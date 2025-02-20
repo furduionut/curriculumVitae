@@ -1,0 +1,79 @@
+/* Parameteres */
+:root{
+    --background-color: #b6cad4;
+    --second-background-color: #8a99a1;
+    --third-background-color: #cbe1ed;
+    --font-color: 465b7b;
+    --viewport-width: 2500px;
+    --viewport-height: 2500px;
+    }
+
+/* General styles */
+body {
+    display: flex;
+    background-color: var(--background-color);
+    }   
+
+.container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-around;
+        }
+        
+.banner {
+    display: flex;
+    width: auto;
+    height: auto;
+    }
+
+.viewport{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+    .stage-label {
+        color: blue;
+        font-family: arial;
+        font-size: 250px;
+        width: var(--viewport-width);
+        height: 50px;
+    }
+
+    .axo {
+        width: var(--viewport-width);
+        height: var(--viewport-height);
+        
+    }
+
+    .slider-container {
+        background-color: var(--second-background-color);
+        width: var(--viewport-width);
+        height: 200px; 
+        border-radius: 100px;
+    }
+
+        .draggable-circle {
+                left: 10px;
+                background-color: var(--third-background-color);
+                width: 180px;
+                height: 180px;
+                border-radius: 50%;
+                cursor : grab;
+                box-Shadow : 15px 15px 15px rgba(0, 0, 0, 0.3);
+        }
+
+.cv {
+    background-color: var(--background-color);
+    width: auto;
+    height: auto;
+    }
+
+/* Responsiveness based on screen-width*/
+@media (max-width: 600px) {
+    .container {
+      flex-direction: column;
+    }
+  }
