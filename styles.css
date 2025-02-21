@@ -1,25 +1,61 @@
 /* Parameteres */
 :root{
+    
+    
+    /* control */
+    --general-margin: 2px;
+    --general-padding: 2px;
+
+    /* --html-border: red solid 2px;
+    --container-border: orange solid 2px;
+    --banner-border: green solid 2px;
+    --viewport-border: purple solid 2px;
+    --cv-border: black solid 2px;
+    --other-border: rgb(16, 9, 93) solid 2px; */
+
+    /* colors */
     --background-color: #b6cad4;
+    --first-background-color: f4f1ea;
     --second-background-color: #8a99a1;
     --third-background-color: #cbe1ed;
-    --font-color: 465b7b;
+
+    /* geometry */
     --main-border-radius: 25px;
+    --specific-border-radius: 50%;
+
+    /* font */
+    --general-font-familiy: arial;
+    --general-color: 465b7b;
+
+    --title-font-family: arial;
+    --title-color: 1c3166;
+    
+    --subtitle-font-familiy: arial;
+    --subtitle-color: 1c3166;
+
+    --subject-font-familiy: arial;
+    --subject-color: 1c3166;
+
+    --description-font-familiy: arial;
+    --description-color: 1c3166;
+
     }
 
 /* General styles */
 html, body {
     width: 100vw;
-    height: 100vh;
+    height: auto;
     
-    margin: 0;
-    padding: 0;
+    border: var(--html-border);
+    margin: var(--general-margin);
+    padding: var(--general-padding);
     box-sizing: border-box;
 
     display: flex;
     flex-wrap: wrap;
+    justify-content: flex-start;
+
     box-sizing: border-box;
-    /* overflow: hidden; */
 
     background-color: var(--background-color);
     }   
@@ -28,7 +64,13 @@ html, body {
     width: auto;
     height: auto;
     
+    border: var(--container-border);
+    margin: var(--general-margin);
+    padding: var(--general-padding);
+    box-sizing: border-box;
+
     display: flex;
+    flex-wrap: wrap;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -38,68 +80,109 @@ html, body {
     position: relative;
     overflow: visible;
 
-    width: 100vw;
+    width: 100%;
     height: auto;
+
+    border: var(--banner-border);
+    margin: var(--general-margin);
+    padding: var(--general-padding);
+
+    box-sizing: border-box;
+
         }
 
     .viewport{        
         width: 100%;
-        height: auto;
+        height: 750px;
+
+        border: var(--viewport-border);
+        margin: var(--general-margin);
+        padding: var(--general-padding);
+
+        box-sizing: border-box;
 
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-    }
-
-        .stage-label {
-            width: 50%;
-            height: auto;
-            color: var(--font-color);
-
-            display: flex;
-            justify-content: center;
-        }
-
-        .axo {
-            width: 100%;
-            height: 35vh;
-        }
-
-        .slider-container {
-            position: relative;
-            bottom: 5%;
-            
-            width: 50%;
-            height: 25px;
-
-            display:flex;
-            flex-direction: row;
-
-            background-color: var(--third-background-color);
-            border-radius: var(--main-border-radius);
-        }
-
-            .draggable-circle {
-                    position: relative;
-                    left: 1%;
-                    width: 25px;
-                    height: auto;
-
-                    border: black solid 1px;
-                    background-color: var(--third-background-color);
-                    box-Shadow : 5px 5px 15px rgba(0, 0, 0, 0.3);
-                    border-radius: 50%;
-                    
-                    cursor : grab;
-                    
             }
+
+            /* .stage-label {
+                width: 50%;
+                height: 5%;
+                color: var(--general-color);
+
+                border: var(--viewport-border);
+                margin: var(--general-margin);
+                padding: var(--general-padding);
+
+                box-sizing: border-box;
+
+                display: flex;
+                justify-content: center;
+                    } */
+
+            .axo {
+                width: 50%;
+                height: 90%;
+
+                border: var(--viewport-border);
+                margin: var(--general-margin);
+                padding: var(--general-padding);
+
+                box-sizing: border-box;
+
+                display: flex;
+                justify-content: center;
+
+                cursor : grab;
+                }
+
+            /* .slider-container {
+                width: 50%;
+                height: 5%;
+
+                border: var(--viewport-border);
+                margin: var(--general-margin);
+                padding: var(--general-padding);
+
+                box-sizing: border-box;
+
+                position: relative;
+                bottom: 5%;
+                
+                display:flex;
+                flex-direction: row;
+
+                background-color: var(--third-background-color);
+                border-radius: var(--main-border-radius);
+                }
+
+                    .draggable-circle {
+                            position: relative;
+                            left: 0.25%;
+                            width: 25px;
+                            height: auto;
+
+                            border: black solid 1px;
+                            background-color: var(--second-background-color);
+                            box-Shadow : 5px 5px 15px rgba(0, 0, 0, 0.3);
+                            border-radius: var(--specific-border-radius);
+                            
+                            cursor : grab;  
+                            } */
 
     .cv {
     position: relative;
     overflow: visible;
 
-    width: 100vw;
+    border: var(--cv-border);
+    margin: var(--general-margin);
+    padding: var(--general-padding);
+
+    box-sizing: border-box;
+
+    width: 100%;
     height: auto;
         }
 
