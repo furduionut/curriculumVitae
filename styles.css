@@ -93,7 +93,7 @@ html, body {
 
     .viewport{        
         width: 100%;
-        height: 250px;
+        height: 150px;
 
         border: var(--viewport-border);
         margin: var(--general-margin);
