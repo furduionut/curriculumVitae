@@ -6,12 +6,12 @@
     --general-margin: 2px;
     --general-padding: 2px;
 
-    /* --html-border: red solid 2px;
-    --container-border: orange solid 2px;
-    --banner-border: green solid 2px;
-    --viewport-border: purple solid 2px;
-    --cv-border: black solid 2px;
-    --other-border: rgb(16, 9, 93) solid 2px; */
+    --html-border: none;
+    --container-border: none;
+    --banner-border: none;
+    --viewport-border: none;
+    --cv-border: none;
+    --other-border: none;
 
     /* colors */
     --background-color: #b6cad4;
@@ -107,7 +107,7 @@ html, body {
         align-items: center;
             }
 
-            /* .stage-label {
+            .stage-label {
                 width: 50%;
                 height: 5%;
                 color: var(--general-color);
@@ -120,7 +120,7 @@ html, body {
 
                 display: flex;
                 justify-content: center;
-                    } */
+                    }
 
             .axo {
                 width: 50%;
@@ -138,7 +138,7 @@ html, body {
                 cursor : grab;
                 }
 
-            /* .slider-container {
+            .slider-container {
                 width: 50%;
                 height: 5%;
 
@@ -170,7 +170,7 @@ html, body {
                             border-radius: var(--specific-border-radius);
                             
                             cursor : grab;  
-                            } */
+                            }
 
     .cv {
     position: relative;
