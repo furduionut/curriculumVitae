@@ -82,7 +82,7 @@ stages.forEach(stage => {
         (gltf) => {
             try {
                 // Scale the object
-                gltf.scene.scale.set(0.5, 0.5, 0.5);
+                gltf.scene.scale.set(0.75, 0.75, 0.75);
 
                 // Center the object
                 const box = new THREE.Box3().setFromObject(gltf.scene);
