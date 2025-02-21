@@ -123,8 +123,8 @@ html, body {
                     }
 
             .axo {
-                width: 50%;
-                height: 90%;
+                width: 50vw;
+                height: 50vh;
 
                 border: var(--viewport-border);
                 margin: var(--general-margin);
