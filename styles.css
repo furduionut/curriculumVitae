@@ -138,7 +138,7 @@ html, body {
                 cursor : grab;
                 }
 
-            .slider-container {
+            /* .slider-container {
                 width: 50%;
                 height: 5%;
 
@@ -170,7 +170,7 @@ html, body {
                             border-radius: var(--specific-border-radius);
                             
                             cursor : grab;  
-                            }
+                            } */
 
     .cv {
     position: relative;
