@@ -48,11 +48,13 @@ const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 
 // Lights
     const ambientLight = new THREE.AmbientLight(0xffffff, 3); // Soft light
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 5); // Directional light
-    scene.add(ambientLight, directionalLight);
+    const directionalLight01 = new THREE.DirectionalLight(0xffffff, 5); // Directional light 01
+    const directionalLight02 = new THREE.DirectionalLight(0xffffff, 5); // Directional light 02
+    scene.add(ambientLight, directionalLight01, directionalLight02);
 
     // Light parameters
-    directionalLight.position.set(5, 10, 5);
+    directionalLight01.position.set(5, 10, 5);
+    directionalLight02.position.set(-5, 10, -5);
 
 // Geometry test
     // const geometry = new THREE.BoxGeometry(5,5,5);
