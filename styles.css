@@ -1,10 +1,14 @@
+/* Imports */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
 /* Parameteres */
 :root{
     
     
     /* control */
-    --general-margin: 2px;
-    --general-padding: 2px;
+    --general-margin: 0;
+    --general-padding: 0;
+    --general-border: 0;
 
     --html-border: none;
     --container-border: none;
@@ -138,13 +142,14 @@ html, body {
                 cursor : grab;
                 }
 
-            /* .slider-container {
-                width: 50%;
-                height: 5%;
+            .slider-container {
+                width: 75vw;
+                height: calc(75vw/10);
+                border-radius: calc(75vw/5);
 
                 border: var(--viewport-border);
                 margin: var(--general-margin);
-                padding: var(--general-padding);
+                padding: 0;
 
                 box-sizing: border-box;
 
@@ -155,22 +160,22 @@ html, body {
                 flex-direction: row;
 
                 background-color: var(--third-background-color);
-                border-radius: var(--main-border-radius);
+                
                 }
 
                     .draggable-circle {
                             position: relative;
                             left: 0.25%;
-                            width: 25px;
-                            height: auto;
+                            width: calc(75vw - 70.5vw);
+                            height: calc(75vw - 70.5vw);
 
-                            border: black solid 1px;
+                            border: var(--general-border);
                             background-color: var(--second-background-color);
                             box-Shadow : 5px 5px 15px rgba(0, 0, 0, 0.3);
                             border-radius: var(--specific-border-radius);
                             
                             cursor : grab;  
-                            } */
+                            }
 
     .cv {
     position: relative;
@@ -191,4 +196,4 @@ html, body {
     .container {
       flex-direction: column;
     }
-  } */
+  }

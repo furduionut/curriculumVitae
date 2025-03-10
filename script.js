@@ -4,6 +4,7 @@ import * as THREE from "three";
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
+import { DRACOLoader } from "three/examples/jsm/Addons.js";
 
 // Importing from CSS
 const mainColor = '#b6cad4';
@@ -66,14 +67,14 @@ const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 
 // Creating GLTF Models paths
 const stageModels = {};
-const stages = ['Preliminar', 'Pregatitor', 'Conceptual', 'Definitor', 'Detaliat-a', 'Detaliat-b'];
+const stages = ['ACOPERIS', 'ETAJ', 'PARTER', 'SUBSOL', 'SECTIUNE-A', 'SECTIUNE-B'];
 const modelPaths = {
-    "Preliminar":"./preliminar.glb",
-    "Pregatitor":"./pregatitor.glb",
-    "Conceptual":"./conceptual.glb",
-    "Definitor":"./definitor.glb",
-    "Detaliat-a":"./detaliat-a.glb",
-    "Detaliat-b":"./detaliat-b.glb"
+    "ACOPERIS":"./02_00_CASA-BACAU_ACOPERIS.glb",
+    "ETAJ":"./02_00_CASA-BACAU_ETAJ.glb",
+    "PARTER":"./02_00_CASA-BACAU_PARTER.glb",
+    "SUBSOL":"./02_00_CASA-BACAU_SUBSOL.glb",
+    "SECTIUNE-A":"./02_00_CASA-BACAU_SA.glb",
+    "SECTIUNE-B":"./02_00_CASA-BACAU_SB.glb"
 };
 
 // Load all GLB models
@@ -125,7 +126,7 @@ stages.forEach(stage => {
                 });
 
                 // Set model to be initially hidden except for "Definitor"
-                gltf.scene.visible = (stage === 'Definitor');
+                gltf.scene.visible = (stage === 'ACOPERIS');
 
                 // Add model to scene
                 scene.add(gltf.scene);
