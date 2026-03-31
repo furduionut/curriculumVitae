@@ -4,12 +4,6 @@
 /* Parameteres */
 :root{
     
-    
-    /* control */
-    --general-margin: 0;
-    --general-padding: 0;
-    --general-border: 0;
-
     --html-border: none;
     --container-border: none;
     --banner-border: none;
@@ -19,9 +13,9 @@
 
     /* colors */
     --background-color: #b6cad4;
-    --first-background-color: f4f1ea;
-    --second-background-color: #8a99a1;
-    --third-background-color: #cbe1ed;
+    --first-background-color: rgba(182, 202, 212, 1);
+    --second-background-color: rgba(138, 153, 161, 1);
+    --third-background-color: rgba(203, 225, 237, 1);
 
     /* geometry */
     --main-border-radius: 25px;
@@ -46,154 +40,180 @@
     }
 
 /* General styles */
-html, body {
+* {
+    box-sizing: border-box;
+    margin: 0;
+    /* border: .1px solid black; */
+    padding: 0;
+}
+
+body {
     width: 100vw;
-    height: auto;
+    height: 100em;
     
-    border: var(--html-border);
-    margin: var(--general-margin);
-    padding: var(--general-padding);
-    box-sizing: border-box;
-
     display: flex;
+    flex-direction: column;
     flex-wrap: wrap;
+}
+
+div[class|='container'] {
+    background-color: #8a99a1;
+}
+
+.container-1{
+    width: 100%;
+    height: 7.5%;
+    gap: 1em;
+    
+    display: flex;
+    flex-direction: row;
     justify-content: flex-start;
+    align-items: flex-start;
+    
+    z-index: 2;
+    box-shadow: 0em 1em 2em rgba(0, 0, 0, 0.4);
+}
 
-    box-sizing: border-box;
+.container-1 > div {
+    background-color: pink;
+    position: relative;
+    left: 1em;
+    top: 1em;
 
-    background-color: var(--background-color);
-    }   
+}
 
-.container {
+
+
+div.photo {
+    position: relative;
+
+    width: 10em;
+    height: 10em;
+    border-radius: 1em;
+    flex-shrink: 0;
+}
+
+.information > div {
+
     width: auto;
     height: auto;
-    
-    border: var(--container-border);
-    margin: var(--general-margin);
-    padding: var(--general-padding);
-    box-sizing: border-box;
 
     display: flex;
-    flex-wrap: wrap;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-        }
-        
-.banner {
-    position: relative;
-    overflow: visible;
+    border-style: none;
+}
 
+.container-2{
     width: 100%;
-    height: auto;
+    height: 25%;
+}
 
-    border: var(--banner-border);
-    margin: var(--general-margin);
-    padding: var(--general-padding);
+.container-3{
+    width: 100%;
+    height: 5%;
 
-    box-sizing: border-box;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
 
-        }
+    z-index: 2;
+    box-shadow: 0em 0em 2em rgba(0, 0, 0, 0.4);
+}
 
-    .viewport{        
-        width: 100vw;
-        height: 40vh;
+div.container-3 > div {
+    width: 15vw;
+    height: 100%;
 
-        border: var(--viewport-border);
-        margin: var(--general-margin);
-        padding: var(--general-padding);
+    background-color: pink;
+}
 
-        box-sizing: border-box;
+.container-4{
+    width: 100%;
+    height: 55%;
+}
+
+.experience {
+    padding: 1em;
+    
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr 3fr 1fr 3fr 1fr;
+    grid-template-rows: 1fr .5fr 1fr .5fr 1fr .5fr 1fr .5fr 1fr .5fr;
+
+}
+
+
+div[class^='experience-'] {
+    width: 100%;
+    height: 100%;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    background-color: white;
+    border-radius: 1em;
+
+    z-index: 2;
+    box-shadow: 0em 0em 3em rgba(0, 0, 0, 0.4);
+}
+
+.container-5{
+    width: 100%;
+    height: 7.5%;
+
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+
+    z-index: 2;
+    box-shadow: 0em -1em 2em rgba(0, 0, 0, 0.4);
+}
+
+.digitalAb {
+    width: 100%;
+    height: 100%;
+    display: flex;
+
+    flex-wrap: wrap-reverse;
+    gap: 10px;
+    justify-content: space-evenly;
+    align-items: center;
+
+}
+
+div.digitalAb > div {
+    width: 5em;
+    height: 5em;
+
+    background-color: pink;
+    border-radius: .5em;
+}
+
+@media (width < 480px) {
+    * {
+        font-size: 12px;
+    }
+    
+    .container-1 {
+        width: auto;
+        height: 7.5%;
 
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        justify-content: flex-start;
+        gap: 1px;
         align-items: center;
-            }
-
-            .stage-label {
-                width: 50%;
-                height: 5%;
-                color: var(--general-color);
-
-                border: var(--viewport-border);
-                margin: var(--general-margin);
-                padding: var(--general-padding);
-
-                box-sizing: border-box;
-
-                display: flex;
-                justify-content: center;
-                    }
-
-            .axo {
-                width: 75%;
-                height: 100%;
-
-                border: var(--viewport-border);
-                margin: var(--general-margin);
-                padding: var(--general-padding);
-
-                box-sizing: border-box;
-
-                display: flex;
-                justify-content: center;
-
-                cursor : grab;
-                }
-
-            .slider-container {
-                width: 75vw;
-                height: calc(75vw/10);
-                border-radius: calc(75vw/5);
-
-                border: var(--viewport-border);
-                margin: var(--general-margin);
-                padding: 0;
-
-                box-sizing: border-box;
-
-                position: relative;
-                bottom: 5%;
-                
-                display:flex;
-                flex-direction: row;
-
-                background-color: var(--third-background-color);
-                
-                }
-
-                    .draggable-circle {
-                            position: relative;
-                            left: 0.25%;
-                            width: calc(75vw - 70.5vw);
-                            height: calc(75vw - 70.5vw);
-
-                            border: var(--general-border);
-                            background-color: var(--second-background-color);
-                            box-Shadow : 5px 5px 15px rgba(0, 0, 0, 0.3);
-                            border-radius: var(--specific-border-radius);
-                            
-                            cursor : grab;  
-                            }
-
-    .cv {
-    position: relative;
-    overflow: visible;
-
-    border: var(--cv-border);
-    margin: var(--general-margin);
-    padding: var(--general-padding);
-
-    box-sizing: border-box;
-
-    width: 100%;
-    height: auto;
-        }
-
-/* Responsiveness based on screen-width*/
-@media (max-width: 600px) {
-    .container {
-      flex-direction: column;
     }
-  }
+
+
+    .container-1 > div {
+        position: relative;
+        left: 0;
+        top: 1em;
+    }
+}
