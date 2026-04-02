@@ -150,6 +150,9 @@ div[class^='experience-'] {
     width: 100%;
     height: 100%;
     
+    max-width: 20em;
+    max-height: 15em;
+
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -158,8 +161,84 @@ div[class^='experience-'] {
     background-color: white;
     border-radius: 1em;
 
-    z-index: 2;
-    box-shadow: 0em 0em 3em rgba(0, 0, 0, 0.4);
+
+}
+
+.content {
+    width: 100%;
+    height: 100%;
+
+    z-index: 3;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    
+    overflow: hidden;
+    white-space: normal;
+   
+    border-radius: 0.75em;
+    box-shadow: 0em 0em 1em rgba(0, 0, 0, 0.4);
+}
+
+.geometry {
+    width: 0;
+    height: 0;
+}
+
+.cloud-square-1 {
+    z-index: 1;
+    width: 15vw;
+    max-width: 10em;
+    height: 2em;
+
+    background-color: white;
+    
+    border-radius: .75em;
+    position: relative;
+    bottom: 1em;
+    right: 1em
+}
+
+.cloud-square-2 {
+    z-index: 1;
+    width: 15vw;
+    max-width: 10em;
+
+    height: 6vh;
+
+    background-color: white;
+    
+    border-radius: .75em;
+    position: relative;
+    bottom: 10.5em;
+    right: 7em;
+}
+
+.experience-5 .cloud-square-1 {
+    position: relative;
+    bottom: 1em;
+    right: 5em
+}
+
+.experience-5 .cloud-square-2 {
+    position: relative;
+    bottom: 10em;
+    right: 1em;
+}
+
+.experience-2 .cloud-square-1 {
+    position: relative;
+    bottom: 1em;
+    right: 5em
+}
+
+.experience-2 .cloud-square-2 {
+    position: relative;
+    bottom: 10em;
+    right: 1em;
 }
 
 .container-5{
@@ -194,7 +273,7 @@ div.digitalAb > div {
     border-radius: .5em;
 }
 
-@media (width < 480px) {
+@media (width < 512px) {
     * {
         font-size: 12px;
     }
