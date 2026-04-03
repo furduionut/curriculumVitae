@@ -10,7 +10,7 @@ import { DRACOLoader } from "three/examples/jsm/Addons.js";
 const mainColor = '#b6cad4';
 
 // Set 3D viewport
-const container = document.getElementById("axo");
+const container = document.getElementById("canvas");
 container.width = parseInt(window.getComputedStyle(container).width, 10);
 container.height = parseInt(window.getComputedStyle(container).height, 10);
 

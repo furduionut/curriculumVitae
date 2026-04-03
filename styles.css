@@ -39,6 +39,8 @@
     --description-font-familiy: arial;
     --description-color: 1c3166;
 
+    /* images */
+    --profile-image: url('./public/photo_2026-04-03_08-53-59.jpg');
     }
 
 /* General styles */
@@ -49,67 +51,139 @@
     padding: 0;
 }
 
-
 /* Testing board */
 
-/* *{
+*{
     border: 1px solid red;
 
-} */
+}
 
+/* Level 0 - Page layout*/
 body {
-    width: 100vw;
-    height: 200vh;
+    width: 100%;
+    height: auto;
     
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
-}
 
-.title {
-    font-size: 2em;
-    font-style: bold;
-}
-
-div[class|='container'] {
     background-color: var(--first-background-color);
 }
 
-.container-1{
-    width: 100%;
-    height: 7.5%;
-    gap: 1em;
+/* Level 1 - Sections layout */
+.aboutMe {
+    padding: 1.0em;
     
+    width: 100%;
+    height: 7.5em;
+
+    z-index: 2;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
     align-items: flex-start;
+    gap: 2em;
     
-    z-index: 2;
     box-shadow: 0em 1em 2em var(--shadow-color);
 }
 
+.projects {
+    padding: 1.0em;
+
+    width: 100%;
+    height: 50em;
+
+    z-index: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.description{
+    width: 100%;
+    height: 7.5em;
+
+    z-index: 2;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+
+    box-shadow: 0em 0em 2em var(--shadow-color)
+}
+
+.experience{
+    padding: 1.0em;
+
+    width: 100%;
+    height: 100em;
+    
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
+
+    gap: 1em;
+}
+
+.abilities{
+    padding: 1.0em;
+
+    width: 100%;
+    height: 7.5em;
+
+    z-index: 2;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 1em;
+    
+    box-shadow: 0em 0em 2em var(--shadow-color);
+}
+
+.leveling {
+    padding: 1.0em;
+
+    width: 100%;
+    height: 35em;
+
+    z-index: 1;
+}
+
+.credits {
+    padding: 1.0em;
+
+    width: 100%;
+    height: 7.5em;
+
+    z-index: 2; 
+    box-shadow: 0em -1em 2em var(--shadow-color);
+}
+
+/* Level 2 - Elements layout */
 .photo{
-    background-image: url('./public/photo_2026-04-03_08-53-59.jpg');
+    position: relative;
+    left: 1em;
+    
+    background-image: var(--profile-image);
     background-size: 12.5em;
     background-repeat: no-repeat;
     background-position: center;
-    position: relative;
-    left: 1em;
-    top: 1em;
-
-}
-
-div.photo {
-    position: relative;
-
+    
     width: 10em;
     height: 10em;
     border-radius: 1em;
     flex-shrink: 0;
+
 }
 
-.information > div {
+.name {
+    font-size: 2em;
+    font-style: bold;
+}
+
+.contact {
     width: auto;
     height: auto;
 
@@ -119,59 +193,26 @@ div.photo {
     align-items: flex-start;
 }
 
-.container-2{
-    width: 100%;
-    height: 25%;
-}
-
 .canvas {
-    width: 100%;
-    height: 100%;
-
+    width: 45em;
+    height: 45em;
 }
 
-.container-3{
-    width: 100%;
-    height: 5%;
+.navBtn {
+    width: 5em;
+    height: 5em;
+    background-color: var(--third-background-color);
 
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-
-    z-index: 2;
-    box-shadow: 0em 0em 2em var(--shadow-color)
+    border-radius: 1em;
+    flex-shrink: 0;
 }
 
-div.container-3 > div {
-    width: 15vw;
-    height: 100%;
-
-    background-color: --var(--second-background-color);
-    border-style: solid;
-}
-
-.container-4{
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 55%;
-}
-
-.experience{
-    padding: 1.0em;
-
-    width: 100%;
-    height: 100%;
+.experience > div {
+    width: 15em;
+    height: 10em;
     
-    display: flex;
-    flex-direction: column;
-    justify-items: center;
-    align-items: center;
-
-    gap: 1em;
-    /* display: grid;
-    grid-template-columns: 1fr 3fr 1fr  3fr 1fr;
-    grid-template-rows: 1fr .5fr 1fr .5fr 1fr .5fr 1fr .5fr 1fr .5fr; */
+    background-color: white;
+    border-radius: 1em;
 }
 
 .experience > div:nth-child(even) {
@@ -182,16 +223,16 @@ div.container-3 > div {
     align-self: flex-end;
 }
 
-div[class^='experience-'] {
-    width: 15em;
-    height: auto;
-    background-color: white;
-    border-radius: 1em;
-}
-
-.timeline {
+.digitalAb {
     width: 100%;
-    height: 1em;
+    height: 100%;
+    display: flex;
+
+    flex-wrap: wrap-reverse;
+    gap: 10px;
+    justify-content: space-evenly;
+    align-items: center;
+
 }
 
 .content {
@@ -213,31 +254,7 @@ div[class^='experience-'] {
     box-shadow: 0em 0em 1em var(--shadow-color);
 }
 
-.container-5{
-    width: 100%;
-    height: 7.5%;
-
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-
-    z-index: 2;
-    box-shadow: 0em -1em 2em var(--shadow-color);
-}
-
-.digitalAb {
-    width: 100%;
-    height: 100%;
-    display: flex;
-
-    flex-wrap: wrap-reverse;
-    gap: 10px;
-    justify-content: space-evenly;
-    align-items: center;
-
-}
-
-div.digitalAb > div {
+.digitalAb > div {
     width: 5em;
     height: 5em;
 
@@ -251,11 +268,13 @@ div.digitalAb > div {
     border-radius: .5em;
 }
 
+/* Level 3 - Content layout */
+
 .BIM {
     order: 1;
 }
 
-h1.abHeader {
+.abHeader {
     font-size: 1.5em;
 }
 
@@ -263,43 +282,66 @@ p {
     font-size: .75em;
 }
 
+
+/* Responsive Behaviour */
 @media (width < 512px) {
     * {
         font-size: 12px;
     }
+
+    body {
+        width: 100%;
+        height: auto;
+    }
     
-    .container-1 {
+    .aboutMe {
         width: auto;
         height: 7.5%;
 
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
-        gap: 1px;
         align-items: center;
+
+        gap: 1px;
     }
 
-    .container-1 > div {
-        position: relative;
-        left: 0;
-        top: 1em;
+    .projects {
     }
 
-    .container-2 {
-        width: auto;
-        height: 40%
+    .canvas {
+        width: 45em;
+        height: 45em;
     }
 
-    .container-3 {
-        width: auto;
-        height: 5%;
+    .description {
     }
-    .container-4 { 
-        width: auto;
-        height: 40%;
+    
+    .experience { 
+        width: 100%;
+        height: auto;
+
     }
 
-    .BIM {
-        order: 1
+    .experience > div {
+        width: 100%;
+        height: 10em;
+        
+        background-color: white;
+        border-radius: 1em;
+    }
+
+    .experience > div:nth-child(even) {
+        align-self: center;
+    }
+    
+    .experience > div:nth-child(odd){
+        align-self: center;
+    }
+
+    .abilities{
+    }
+
+    .credits {
     }
 }
