@@ -53,10 +53,10 @@
 
 /* Testing board */
 
-*{
+/* *{
     border: 1px solid red;
 
-}
+} */
 
 /* Level 0 - Page layout*/
 body {
@@ -85,6 +85,7 @@ body {
     gap: 2em;
     
     box-shadow: 0em 1em 2em var(--shadow-color);
+
 }
 
 .projects {
@@ -95,9 +96,11 @@ body {
 
     z-index: 1;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
+
+    gap: 2em;
 }
 
 .description{
@@ -131,7 +134,7 @@ body {
     padding: 1.0em;
 
     width: 100%;
-    height: 7.5em;
+    height: auto;
 
     z-index: 2;
     display: flex;
@@ -194,8 +197,17 @@ body {
 }
 
 .canvas {
-    width: 45em;
-    height: 45em;
+    width: 100%;
+    height: 30em;
+}
+
+.controls{
+    width: 100%;
+    height: auto;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .navBtn {
@@ -207,32 +219,57 @@ body {
     flex-shrink: 0;
 }
 
-.experience > div {
-    width: 15em;
-    height: 10em;
+.experience > div:not(:last-child) {
+    width: auto;
+    height: auto;
+    
+    z-index: 2;
+    background-color: white;
+    border-radius: 1em;
+
+    box-shadow: 0em 0em 2em var(--shadow-color);
+}
+
+/* .content > ul {
+    display: none;
+} */
+
+.experience > div:nth-child(even):not(:last-child) {
+    align-self: flex-start;
+}
+
+.experience > div:nth-child(odd):not(:last-child){
+    align-self: flex-end;
+}
+
+
+.timeline {
+    z-index: 1;
+    flex-shrink: 0;
+
+    position: relative;
+    bottom: 85%;
+    height: 100%;
+    width: 1em;
+
+    align-self: center;
     
     background-color: white;
     border-radius: 1em;
 }
 
-.experience > div:nth-child(even) {
-    align-self: flex-start;
-}
-
-.experience > div:nth-child(odd){
-    align-self: flex-end;
-}
-
 .digitalAb {
     width: 100%;
     height: 100%;
-    display: flex;
 
+
+    display: flex;
+    flex-direction: row-reverse;
     flex-wrap: wrap-reverse;
-    gap: 10px;
     justify-content: space-evenly;
     align-items: center;
 
+    gap: 10px;
 }
 
 .content {
@@ -270,10 +307,6 @@ body {
 
 /* Level 3 - Content layout */
 
-.BIM {
-    order: 1;
-}
-
 .abHeader {
     font-size: 1.5em;
 }
@@ -282,9 +315,13 @@ p {
     font-size: .75em;
 }
 
+.BIM {
+    order: 1;
+}
+
 
 /* Responsive Behaviour */
-@media (width < 512px) {
+@media (width <= 480px) {
     * {
         font-size: 12px;
     }
@@ -296,7 +333,7 @@ p {
     
     .aboutMe {
         width: auto;
-        height: 7.5%;
+        height: 7.5em;
 
         display: flex;
         flex-direction: column;
@@ -310,8 +347,9 @@ p {
     }
 
     .canvas {
-        width: 45em;
-        height: 45em;
+
+        width: 100%;
+        height: 30em;
     }
 
     .description {
@@ -323,12 +361,14 @@ p {
 
     }
 
-    .experience > div {
+    .experience > div:not(:last-child) {
         width: 100%;
-        height: 10em;
+        height: auto;
         
+        z-index: 2;
         background-color: white;
         border-radius: 1em;
+
     }
 
     .experience > div:nth-child(even) {
@@ -339,9 +379,45 @@ p {
         align-self: center;
     }
 
+    .timeline {
+        display: none;
+    }
     .abilities{
     }
-
+    
     .credits {
     }
+
+/* Level 2 - Elements layout */
+.photo{
+    position: relative;
+    left: 0;
+    padding: 0;
+
+}
+.contact {
+    width: auto;
+    height: auto;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.projects {
+    padding: 1.0em;
+
+    width: 100%;
+    height: 50em;
+
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+.nextBtn {}
+.prevBtn {}
+
 }

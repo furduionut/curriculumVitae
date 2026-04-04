@@ -7,12 +7,15 @@ import { GLTFLoader } from "three/examples/jsm/Addons.js";
 import { DRACOLoader } from "three/examples/jsm/Addons.js";
 
 // Importing from CSS
-const mainColor = '#b6cad4';
+const root = document.documentElement;
+const style = getComputedStyle(root);
+
+const mainColor = style.getPropertyValue('--first-background-color');
 
 // Set 3D viewport
 const container = document.getElementById("canvas");
-container.width = parseInt(window.getComputedStyle(container).width, 10);
-container.height = parseInt(window.getComputedStyle(container).height, 10);
+container.width = parseInt(window.getComputedStyle(container).width);
+container.height = parseInt(window.getComputedStyle(container).height);
 
 // Tests
 console.log(container.height, container.width)
@@ -98,32 +101,6 @@ stages.forEach(stage => {
 
                 // Apply material overrides (same for all stages)
                 const backgroundColor = new THREE.Color(mainColor);
-                gltf.scene.traverse((child) => {
-                    if (child.isMesh) {
-                        if (Array.isArray(child.material)) {
-                            child.material.forEach((material, index) => {
-                                if (material.name === 'iarba - verde' || material.name === 'Pamant' || material.name === 'x') {
-                                    child.material[index] = new THREE.MeshBasicMaterial({
-                                        color: backgroundColor,
-                                        emissive: 0xf0f0f0,
-                                        map: null,
-                                        side: THREE.FrontSide
-                                    });
-                                }
-                            });
-                        } else {
-                            const material = child.material;
-                            if (material.name === 'iarba - verde' || material.name === 'Pamant' || material.name === 'x') {
-                                child.material = new THREE.MeshBasicMaterial({
-                                    color: backgroundColor,
-                                    emissive: 0xf0f0f0,
-                                    map: null,
-                                    side: THREE.FrontSide
-                                });
-                            }
-                        }
-                    }
-                });
 
                 // Set model to be initially hidden except for "Definitor"
                 gltf.scene.visible = (stage === 'ACOPERIS');
@@ -141,6 +118,10 @@ stages.forEach(stage => {
     );
 });
 
+
+const nextBtn = document.getElementById('forward');
+const prevBtn = document.getElementById('backward');
+
 // Set Camera Controls
 const controls = new OrbitControls(camera, renderer.domElement);
     // Set parameters of controls
@@ -154,30 +135,30 @@ const controls = new OrbitControls(camera, renderer.domElement);
     controls.maxPolarAngle = Math.PI / 3; // Prevent vertical rotation (limit pitch to 90 degrees)
     controls.minPolarAngle = Math.PI / 3; // Lock vertical axis at 90 degrees (horizontal only)
 
-// Set Slider/Circle Control
-    const circleSize = 30;
-    const sliderContainer = document.getElementsByClassName('slider-container');
-    const sliderContainerElement = document.querySelector('.slider-container');
-    const draggableCircle = document.getElementById('draggable-circle');
+// // Set Slider/Circle Control
+//     const circleSize = 30;
+//     const sliderContainer = document.getElementsByClassName('slider-container');
+//     const sliderContainerElement = document.querySelector('.slider-container');
+//     const draggableCircle = document.getElementById('draggable-circle');
     
-    sliderContainerElement.addEventListener( 'click', console.log("e"));
-    draggableCircle.addEventListener( 'click', console.log("e"));
+//     sliderContainerElement.addEventListener( 'click', console.log("e"));
+//     draggableCircle.addEventListener( 'click', console.log("e"));
 
-    const stageLabel = document.getElementsByClassName('stage-label');
+//     const stageLabel = document.getElementsByClassName('stage-label');
 
-    // Get slider width;
-    const styles = window.getComputedStyle(sliderContainerElement);
-    const sliderWidth = parseInt(styles.getPropertyValue('width'));
+//     // Get slider width;
+//     const styles = window.getComputedStyle(sliderContainerElement);
+//     const sliderWidth = parseInt(styles.getPropertyValue('width'));
 
-    // Set circle position based on the slider width;
-    const stagePositions = [
-    sliderWidth * 0.10,  // of slider width for first stage
-    sliderWidth * 0.20,  // of slider width for second stage
-    sliderWidth * 0.40,  // of slider width for third stage
-    sliderWidth * 0.60,  // of slider width for fourth stage
-    sliderWidth * 0.80,  // of slider width for fifth stage
-    sliderWidth * 0.90,  // of slider width for sixth stage
-    ];
+//     // Set circle position based on the slider width;
+//     const stagePositions = [
+//     sliderWidth * 0.10,  // of slider width for first stage
+//     sliderWidth * 0.20,  // of slider width for second stage
+//     sliderWidth * 0.40,  // of slider width for third stage
+//     sliderWidth * 0.60,  // of slider width for fourth stage
+//     sliderWidth * 0.80,  // of slider width for fifth stage
+//     sliderWidth * 0.90,  // of slider width for sixth stage
+//     ];
 
 // Functions
     let isDragging = false;
