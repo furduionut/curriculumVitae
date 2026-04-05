@@ -15,13 +15,12 @@
     --background-color: #b6cad4;
     --first-background-color: rgba(173, 182, 211, 1);
     --second-background-color: rgba(138, 153, 161, 1);
-    --third-background-color: rgb(239, 242, 243);
+    --third-background-color: rgb(239, 243, 239);
     --shadow-color: rgba(148, 156, 191, 1);
-    --font-color: rgba(18, 24, 77, 1)
+    --font-color: rgba(18, 24, 77, 1);
 
     /* geometry */
-    --main-border-radius: 25px;
-    --specific-border-radius: 1em;
+    --general-border-radius: 1em;
 
     /* font */
     --general-font-familiy: arial;
@@ -49,6 +48,10 @@
     margin: 0;
     border: 0;
     padding: 0;
+}
+
+span {
+    color: var(--title-color);
 }
 
 h1 {
@@ -86,7 +89,8 @@ li {
 body {
     width: 100%;
     height: auto;
-    
+ 
+
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
@@ -114,17 +118,18 @@ body {
 
 .projects {
     padding: 1.0em;
+    padding-top: 5em;
 
     width: 100%;
-    height: 50em;
+    height: auto;
 
     z-index: 1;
     display: flex;
-    flex-direction: column;
+    flex-flow: column wrap;
     justify-content: space-evenly;
     align-items: center;
 
-    gap: 2em;
+    gap: 1em;
 }
 
 .description{
@@ -164,7 +169,7 @@ body {
     width: 100%;
     height: auto;
 
-    z-index: 2;
+    z-index: 3;
     display: flex;
     justify-content: space-evenly;
     align-items: center;
@@ -174,13 +179,17 @@ body {
 }
 
 .leveling {
+    display: flex;
+    flex-flow: column wrap;
+    gap: 1em;
     padding: 1.0em;
 
     width: 100%;
-    height: 35em;
+    height: auto;
 
     z-index: 1;
 }
+
 
 .credits {
     padding: 1.0em;
@@ -189,13 +198,12 @@ body {
     height: 7.5em;
 
     z-index: 2; 
-    box-shadow: 0em -1em 2em var(--shadow-color);
+    box-shadow: 0em 0em 2em var(--shadow-color);
 }
 
 /* Level 2 - Elements layout */
 .photo{
     position: relative;
-    left: 1em;
     
     background-image: var(--profile-image);
     background-size: 12.5em;
@@ -204,7 +212,7 @@ body {
     
     width: 10em;
     height: 10em;
-    border-radius: 1em;
+    border-radius: var(--general-border-radius);
     flex-shrink: 0;
 
 }
@@ -225,8 +233,14 @@ body {
 }
 
 .canvas {
+    padding: 1em;
+
     width: 100%;
-    height: 30em;
+    height: auto;
+    aspect-ratio: 1/1;
+    
+    border: 2px solid var(--second-background-color);
+    border-radius: var(--general-border-radius);
 }
 
 .controls{
@@ -236,6 +250,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
 }
 
 .navBtn {
@@ -243,7 +258,7 @@ body {
     height: 5em;
     background-color: var(--third-background-color);
 
-    border-radius: 1em;
+    border-radius: var(--general-border-radius);
     flex-shrink: 0;
 }
 
@@ -279,7 +294,7 @@ body {
     align-self: center;
     
     background-color: white;
-    border-radius: 1em;
+    border-radius: var(--general-border-radius);
 }
 
 .digitalAb {
@@ -315,7 +330,7 @@ body {
     white-space: normal;
    
     background-color: white;
-    border-radius: 1.5em;
+    border-radius: var(--general-border-radius);
 
     box-shadow: 0em 0em 1cqb var(--shadow-color);
 }
@@ -331,8 +346,41 @@ body {
     justify-content: center;
 
     background-color: var(--third-background-color); 
-    border-radius: .5em;
+    border-radius: var(--general-border-radius);
     box-shadow: 0em 0em 1em var(--shadow-color);
+}
+
+div[class^='skill'] {
+    display: flex;
+    gap: 1em;
+    width: 100%;
+    height: 2.5em;
+}
+
+.symbol {
+    height: 100%;
+    width: 2.5em;
+
+    aspect-ratio: 1/1;
+
+    border-radius: var(--general-border-radius);
+    background-color: white;
+}
+
+.bar {
+    height: 100%;
+    width: 100%;
+
+    border-radius: var(--general-border-radius);
+    background-color: white;
+}
+
+div[class^='skill']:nth-child(odd) > .bar {
+    background: linear-gradient(to left, var(--first-background-color) 50%, white 70%);
+}
+
+div[class^='skill']:nth-child(even) > .bar {
+    background: linear-gradient(to left, var(--first-background-color) 30%, white 70%);
 }
 
 div[class^='geometry'] {
@@ -350,16 +398,16 @@ div[class^='geometry'] {
 
     position: relative;
     left: 10%;
-    border-top-left-radius: 1em;
-    border-top-right-radius: 1em;
+    border-top-left-radius: var(--general-border-radius);
+    border-top-right-radius: var(--general-border-radius);
 }
 
 .geometry-down {
     position: relative;
     left: 35%;
 
-    border-bottom-left-radius: 1em;
-    border-bottom-right-radius: 1em;
+    border-bottom-left-radius: var(--general-border-radius);
+    border-bottom-right-radius: var(--general-border-radius);
 }
 
 /* Level 3 - Content layout */
@@ -390,10 +438,11 @@ div[class^='geometry'] {
     }
 
     .projects {
-        padding: 1.0em;
+        padding: 1em;
+        padding-top: 10em;
     
         width: 100%;
-        height: 50em;
+        height: auto;
     
         z-index: 1;
         display: flex;
@@ -406,9 +455,8 @@ div[class^='geometry'] {
     }
 
     .canvas {
-
         width: 100%;
-        height: 30em;
+        aspect-ratio: 1/1;
     }
     
     .experience { 
@@ -452,6 +500,7 @@ div[class^='geometry'] {
 
 }
 
+
 .contact {
     width: auto;
     height: auto;
@@ -462,6 +511,13 @@ div[class^='geometry'] {
     align-items: center;
 }
 
+.name {
+    font-size: 30px;
+}
+
+.digitalAb {
+    justify-content: space-evenly;
+}
 
 
 .nextBtn {}
