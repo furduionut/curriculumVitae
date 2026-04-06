@@ -179,7 +179,7 @@ body {
 }
 
 .leveling {
-    display: flex;
+    display: none;
     flex-flow: column wrap;
     gap: 1em;
     padding: 1.0em;
@@ -189,6 +189,10 @@ body {
 
     z-index: 1;
 }
+
+/* .abilities:hover + .leveling {
+    display: flex;
+} */
 
 
 .credits {
@@ -282,6 +286,11 @@ body {
     align-self: flex-end;
 }
 
+.expDescription {
+    display: none;
+}
+
+
 .timeline {
     z-index: 1;
     flex-shrink: 0;
@@ -311,6 +320,8 @@ body {
     gap: 10px;
 }
 
+
+
 .content {
     padding: 2em;
 
@@ -335,6 +346,11 @@ body {
     box-shadow: 0em 0em 1cqb var(--shadow-color);
 }
 
+.content:hover > .expDescription {
+    display: block;
+
+}
+
 .digitalAb > div {
     width: 5em;
     height: 5em;
@@ -349,6 +365,7 @@ body {
     border-radius: var(--general-border-radius);
     box-shadow: 0em 0em 1em var(--shadow-color);
 }
+
 
 div[class^='skill'] {
     display: flex;
@@ -439,7 +456,7 @@ div[class^='geometry'] {
 
     .projects {
         padding: 1em;
-        padding-top: 10em;
+        padding-top: 9em;
     
         width: 100%;
         height: auto;
@@ -482,13 +499,15 @@ div[class^='geometry'] {
         align-self: center;
     }
 
-    .timeline {
+    .leveling {
         display: none;
     }
     
-    .abilities{
+    .abilities:hover + .leveling {
+        display: flex;
     }
     
+
     .credits {
     }
 

@@ -6,6 +6,8 @@ import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
 import { DRACOLoader } from "three/examples/jsm/Addons.js";
 
+// DOM
+
 // Importing from CSS
 const root = document.documentElement;
 const style = getComputedStyle(root);
