@@ -142,7 +142,7 @@ body {
     z-index: 2;
     display: flex;
     flex-flow: column wrap;
-    justify-content: space-evenly;
+    justify-content: space-around;
     align-items: center;
 
     box-shadow: 0em 0em 2em var(--shadow-color)
@@ -179,7 +179,7 @@ body {
 }
 
 .leveling {
-    display: none;
+    display: flex;
     flex-flow: column wrap;
     gap: 1em;
     padding: 1.0em;
@@ -249,21 +249,45 @@ body {
 
 .controls{
     width: 100%;
-    height: auto;
+    height: 10em;
 
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
 
+    gap: 1em;
+}
+
+.stageNav {
+    height: 10em;
+    width: 100%;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.stageBtn {
+    width: 100%;
+    height: 4.5em;
+
+    background-color: var(--third-background-color);
+    border-radius: var(--general-border-radius);
+    box-shadow: 0em 0em 1em var(--shadow-color);
 }
 
 .navBtn {
-    width: 5em;
-    height: 5em;
-    background-color: var(--third-background-color);
+    width: 10em;
+    height: 100%;
 
+    background-color: var(--third-background-color);
     border-radius: var(--general-border-radius);
+    box-shadow: 0em 0em 1em var(--shadow-color);
     flex-shrink: 0;
+}
+
+.upwards {
+
 }
 
 .experience {
@@ -278,38 +302,49 @@ body {
     display: none;
 } */
 
+
 .experience > div:nth-child(even):not(:last-child) {
+    width: 20em;
     align-self: flex-start;
 }
 
 .experience > div:nth-child(odd):not(:last-child){
+    width: 20em;
     align-self: flex-end;
 }
+
+.seeDetails {
+    display: inline-block;
+
+    width: 2em;
+    height: 2em; 
+    background-color: var(--first-background-color);
+    border-radius: var(--general-border-radius);
+}
+
 
 .expDescription {
     display: none;
 }
 
-
-.timeline {
-    z-index: 1;
-    flex-shrink: 0;
-
-    position: relative;
-    bottom: 85%;
+/* .timeline {
+ 
+    z-index: 0;
+    display: flex;
+    width: 100%;
     height: 100%;
-    width: 1em;
 
-    align-self: center;
-    
-    background-color: white;
-    border-radius: var(--general-border-radius);
 }
+
+.mainPipe {
+    width: 1em;
+    height: 100%;
+    background-color: white;
+} */
 
 .digitalAb {
     width: 100%;
     height: 100%;
-
 
     display: flex;
     flex-direction: row-reverse;
@@ -319,8 +354,6 @@ body {
 
     gap: 10px;
 }
-
-
 
 .content {
     padding: 2em;
@@ -427,6 +460,58 @@ div[class^='geometry'] {
     border-bottom-right-radius: var(--general-border-radius);
 }
 
+.treeBind-left {
+    position: relative;
+    bottom: 2em;
+
+}
+
+.branch-left {
+
+    background-color: white;
+
+    width: 1em;
+    height: 5em;
+    position: relative;
+    left: 17em;
+    flex-shrink: 0;
+}
+
+.base-left {
+    background-color: white;
+
+    position: relative;
+    right: 1em;
+    width: 49vw;
+    height: 1em;
+}
+
+/* .treeBind-right {
+    position: relative;
+    bottom: 2em;
+
+}
+
+.branch-right {
+
+    background-color: white;
+
+    width: 1em;
+    height: 5em;
+    position: relative;
+    left: 2em;
+}
+
+.base-right {
+
+    background-color: white;
+    position: relative;
+    position:relative;
+
+    width: 49vw;
+    height: 1em;
+} */
+
 /* Level 3 - Content layout */
 
 .BIM {
@@ -500,14 +585,10 @@ div[class^='geometry'] {
     }
 
     .leveling {
-        display: none;
-    }
-    
-    .abilities:hover + .leveling {
         display: flex;
     }
     
-
+    
     .credits {
     }
 
@@ -518,7 +599,6 @@ div[class^='geometry'] {
     padding: 0;
 
 }
-
 
 .contact {
     width: auto;
@@ -538,6 +618,24 @@ div[class^='geometry'] {
     justify-content: space-evenly;
 }
 
+.controls {
+    height: 5em;
+    gap: 1em;
+}
+
+.stageNav {
+    height: auto;
+    gap: 0.5em;
+}
+
+.stageBtn {
+    height: 2.25em;
+}
+
+.navBtn {
+width: 5em;
+height: 100%;
+}
 
 .nextBtn {}
 
