@@ -302,7 +302,8 @@ body {
     display: none;
 } */
 
-
+.experience {
+}
 .experience > div:nth-child(even):not(:last-child) {
     width: 20em;
     align-self: flex-start;
@@ -486,7 +487,7 @@ div[class^='geometry'] {
     height: 1em;
 }
 
-/* .treeBind-right {
+.treeBind-right {
     position: relative;
     bottom: 2em;
 
@@ -510,7 +511,7 @@ div[class^='geometry'] {
 
     width: 49vw;
     height: 1em;
-} */
+}
 
 /* Level 3 - Content layout */
 

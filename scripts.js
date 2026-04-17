@@ -1,3 +1,89 @@
+/* METACODE IDEAS
+    Class Project (name, about, url, models){
+        name: this.name;
+        about: this.about; 
+        url: this.url;
+        models: this.models
+        }
+
+    project01 = new Object("name", "about", "url", [models]);
+    project02 = new Object("name", "about", "url", [models]);
+    project02 = new Object("name", "about", "url", [models]);
+
+    const buildingsArr = [project01, project02, project03];
+
+
+
+    const nextBuildingIndex = () => {
+        if (buildingIndex < buildingArr.length) {buildingIndex++}
+        else {buildingIndex = 0;}
+        };
+
+    const prevBuildingIndex = () => {
+        if (buildingIndex <= buildingArr.length) {buildingIndex--}
+        else {buildingIndex = 0;}
+        };
+
+    const nextModelIndex = () => {
+        if (modelIndex < models.length) {modelIndex++}
+        else {buildingIndex = 0;}
+        };
+
+    const prevModelIndex = () => {
+        if (modelIndex <= models.length) {modelIndex--}
+        else {buildingIndex = 0;}
+        };
+
+    const upBtn     = document.getElementById('upBtn');
+    const nextBtn   = document.getElementById('nextBtn');
+    const prevBtn   = document.getElementById('prevBtn');
+    const downBtn   = document.getElementById('downBtn');
+
+    
+    
+*/
+    // ITERATOR
+    const buildings = ['a', 'b', 'c','a', 'b', 'c'];
+    const models = [];
+
+    let buildingIndex = 0;
+    let modelIndex = 0;
+    
+    // DOM
+    const upBtn     = document.getElementById('upBtn');
+    const nextBtn   = document.getElementById('nextBtn');
+    const prevBtn   = document.getElementById('prevBtn');
+    const downBtn   = document.getElementById('downBtn');
+
+    // FUNCTIONS
+    const nextBuildingIndex = () => {
+        if (buildingIndex <= buildings.length-1) {
+            buildingIndex++;
+            console.log(buildingIndex);
+        }
+        else {buildingIndex = 0;}
+    };
+    const prevBuildingIndex = () => {
+        if (buildingIndex <= 0) {
+            buildingIndex = buildings.length;
+            console.log(buildingIndex);
+        }
+        else {
+            buildingIndex--;
+            console.log(buildingIndex);
+        }
+            
+    };
+
+    const upModelIndex = () => {console.log('up');};
+    const downvModelIndex = () => {console.log('down');};
+
+    // EVENTS
+    upBtn.addEventListener('click', upModelIndex);
+    nextBtn.addEventListener('click', nextBuildingIndex);
+    prevBtn.addEventListener('click', prevBuildingIndex);
+    downBtn.addEventListener('click', downvModelIndex);
+
 // Importing Modules
 import "./styles.css";
 import * as THREE from "three";
@@ -6,6 +92,7 @@ import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
 import { DRACOLoader } from "three/examples/jsm/Addons.js";
 
+/*
 // DOM
 
 // Importing from CSS
@@ -211,3 +298,4 @@ function animate() {
 }
 animate();
 
+*/
