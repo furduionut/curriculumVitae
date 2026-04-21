@@ -43,30 +43,33 @@
             './public/projects/casaBacau/WEB_ASSETS_OUTTER-SHELL.glb',
             ['./public/projects/casaBacau/WEB_ASSETS_2ND-FLOOR.glb',
             './public/projects/casaBacau/WEB_ASSETS_1ST-FLOOR.glb',
-            './public/projects/casaBacau/WEB_ASSETS_BASEMENE.glb']
+            './public/projects/casaBacau/WEB_ASSETS_BASEMENT.glb']
         ),
 
         new Project(
             'casaClim', 
             'Botosani', 
             './public/projects/casaClim/WEB_ASSETS_OUTTER-SHELL.glb', 
-            [4,5,6]),
+            ['./public/projects/casaClim/placeHolder_SECTION-01.glb',
+             './public/projects/casaClim/placeHolder_SECTION-02.glb'
+            ]),
 
         new Project('casaBox',
             'Botosani',
             './public/projects/casaStolnicu/WEB_ASSETS_OUTTER-SHELL.glb',
-            [4,5,6])
+            ['./public/projects/casaStolnicu/placeHolder_SECTION-01.glb',
+             './public/projects/casaStolnicu/placeHolder_SECTION-02.glb'
+            ])
         ];
 
 
         
     // ITERATOR
     let buildingIndex = 0;
-    let modelIndex = 0;
     let buildingModelIndex = 0;
 
-    const buildings     = projects.map(p => p.mainModel);
-    const models        = projects[buildingIndex].auxModels;
+    let buildings     = projects.map(p => p.mainModel);
+    let models        = projects.map(p => p.auxModels);
 
     // DOM
     const upBtn     = document.getElementById('upBtn');
@@ -138,9 +141,6 @@
                     // INCREMETING
                     buildingIndex++;
 
-                    // RESETING MODELS
-                    modelIndex = 0; 
-
                     // LOADING BUILDING
                     loadingBuildings();
 
@@ -150,9 +150,6 @@
 
                     // LOADING BUILDING
                     loadingBuildings();
-                    
-                    // RESETING MODELS
-                    modelIndex = 0; 
 
                 }
         };
@@ -162,12 +159,8 @@
                     // INCREMETING
                     buildingIndex--;
 
-                    // RESETING MODELS
-                    modelIndex = 0; 
-
                     // LOADING BUILDING
                     loadingBuildings();
-
 
                 } else {
                     // RESET INCREMETING
@@ -176,45 +169,49 @@
                     // LOADING BUILDING
                     loadingBuildings();
 
-                    // RESETING MODELS
-                    modelIndex = 0; 
-
                 }
         };
 
         // NEXT MODEL
-        const nextModelIndex = () => {
-            if (buildingModelIndex < models.length - 1) {
+        const prevModelIndex = () => {
+            if (buildingModelIndex < models[buildingIndex].length - 1) {
                 // INCREMETING
                 buildingModelIndex++;
+
+                // LOADING MODEL
+                loadingModels();
+
             } else {
                 // RESET INCREMETING
                 buildingModelIndex = 0;}
 
+                // LOADING MODEL
+                    loadingModels();
+
             // TESTING
-            console.log(models[buildingModelIndex])
+            console.log(`model ${buildingModelIndex+1} out of ${models[buildingIndex].length} is ${models[buildingIndex][buildingModelIndex]}`)    
             }
 
-            // TESTING
-            console.log(models[buildingModelIndex])    
-
-        const prevModelIndex = () => {
+        const nextModelIndex = () => {
             if (buildingModelIndex > 0) {
                 // INCREMETING
                 buildingModelIndex--;
+
+                // LOADING MODEL
+                loadingModels();
             }
 
             else {
                 // RESET INCREMETING    
-                buildingModelIndex = models.length -1}    
+                buildingModelIndex = models[buildingIndex].length - 1}    
+
+                // LOADING MODEL
+                loadingModels();
 
             // TESTING
-            console.log(models[buildingModelIndex])         
+            console.log(`model ${buildingModelIndex+1} out of ${models[buildingIndex].length} is ${models[buildingIndex][buildingModelIndex]}`)            
         };
 
-        // INDEX
-        let mURL = buildings[buildingIndex];
-        
 
     // MODELS
         // LOADER
@@ -233,21 +230,24 @@
                     // BUILDING PREVIEW
                     console.log (`building ${buildingIndex} was loaded from ${buildings[buildingIndex]}`);
 
-                    // REMOVE MODEL
+                    // REMOVE BUILDING
                     if (currentBuilding) {scene.remove(currentBuilding);}
 
-                    // ADDING MODEL
+                    // ADDING BUILDING
                     currentBuilding = gltf.scene;
                     scene.add(currentBuilding);
         
-                    // POSITION MODEL
+                    // POSITION BUILDING
                     currentBuilding.position.set(5,-25,0);
             })}
 
             // CURENT MODEL
-            let currentmodel
+            let currentModel
             const loadingModels = () => {
-                gltfLoader.load(models[modelIndex], (gltf) => {
+                gltfLoader.load(models[buildingIndex][buildingModelIndex], (gltf) => {
+                    // REMOVE CURENT BUILDING
+                    scene.remove(currentBuilding);
+
                     // REMOVE MODEL
                     if (currentModel) {scene.remove(currentModel);}
 
@@ -262,8 +262,6 @@
 
         // INITIAL MODEL
             loadingBuildings()
-        
-        
 
     // EVENTS
         upBtn.addEventListener('click', nextModelIndex);
