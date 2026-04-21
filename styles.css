@@ -235,16 +235,24 @@ body {
     justify-content: center;
     align-items: flex-start;
 }
+.viewport {
+    width: 100%;
+    height: auto;
+}
 
 .canvas {
     padding: 1em;
-
-    width: 100%;
-    height: auto;
-    aspect-ratio: 1/1;
+    display: flex;
+    justify-content: center;
+    align-items: center ;
+    
+    width: auto;
+    height: 45em;
     
     border: 2px solid var(--second-background-color);
     border-radius: var(--general-border-radius);
+    overflow: hidden;
+
 }
 
 .controls{
@@ -559,6 +567,7 @@ div[class^='geometry'] {
 
     .canvas {
         width: 100%;
+        height: auto;
         aspect-ratio: 1/1;
     }
     

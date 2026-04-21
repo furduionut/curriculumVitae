@@ -12,290 +12,305 @@
 
     const buildingsArr = [project01, project02, project03];
 
-
-
-    const nextBuildingIndex = () => {
-        if (buildingIndex < buildingArr.length) {buildingIndex++}
-        else {buildingIndex = 0;}
-        };
-
-    const prevBuildingIndex = () => {
-        if (buildingIndex <= buildingArr.length) {buildingIndex--}
-        else {buildingIndex = 0;}
-        };
-
-    const nextModelIndex = () => {
-        if (modelIndex < models.length) {modelIndex++}
-        else {buildingIndex = 0;}
-        };
-
-    const prevModelIndex = () => {
-        if (modelIndex <= models.length) {modelIndex--}
-        else {buildingIndex = 0;}
-        };
-
-    const upBtn     = document.getElementById('upBtn');
-    const nextBtn   = document.getElementById('nextBtn');
-    const prevBtn   = document.getElementById('prevBtn');
-    const downBtn   = document.getElementById('downBtn');
-
-    
-    
 */
-    // ITERATOR
-    const buildings = ['a', 'b', 'c','a', 'b', 'c'];
-    const models = [];
 
+    // IMPORTS
+    import "./styles.css";
+    import * as THREE from "three";
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
+    import { GLTFLoader } from "three/examples/jsm/Addons.js";
+    import { DRACOLoader } from "three/examples/jsm/Addons.js";
+
+    // CONSTRUCTORS
+    class Project{
+        constructor(name, location, mainModel, auxModels, description){
+
+            if(!Array.isArray(auxModels)){ throw new TypeError('auxModels should be an array')};
+
+            this.name = name;
+            this.location = location;
+            this.mainModel = mainModel;
+            this.auxModels = auxModels;
+            this.description = description; 
+        }
+    }
+
+    const projects = [ 
+        new Project(
+            'casaBacau',
+            'Bacau', 
+            './public/projects/casaBacau/WEB_ASSETS_OUTTER-SHELL.glb',
+            ['./public/projects/casaBacau/WEB_ASSETS_2ND-FLOOR.glb',
+            './public/projects/casaBacau/WEB_ASSETS_1ST-FLOOR.glb',
+            './public/projects/casaBacau/WEB_ASSETS_BASEMENE.glb']
+        ),
+
+        new Project(
+            'casaClim', 
+            'Botosani', 
+            './public/projects/casaClim/WEB_ASSETS_OUTTER-SHELL.glb', 
+            [4,5,6]),
+
+        new Project('casaBox',
+            'Botosani',
+            './public/projects/casaStolnicu/WEB_ASSETS_OUTTER-SHELL.glb',
+            [4,5,6])
+        ];
+
+
+        
+    // ITERATOR
     let buildingIndex = 0;
     let modelIndex = 0;
-    
+    let buildingModelIndex = 0;
+
+    const buildings     = projects.map(p => p.mainModel);
+    const models        = projects[buildingIndex].auxModels;
+
     // DOM
     const upBtn     = document.getElementById('upBtn');
     const nextBtn   = document.getElementById('nextBtn');
     const prevBtn   = document.getElementById('prevBtn');
     const downBtn   = document.getElementById('downBtn');
 
-    // FUNCTIONS
-    const nextBuildingIndex = () => {
-        if (buildingIndex <= buildings.length-1) {
-            buildingIndex++;
-            console.log(buildingIndex);
-        }
-        else {buildingIndex = 0;}
-    };
-    const prevBuildingIndex = () => {
-        if (buildingIndex <= 0) {
-            buildingIndex = buildings.length;
-            console.log(buildingIndex);
-        }
-        else {
-            buildingIndex--;
-            console.log(buildingIndex);
-        }
+    // PARAMETERS
+        // CANVAS
+            const canvas        = document.getElementById('canvas');
+            let canvasWidth     = canvas.clientWidth;
+            let canvasHeight    = canvas.clientHeight;
             
-    };
+        // CAMERA
+            const cameraAspect = canvasWidth / canvasHeight;
+            const cameraFar = 2000;
+            const cameraNear = 0.1;
+            const cameraTop = 15;
+            const cameraBottom = -15;
+            const cameraRight = 15;
+            const cameraLeft = -15;
 
-    const upModelIndex = () => {console.log('up');};
-    const downvModelIndex = () => {console.log('down');};
+        // RENDERER
+            const rendererWidth     = canvasWidth;
+            const rendererHeight    = canvasHeight;
+
+    // SCENE
+        // CREATE
+        const scene = new THREE.Scene();
+        
+        // BACKGROUND 
+        const root = document.documentElement;
+        const style = getComputedStyle(root);
+        const mainColor = style.getPropertyValue('--first-background-color');
+        scene.background = new THREE.Color(mainColor);
+    
+    // LIGHTS
+        // CREATE
+        const ambientLight = new THREE.AmbientLight(0xffffff, 3);
+        const directionalLight01 = new THREE.DirectionalLight(0xffffff, 5); // Directional light 01
+        const directionalLight02 = new THREE.DirectionalLight(0xffffff, 5); // Directional light 02
+        scene.add(ambientLight, directionalLight01, directionalLight02);
+    
+        // POSITION
+        directionalLight01.position.set(5, 10, 5);
+        directionalLight02.position.set(-5, 10, -5);
+
+    // CAMERA
+        // CREATE
+        const camera = new THREE.OrthographicCamera(
+            cameraLeft  *cameraAspect,  
+            cameraRight  *cameraAspect, 
+            cameraTop, 
+            cameraBottom, 
+            cameraNear, 
+            cameraFar
+        );
+        
+        // SETUP
+        camera.position.set(15,5,15);
+        camera.lookAt(new THREE.Vector3(-5,-10, -5));
+
+    // FUNCTIONS
+
+
+        // INDEX UPDATING
+        const nextBuildingIndex = () => {
+                if (buildingIndex < buildings.length - 1) {
+                    // INCREMETING
+                    buildingIndex++;
+
+                    // RESETING MODELS
+                    modelIndex = 0; 
+
+                    // LOADING BUILDING
+                    loadingBuildings();
+
+                } else {
+                    // RESET INCREMETING
+                    buildingIndex = 0; 
+
+                    // LOADING BUILDING
+                    loadingBuildings();
+                    
+                    // RESETING MODELS
+                    modelIndex = 0; 
+
+                }
+        };
+
+        const prevBuildingIndex = () => {
+                if (buildingIndex > 0) {
+                    // INCREMETING
+                    buildingIndex--;
+
+                    // RESETING MODELS
+                    modelIndex = 0; 
+
+                    // LOADING BUILDING
+                    loadingBuildings();
+
+
+                } else {
+                    // RESET INCREMETING
+                    buildingIndex = buildings.length - 1;
+
+                    // LOADING BUILDING
+                    loadingBuildings();
+
+                    // RESETING MODELS
+                    modelIndex = 0; 
+
+                }
+        };
+
+        // NEXT MODEL
+        const nextModelIndex = () => {
+            if (buildingModelIndex < models.length - 1) {
+                // INCREMETING
+                buildingModelIndex++;
+            } else {
+                // RESET INCREMETING
+                buildingModelIndex = 0;}
+
+            // TESTING
+            console.log(models[buildingModelIndex])
+            }
+
+            // TESTING
+            console.log(models[buildingModelIndex])    
+
+        const prevModelIndex = () => {
+            if (buildingModelIndex > 0) {
+                // INCREMETING
+                buildingModelIndex--;
+            }
+
+            else {
+                // RESET INCREMETING    
+                buildingModelIndex = models.length -1}    
+
+            // TESTING
+            console.log(models[buildingModelIndex])         
+        };
+
+        // INDEX
+        let mURL = buildings[buildingIndex];
+        
+
+    // MODELS
+        // LOADER
+        const gltfLoader = new GLTFLoader();
+        const dracoLoader = new DRACOLoader();
+
+        // SETUP
+        dracoLoader.setDecoderPath('./public/draco/');
+        gltfLoader.setDRACOLoader(dracoLoader);
+
+        // LOADING
+            // CURENT BUILDING
+            let currentBuilding
+            const loadingBuildings = () => {
+                gltfLoader.load(buildings[buildingIndex], (gltf) => {    
+                    // BUILDING PREVIEW
+                    console.log (`building ${buildingIndex} was loaded from ${buildings[buildingIndex]}`);
+
+                    // REMOVE MODEL
+                    if (currentBuilding) {scene.remove(currentBuilding);}
+
+                    // ADDING MODEL
+                    currentBuilding = gltf.scene;
+                    scene.add(currentBuilding);
+        
+                    // POSITION MODEL
+                    currentBuilding.position.set(5,-25,0);
+            })}
+
+            // CURENT MODEL
+            let currentmodel
+            const loadingModels = () => {
+                gltfLoader.load(models[modelIndex], (gltf) => {
+                    // REMOVE MODEL
+                    if (currentModel) {scene.remove(currentModel);}
+
+                    // ADDING MODEL
+                    currentModel = gltf.scene;
+                    scene.add(currentModel);
+                            
+                    // POSITION MODEL
+                    currentModel.position.set(5,-25,0);
+                })
+            }
+
+        // INITIAL MODEL
+            loadingBuildings()
+        
+        
 
     // EVENTS
-    upBtn.addEventListener('click', upModelIndex);
-    nextBtn.addEventListener('click', nextBuildingIndex);
-    prevBtn.addEventListener('click', prevBuildingIndex);
-    downBtn.addEventListener('click', downvModelIndex);
-
-// Importing Modules
-import "./styles.css";
-import * as THREE from "three";
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
-import { GLTFLoader } from "three/examples/jsm/Addons.js";
-import { DRACOLoader } from "three/examples/jsm/Addons.js";
-
-/*
-// DOM
-
-// Importing from CSS
-const root = document.documentElement;
-const style = getComputedStyle(root);
-
-const mainColor = style.getPropertyValue('--first-background-color');
-
-// Set 3D viewport
-const container = document.getElementById("canvas");
-container.width = parseInt(window.getComputedStyle(container).width);
-container.height = parseInt(window.getComputedStyle(container).height);
-
-// Tests
-console.log(container.height, container.width)
-
-// Settingup Scene
-const scene = new THREE.Scene();
-
-// Set up Orthographic Camera (adjust near/far planes and view size based on your needs)
-    // Creating parameteres for camera
-        const aspect = container.width / container.height;
-        const far = 1000;
-        const near = 0.001;
-        const top = 10;
-        const bottom = -10;
-        const right = 10;
-        const left = -10;
-
-// Settingup the camera
-    const camera = new THREE.OrthographicCamera(left * aspect,  right * aspect,top, bottom, near, far);
-
-// Setting the background
-    scene.background = new THREE.Color(mainColor);
-
-// Set initial camera position at the corner (isometric-like view)
-    camera.position.set(10, 10, 10); // Position at (10, 10, 10) to simulate isometric view
-
-// Set direction of the camera;
-    camera.lookAt(new THREE.Vector3(0, 0, 0)); // Look at the center of the object
-
-// Set the renderer
-const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(container.width, container.height);
-    container.appendChild(renderer.domElement);
-
-// Lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 3); // Soft light
-    const directionalLight01 = new THREE.DirectionalLight(0xffffff, 5); // Directional light 01
-    const directionalLight02 = new THREE.DirectionalLight(0xffffff, 5); // Directional light 02
-    scene.add(ambientLight, directionalLight01, directionalLight02);
-
-    // Light parameters
-    directionalLight01.position.set(5, 10, 5);
-    directionalLight02.position.set(-5, 10, -5);
-
-// Geometry test
-    // const geometry = new THREE.BoxGeometry(5,5,5);
-    // const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    // const cube = new THREE.Mesh(geometry, material);
-
-    // console.log(cube);
-    // scene.add(cube);
-
-// Creating GLTF Models paths
-const stageModels = {};
-const stages = ['ACOPERIS', 'ETAJ', 'PARTER', 'SUBSOL', 'SECTIUNE-A', 'SECTIUNE-B'];
-const modelPaths = {
-    "ACOPERIS":"./02_00_CASA-BACAU_ACOPERIS.glb",
-    "ETAJ":"./02_00_CASA-BACAU_ETAJ.glb",
-    "PARTER":"./02_00_CASA-BACAU_PARTER.glb",
-    "SUBSOL":"./02_00_CASA-BACAU_SUBSOL.glb",
-    "SECTIUNE-A":"./02_00_CASA-BACAU_SA.glb",
-    "SECTIUNE-B":"./02_00_CASA-BACAU_SB.glb"
-};
-
-// Load all GLB models
-const loader = new GLTFLoader()
-stages.forEach(stage => {
-    loader.load(
-        modelPaths[stage],
-        (gltf) => {
-            try {
-                // Scale the object
-                gltf.scene.scale.set(0.75, 0.75, 0.75);
-
-                // Center the object
-                const box = new THREE.Box3().setFromObject(gltf.scene);
-                box.expandByScalar(0.1);
-                const center = box.getCenter(new THREE.Vector3());
-                gltf.scene.position.sub(center);
-
-                // Store the object
-                stageModels[stage] = gltf.scene;
-
-                // Apply material overrides (same for all stages)
-                const backgroundColor = new THREE.Color(mainColor);
-
-                // Set model to be initially hidden except for "Definitor"
-                gltf.scene.visible = (stage === 'ACOPERIS');
-
-                // Add model to scene
-                scene.add(gltf.scene);
-            } catch (error) {
-                console.error(`Error processing gltf model for stage ${stage}:`, error);
-            }
-        },
-        undefined,
-        (error) => {
-            console.error(`Error loading gltf model for stage ${stage}:`, error);
-        }
-    );
-});
-
-
-const nextBtn = document.getElementById('forward');
-const prevBtn = document.getElementById('backward');
-
-// Set Camera Controls
-const controls = new OrbitControls(camera, renderer.domElement);
-    // Set parameters of controls
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
-    controls.screenSpacePanning = false;
-    controls.zoomSpeed = 1.2;
-    controls.minDistance = 10;  // Limit zoom to a certain minimum distance
-    controls.maxDistance = 10; // Limit zoom to a certain maximum distance
-    controls.enableZoom = false; // Disabling zoom
-    controls.maxPolarAngle = Math.PI / 3; // Prevent vertical rotation (limit pitch to 90 degrees)
-    controls.minPolarAngle = Math.PI / 3; // Lock vertical axis at 90 degrees (horizontal only)
-
-// // Set Slider/Circle Control
-//     const circleSize = 30;
-//     const sliderContainer = document.getElementsByClassName('slider-container');
-//     const sliderContainerElement = document.querySelector('.slider-container');
-//     const draggableCircle = document.getElementById('draggable-circle');
+        upBtn.addEventListener('click', nextModelIndex);
+        nextBtn.addEventListener('click', nextBuildingIndex);
+        prevBtn.addEventListener('click', prevBuildingIndex);
+        downBtn.addEventListener('click', prevModelIndex);
     
-//     sliderContainerElement.addEventListener( 'click', console.log("e"));
-//     draggableCircle.addEventListener( 'click', console.log("e"));
+    // RENDERER
+        // CREATE
+        const renderer = new THREE.WebGLRenderer({antialias: true});
 
-//     const stageLabel = document.getElementsByClassName('stage-label');
+        // SETUP
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(rendererWidth, rendererHeight);
+        canvas.appendChild(renderer.domElement);
 
-//     // Get slider width;
-//     const styles = window.getComputedStyle(sliderContainerElement);
-//     const sliderWidth = parseInt(styles.getPropertyValue('width'));
+    // CONTROL
+        // CREATE
+        const controls = new OrbitControls(camera, renderer.domElement);
 
-//     // Set circle position based on the slider width;
-//     const stagePositions = [
-//     sliderWidth * 0.10,  // of slider width for first stage
-//     sliderWidth * 0.20,  // of slider width for second stage
-//     sliderWidth * 0.40,  // of slider width for third stage
-//     sliderWidth * 0.60,  // of slider width for fourth stage
-//     sliderWidth * 0.80,  // of slider width for fifth stage
-//     sliderWidth * 0.90,  // of slider width for sixth stage
-//     ];
+        // SETUP
+        controls.target.set(-5,-10, -5);
 
-// Functions
-    let isDragging = false;
-    let hasInteracted = false;
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.screenSpacePanning = false;
+        controls.enableZoom = true;
+        controls.zoomToCursor = false;
+        controls.enablePan = true;
 
-    // Update stage
-    function updateStage(position) 
-            {
-                let closestStage = 0;
-                let minDistance = Infinity;
-                for (let i = 0; i < stagePositions.length; i++) {
-                    let distance = Math.abs(position - stagePositions[i]);
-                    if (distance < minDistance) {
-                        minDistance = distance;
-                        closestStage = i;
-                    }
-                }
+        // LIMITS
+        controls.zoomSpeed = 1.2;
+        controls.minDistance = 10;  // Limit zoom to a certain minimum distance
+        controls.maxDistance = 10; // Limit zoom to a certain maximum distance
+        controls.maxPolarAngle = Math.PI / 3; // Prevent vertical rotation (limit pitch to 90 degrees)
+        controls.minPolarAngle = Math.PI / 3; // Lock vertical axis at 90 degrees (horizontal only)
 
-                // Update circle position
-                draggableCircle.style.left = `${stagePositions[closestStage]}px`;
-                loadModel(stages[closestStage]);
-
-                // Show stage name after interaction
-                if (hasInteracted) {
-                    stageLabel.innerText = stages[closestStage];
-                    stageLabel.style.display = 'block';
-                }
+    // RENDERING
+            function rendering() {
+                requestAnimationFrame(rendering);
+                controls.update();
+                renderer.render(scene, camera);
             }
-    // Loading model
-        function loadModel(stageName) 
-            {
-        // Hide all models
-        Object.values(stageModels).forEach(model => model.visible = false);
+            rendering();
 
-        // Show the current stage model
-        const model = stageModels[stageName];
-        if (model) {
-            model.visible = true;
-        }
-            }
+                // CONTROLS
+ 
 
-
-// Animation loop
-function animate() {
-    requestAnimationFrame(animate);
-    controls.update();
-    renderer.render(scene, camera);
-}
-animate();
-
-*/
+    // TESTING
+    
