@@ -18,7 +18,6 @@
     import "./styles.css";
     import * as THREE from "three";
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-    import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
     import { GLTFLoader } from "three/examples/jsm/Addons.js";
     import { DRACOLoader } from "three/examples/jsm/Addons.js";
 
@@ -40,19 +39,21 @@
         new Project(
             'casaBacau',
             'Bacau', 
-            './public/projects/casaBacau/WEB_ASSETS_OUTTER-SHELL.glb',
-            ['./public/projects/casaBacau/WEB_ASSETS_2ND-FLOOR.glb',
-            './public/projects/casaBacau/WEB_ASSETS_1ST-FLOOR.glb',
-            './public/projects/casaBacau/WEB_ASSETS_BASEMENT.glb']
+            './public/projects/casaBacau/casaBacau_OUTTER-SHELL.glb',
+            ['./public/projects/casaBacau/casaBacau_OUTTER-SHELL.glb',
+            './public/projects/casaBacau/casaBacau_2ND-FLOOR.glb',
+            './public/projects/casaBacau/casaBacau_1ST-FLOOR.glb',
+            './public/projects/casaBacau/casaBacau_BASEMENT.glb']
         ),
 
         new Project(
             'casaClim', 
             'Botosani', 
-            './public/projects/casaClim/WEB_ASSETS_OUTTER-SHELL.glb', 
-            ['./public/projects/casaClim/placeHolder_SECTION-01.glb',
-             './public/projects/casaClim/placeHolder_SECTION-02.glb'
-            ]),
+            './public/projects/casaClim/casaClim_OUTTER-SHELL.glb', 
+            ['./public/projects/casaClim/casaClim_OUTTER-SHELL.glb',
+            './public/projects/casaClim/casaClim_2ND-FLOOR.glb',
+            './public/projects/casaClim/casaClim_1ST-FLOOR.glb']
+        ),
 
         new Project('casaBox',
             'Botosani',
@@ -227,6 +228,9 @@
             let currentBuilding
             const loadingBuildings = () => {
                 gltfLoader.load(buildings[buildingIndex], (gltf) => {    
+                    // REMOVE MODEL
+                    scene.remove(currentModel); 
+
                     // BUILDING PREVIEW
                     console.log (`building ${buildingIndex} was loaded from ${buildings[buildingIndex]}`);
 
@@ -246,7 +250,7 @@
             const loadingModels = () => {
                 gltfLoader.load(models[buildingIndex][buildingModelIndex], (gltf) => {
                     // REMOVE CURENT BUILDING
-                    scene.remove(currentBuilding);
+                    scene.remove(currentBuilding); 
 
                     // REMOVE MODEL
                     if (currentModel) {scene.remove(currentModel);}
