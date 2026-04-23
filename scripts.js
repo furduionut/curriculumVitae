@@ -55,16 +55,15 @@
             './public/projects/casaClim/casaClim_1ST-FLOOR.glb']
         ),
 
-        new Project('casaBox',
+        new Project('casaStolnicu',
             'Botosani',
-            './public/projects/casaStolnicu/WEB_ASSETS_OUTTER-SHELL.glb',
-            ['./public/projects/casaStolnicu/placeHolder_SECTION-01.glb',
-             './public/projects/casaStolnicu/placeHolder_SECTION-02.glb'
+            './public/projects/casaStolnicu/casaStolnicu_OUTTER-SHELL.glb',
+            ['./public/projects/casaStolnicu/casaStolnicu_OUTTER-SHELL.glb',
+            './public/projects/casaStolnicu/casaStolnicu_2ND-FLOOR.glb',
+            './public/projects/casaStolnicu/casaStolnicu_1ST-FLOOR.glb'
             ])
         ];
 
-
-        
     // ITERATOR
     let buildingIndex = 0;
     let buildingModelIndex = 0;
