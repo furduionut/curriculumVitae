@@ -1,18 +1,3 @@
-/* METACODE IDEAS
-    Class Project (name, about, url, models){
-        name: this.name;
-        about: this.about; 
-        url: this.url;
-        models: this.models
-        }
-
-    project01 = new Object("name", "about", "url", [models]);
-    project02 = new Object("name", "about", "url", [models]);
-    project02 = new Object("name", "about", "url", [models]);
-
-    const buildingsArr = [project01, project02, project03];
-
-*/
 
     // IMPORTS
     import "./styles.css";
@@ -39,29 +24,28 @@
         new Project(
             'casaBacau',
             'Bacau', 
-            './public/projects/casaBacau/casaBacau_OUTTER-SHELL.glb',
-            ['./public/projects/casaBacau/casaBacau_OUTTER-SHELL.glb',
-            './public/projects/casaBacau/casaBacau_2ND-FLOOR.glb',
-            './public/projects/casaBacau/casaBacau_1ST-FLOOR.glb',
-            './public/projects/casaBacau/casaBacau_BASEMENT.glb']
+            'assets/meshes/casaBacau/casaBacau_OUTTER-SHELL.glb',
+            ['assets/meshes/casaBacau/casaBacau_OUTTER-SHELL.glb',
+            'assets/meshes/casaBacau/casaBacau_2ND-FLOOR.glb',
+            'assets/meshes/casaBacau/casaBacau_1ST-FLOOR.glb',
+            'assets/meshes/casaBacau/casaBacau_BASEMENT.glb']
         ),
 
         new Project(
             'casaClim', 
             'Botosani', 
-            './public/projects/casaClim/casaClim_OUTTER-SHELL.glb', 
-            ['./public/projects/casaClim/casaClim_OUTTER-SHELL.glb',
-            './public/projects/casaClim/casaClim_2ND-FLOOR.glb',
-            './public/projects/casaClim/casaClim_1ST-FLOOR.glb']
+            'assets/meshes/casaClim/casaClim_OUTTER-SHELL.glb', 
+            ['assets/meshes/casaClim/casaClim_OUTTER-SHELL.glb',
+            'assets/meshes/casaClim/casaClim_2ND-FLOOR.glb',
+            'assets/meshes/casaClim/casaClim_1ST-FLOOR.glb']
         ),
 
         new Project('casaStolnicu',
             'Botosani',
-            './public/projects/casaStolnicu/casaStolnicu_OUTTER-SHELL.glb',
-            ['./public/projects/casaStolnicu/casaStolnicu_OUTTER-SHELL.glb',
-            './public/projects/casaStolnicu/casaStolnicu_2ND-FLOOR.glb',
-            './public/projects/casaStolnicu/casaStolnicu_1ST-FLOOR.glb'
-            ])
+            'assets/meshes/casaStolnicu/casaStolnicu_OUTTER-SHELL.glb',
+            ['assets/meshes/casaStolnicu/casaStolnicu_OUTTER-SHELL.glb',
+            'assets/meshes/casaStolnicu/casaStolnicu_2ND-FLOOR.glb',
+            'assets/meshes/casaStolnicu/casaStolnicu_1ST-FLOOR.glb'])
         ];
 
     // ITERATOR
@@ -129,11 +113,10 @@
         );
         
         // SETUP
-        camera.position.set(15,5,15);
+        camera.position.set(15, 5,15);
         camera.lookAt(new THREE.Vector3(-5,-10, -5));
 
     // FUNCTIONS
-
 
         // INDEX UPDATING
         const nextBuildingIndex = () => {
@@ -219,7 +202,7 @@
         const dracoLoader = new DRACOLoader();
 
         // SETUP
-        dracoLoader.setDecoderPath('./public/draco/');
+        dracoLoader.setDecoderPath('./src/utils/draco/');
         gltfLoader.setDRACOLoader(dracoLoader);
 
         // LOADING

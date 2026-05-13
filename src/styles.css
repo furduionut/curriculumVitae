@@ -39,7 +39,7 @@
     --description-color: #1c3166;
 
     /* images */
-    --profile-image: url('./public/photo_2026-04-03_08-53-59.jpg');
+    --profile-image: url("./public/assets/images/profilePicture.jpg");
     }
 
 /* General styles */
@@ -651,4 +651,20 @@ height: 100%;
 
 .prevBtn {}
 
+}
+
+.base-left {
+    display: none;
+}
+
+.base-right {
+    display: none;
+}
+
+.branch-left {
+    display: none;
+}
+
+.branch-right {
+    display: none;
 }
