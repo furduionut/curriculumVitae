@@ -40,8 +40,15 @@
 
     /* images */
     --profile-image: url("./public/assets/images/profilePicture.jpg");
-    }
 
+
+    /* sizes */
+    --personalsVW: 15%;
+    --projectsVW: 45%;
+    --experiencesVW: 25%;
+    --abilitiesVW: 25%;
+    --creditsVW: 25%;
+}
 /* General styles */
 * {
     box-sizing: border-box;
@@ -80,14 +87,14 @@ li {
 
 /* Testing board */
 
-/* *{
+*{
     border: 1px solid red;
 
-} */
+}
 
 /* Level 0 - Page layout*/
 body {
-    width: 100%;
+    width: auto;
     height: auto;
  
 
@@ -102,10 +109,13 @@ body {
 .aboutMe {
     padding: 1.0em;
     
-    width: 100%;
-    height: 7.5em;
+    position: fixed;
+    z-index: 3;
 
-    z-index: 2;
+    width: 100%;
+    height: var(--personalsVW);
+
+
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
@@ -113,99 +123,10 @@ body {
     gap: 2em;
     
     box-shadow: 0em 1em 2em var(--shadow-color);
+    background-color:var(--first-background-color);
 
 }
 
-.projects {
-    padding: 1.0em;
-    padding-top: 5em;
-
-    width: 100%;
-    height: auto;
-
-    z-index: 1;
-    display: flex;
-    flex-flow: column wrap;
-    justify-content: space-evenly;
-    align-items: center;
-
-    gap: 1em;
-}
-
-.description{
-    padding: 1em;
-    gap: 1em;
-    
-    width: 100%;
-    height: auto;
-
-    z-index: 2;
-    display: flex;
-    flex-flow: column wrap;
-    justify-content: space-around;
-    align-items: center;
-
-    box-shadow: 0em 0em 2em var(--shadow-color)
-}
-
-.experience{
-    padding: 1.0em;
-
-    width: 100%;
-    height: 100em;
-    
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    justify-items: center;
-    align-items: center;
-
-    gap: 1em;
-}
-
-.abilities{
-    padding: 1.0em;
-
-    width: 100%;
-    height: auto;
-
-    z-index: 3;
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    gap: 1em;
-    
-    box-shadow: 0em 0em 2em var(--shadow-color);
-}
-
-.leveling {
-    display: flex;
-    flex-flow: column wrap;
-    gap: 1em;
-    padding: 1.0em;
-
-    width: 100%;
-    height: auto;
-
-    z-index: 1;
-}
-
-/* .abilities:hover + .leveling {
-    display: flex;
-} */
-
-
-.credits {
-    padding: 1.0em;
-
-    width: 100%;
-    height: 7.5em;
-
-    z-index: 2; 
-    box-shadow: 0em 0em 2em var(--shadow-color);
-}
-
-/* Level 2 - Elements layout */
 .photo{
     position: relative;
     
@@ -226,29 +147,72 @@ body {
     font-style: bold;
 }
 
-.contact {
-    width: auto;
+
+.informations {
+    width: 100%;
     height: auto;
 
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    display:flex;
+    justify-content: space-between;
     align-items: flex-start;
+    flex-direction: column;
 }
+
+.navBar {
+    width: auto;
+    height: 7.5%;
+
+    display: flex;
+    flex-wrap: wrap; 
+    justify-content: flex-end;
+
+    position: fixed;
+    top: 10%;
+    gap: 1em;
+
+
+}
+
+.navItem {
+    width: 10em;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    background-color:var(--first-background-color);
+    border-radius: var(--general-border-radius);
+    box-shadow: 0em 0em 2em var(--shadow-color)
+}
+
+.projects {
+    z-index: 1;
+    
+    width: 100%;
+    height: var(--projectsVW);
+
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: space-evenly;
+    align-items: center;
+
+    gap: 1em;
+}
+
 .viewport {
     width: 100%;
     height: auto;
 }
 
 .canvas {
-    padding: 1em;
+    width: 100%;
+    height: auto;
+    
     display: flex;
     justify-content: center;
     align-items: center ;
     
-    width: auto;
-    height: 45em;
-    
+
     border: 2px solid var(--second-background-color);
     border-radius: var(--general-border-radius);
     overflow: hidden;
@@ -264,12 +228,13 @@ body {
     align-items: center;
 
     gap: 1em;
+    padding: 1em;
 }
 
 .stageNav {
-    height: 10em;
     width: 100%;
-    
+    height: 10em;
+
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -294,11 +259,109 @@ body {
     flex-shrink: 0;
 }
 
+.description{
+    padding: 2em;
+    gap: 1em;
+    
+    width: 100vw;
+    height: auto;
+
+    z-index: 2;
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: space-around;
+    align-items: center;
+
+    box-shadow: 0em 0em 2em var(--shadow-color)
+}
+
+.experiences{
+    padding: 1.0em;
+
+    width: 100%;
+    height: var(--experiencesVW);
+    
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
+
+    gap: 1em;
+}
+
+.abilities{
+    position:relative;
+    bottom: em;
+
+    width: 100%;
+    height: auto;
+    z-index: 3;
+
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: space-evenly;
+    align-items: center;
+    
+}
+
+.digitalAb {
+    width: 100%;
+    height: auto;
+    box-shadow: 0em 0em 2em var(--shadow-color);
+}
+
+.leveling {
+    padding: 1em;
+
+    width: 100%;
+    height: auto;
+    z-index: 1;
+
+    display: flex;
+    flex-flow: column wrap;
+    gap: 1em;
+    
+
+}
+
+/* .abilities:hover + .leveling {
+    display: flex;
+} */
+
+
+.credits {
+    padding: 1.0em;
+    position: fixed;
+    bottom: 0em;
+
+    width: 100%;
+    height: 7.5em;
+
+    z-index: 3; 
+    box-shadow: 0em 0em 2em var(--shadow-color);
+    background-color:var(--first-background-color);
+
+}
+
+/* Level 2 - Elements layout */
+
+.contact {
+    width: auto;
+    height: auto;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+
+}
+
 .upwards {
 
 }
 
-.experience {
+.experiences:not(:last-child) {
     height: auto;
     width: auto;
 
@@ -310,14 +373,16 @@ body {
     display: none;
 } */
 
-.experience {
+.experiences {
 }
-.experience > div:nth-child(even):not(:last-child) {
+
+
+.experiences > div:nth-child(even){
     width: 20em;
     align-self: flex-start;
 }
 
-.experience > div:nth-child(odd):not(:last-child){
+.experiences > div:nth-child(odd){
     width: 20em;
     align-self: flex-end;
 }
@@ -336,32 +401,30 @@ body {
     display: none;
 }
 
-/* .timeline {
- 
-    z-index: 0;
-    display: flex;
-    width: 100%;
-    height: 100%;
-
+.timeline {
+    display:none;
+    position: sticky;
+    width: auto;
+    height: 10em;
+    z-index: 5;
 }
 
 .mainPipe {
-    width: 1em;
+    width: 2em;
     height: 100%;
     background-color: white;
-} */
+}
 
 .digitalAb {
-    width: 100%;
+    width: 100vw;
     height: 100%;
 
+    padding: 1em;
     display: flex;
     flex-direction: row-reverse;
     flex-wrap: wrap-reverse;
     justify-content: space-evenly;
     align-items: center;
-
-    gap: 10px;
 }
 
 .content {
@@ -482,7 +545,7 @@ div[class^='geometry'] {
     width: 1em;
     height: 5em;
     position: relative;
-    left: 17em;
+    left: 12.5em;
     flex-shrink: 0;
 }
 
@@ -498,6 +561,7 @@ div[class^='geometry'] {
 .treeBind-right {
     position: relative;
     bottom: 2em;
+    transform: scaleX(-1);
 
 }
 
@@ -508,16 +572,14 @@ div[class^='geometry'] {
     width: 1em;
     height: 5em;
     position: relative;
-    left: 2em;
+    left: 10em;
 }
 
 .base-right {
 
     background-color: white;
     position: relative;
-    position:relative;
-
-    width: 49vw;
+    width: 50vw;
     height: 1em;
 }
 
@@ -537,7 +599,7 @@ div[class^='geometry'] {
     }
     
     .aboutMe {
-        width: auto;
+        width: 100%;
         height: 7.5em;
 
         display: flex;
@@ -571,35 +633,29 @@ div[class^='geometry'] {
         aspect-ratio: 1/1;
     }
     
-    .experience { 
+    .experiences { 
         width: 100%;
         height: auto;
-    }
-
-    .experience > div:not(:last-child) {
-        width: 100%;
-        height: auto;
-
     }
 
     .content {
         padding: 7.5%;
     }
 
-    .experience > div:nth-child(even) {
+    .experiences > div:nth-child(even):not(:last-child) {
         align-self: center;
     }
     
-    .experience > div:nth-child(odd){
+    .experiences > div:nth-child(odd):not(:last-child) {
         align-self: center;
     }
 
     .leveling {
-        display: flex;
     }
     
     
     .credits {
+
     }
 
 /* Level 2 - Elements layout */
@@ -651,20 +707,4 @@ height: 100%;
 
 .prevBtn {}
 
-}
-
-.base-left {
-    display: none;
-}
-
-.base-right {
-    display: none;
-}
-
-.branch-left {
-    display: none;
-}
-
-.branch-right {
-    display: none;
 }
