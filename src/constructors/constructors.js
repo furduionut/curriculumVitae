@@ -1,4 +1,4 @@
-class Project{
+export class Project{
     constructor(name, location, mainModel, auxModels, description){
 
         if(!Array.isArray(auxModels)){ throw new TypeError('auxModels should be an array')};
@@ -11,7 +11,7 @@ class Project{
     }
 }
 
-class Ability{
+export class Ability{
     constructor(name, chapters, proficiency,){
         this.name = name;
         this.proficiency = proficiency;
@@ -19,7 +19,7 @@ class Ability{
     }
 }
 
-class Experience{
+export class Experience{
     constructor(name, period, description, roles, projects, skills){
         this.name = name;
         this.period = period;

@@ -330,7 +330,7 @@ body {
 } */
 
 
-.credits {
+/* .credits {
     padding: 1.0em;
     position: fixed;
     bottom: 0em;
@@ -342,7 +342,7 @@ body {
     box-shadow: 0em 0em 2em var(--shadow-color);
     background-color:var(--first-background-color);
 
-}
+} */
 
 /* Level 2 - Elements layout */
 

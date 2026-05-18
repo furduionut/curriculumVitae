@@ -9,6 +9,38 @@
     import { BIM, DWG, TXT, OBJ, IMG, SWG, CGI } from "./modules/abilitiesContent.js";
     import { DSS, DSIGN, GRS, POINT, ARCHIZ, REZVINCI } from "./modules/experiencesContent.js";
 
+
+    // FUNCTION
+    const showLevel = (e) => {
+        let leveling = document.getElementById('leveling');
+        for (const key in e){
+            // leveling.innerHTML = '';
+            
+            const skill = document.createElement('div');
+            const symbol = document.createElement('div');
+            const bar = document.createElement ('div');
+
+            skill.setAttribute('class', 'skill');
+            symbol.setAttribute('class', 'symbol');
+            bar.setAttribute('class', 'bar');
+
+            bar.style.background = `linear-gradient(to right, white ${e[key].completed}%, transparent ${e[key].completed+10}%)`;
+            symbol.innerHTML = e[key].symbol;
+
+            skill.appendChild(symbol);
+            skill.appendChild(bar);
+            leveling.appendChild(skill);
+
+        }};
+
+    
+        showLevel();
+
+        const abilitiesBtn = document.querySelectorAll('#abilityBtn');
+        console.log(abilitiesBtn)
+        abilitiesBtn.forEach((btn) => {btn.addEventListener('click', () => {showLevel(`${btn.className}`)} )});
+    
+
     // CONSTRUCTORS
     class Project{
         constructor(name, location, mainModel, auxModels, description){
