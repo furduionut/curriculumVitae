@@ -6,16 +6,58 @@
     import { GLTFLoader } from "three/examples/jsm/Addons.js";
     import { DRACOLoader } from "three/examples/jsm/Addons.js";
     import { PLP, ORG, SOFT } from "./modules/creditsInfomations.js";
-    import { BIM, DWG, TXT, OBJ, IMG, SWG, CGI } from "./modules/abilitiesContent.js";
+    import { BIM, DWG, TXT, OBJ, IMG, SWG, CGI, ART, THC, MAN, CLB, COM, DEC } from "./modules/abilitiesContent.js";
     import { DSS, DSIGN, GRS, POINT, ARCHIZ, REZVINCI } from "./modules/experiencesContent.js";
 
+    // DOM
+    const abilitiesBtn = document.querySelectorAll('#abilityBtn');
 
     // FUNCTION
     const showLevel = (e) => {
-        let leveling = document.getElementById('leveling');
-        for (const key in e){
-            // leveling.innerHTML = '';
-            
+        let hardLeveling = document.getElementById('hard-leveling');
+        let softLeveling = document.getElementById('soft-leveling');
+        
+        // Choosing object based on className
+        switch (e) {
+            case 'BIM': e = BIM;
+            break;
+                
+            case 'DWG': e = DWG;
+            break;
+                
+            case 'TXT': e = TXT;
+            break;
+
+            case 'OBJ': e = OBJ;
+            break;
+
+            case 'IMG': e = IMG;
+            break;
+
+            case 'SWG': e = SWG;
+            break;
+
+            case 'CGI': e = CGI;
+            break;
+
+            default: e=null
+            }
+            console.log(e);
+        
+        // Reseting DOM content    
+            hardLeveling.innerHTML = '';
+            softLeveling.innerHTML = '';
+        
+        // Measure the object length.
+            const entries = Object.entries(e);
+
+        // Iterate and applies to each entry;
+        for (let i=0; i<entries.length; i++) {
+
+            // Convert the object into a array using Destructing
+            const [key, value] = entries[i];
+
+            // Adding content to DOM
             const skill = document.createElement('div');
             const symbol = document.createElement('div');
             const bar = document.createElement ('div');
@@ -24,22 +66,19 @@
             symbol.setAttribute('class', 'symbol');
             bar.setAttribute('class', 'bar');
 
-            bar.style.background = `linear-gradient(to right, white ${e[key].completed}%, transparent ${e[key].completed+10}%)`;
-            symbol.innerHTML = e[key].symbol;
+            bar.style.background = `linear-gradient(to right, white ${value.completed}%, transparent ${value.completed+10}%)`;
+            bar.innerHTML = key;
+            symbol.innerHTML = value.symbol;
 
             skill.appendChild(symbol);
             skill.appendChild(bar);
-            leveling.appendChild(skill);
+            hardLeveling.appendChild(skill);}
+        };
 
-        }};
-
+    abilitiesBtn.forEach((btn) => {btn.addEventListener('click', () => {showLevel(`${btn.className}`)} )});
     
-        showLevel();
-
-        const abilitiesBtn = document.querySelectorAll('#abilityBtn');
-        console.log(abilitiesBtn)
-        abilitiesBtn.forEach((btn) => {btn.addEventListener('click', () => {showLevel(`${btn.className}`)} )});
-    
+    // DEFAULT
+        showLevel('BIM');
 
     // CONSTRUCTORS
     class Project{

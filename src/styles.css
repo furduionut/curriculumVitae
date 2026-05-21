@@ -147,7 +147,6 @@ body {
     font-style: bold;
 }
 
-
 .informations {
     width: 100%;
     height: auto;
@@ -276,6 +275,7 @@ body {
 }
 
 .experiences{
+    
     padding: 1.0em;
 
     width: 100%;
@@ -311,7 +311,7 @@ body {
     box-shadow: 0em 0em 2em var(--shadow-color);
 }
 
-.leveling {
+.hard-leveling{
     padding: 1em;
 
     width: 100%;
@@ -321,11 +321,21 @@ body {
     display: flex;
     flex-flow: column wrap;
     gap: 1em;
-    
-
 }
 
-/* .abilities:hover + .leveling {
+.soft-leveling{
+    padding: 1em;
+
+    width: 100%;
+    height: auto;
+    z-index: 1;
+
+    display: flex;
+    flex-flow: column wrap;
+    gap: 1em;
+}
+
+/* .abilities:hover + .soft-leveling {
     display: flex;
 } */
 
@@ -611,6 +621,7 @@ div[class^='geometry'] {
     }
 
     .projects {
+
         padding: 1em;
         padding-top: 9em;
     
@@ -650,10 +661,9 @@ div[class^='geometry'] {
         align-self: center;
     }
 
-    .leveling {
+    .hard-leveling {
     }
-    
-    
+
     .credits {
 
     }
