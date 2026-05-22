@@ -11,7 +11,6 @@ const casaBacau = {
 import {} from "./src/constructors/constructors.js"
 
 
-
 const projects = [ 
     new Project(
         'casaBacau',

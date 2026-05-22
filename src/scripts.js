@@ -39,19 +39,37 @@
 
             case 'CGI': e = CGI;
             break;
+                
+            case 'ART': e = ART;
+            break;
+                
+            case 'THC': e = THC;
+            break;
 
-            default: e=null
+            case 'MAN': e = MAN;
+            break;
+
+            case 'CLB': e = CLB;
+            break;
+
+            case 'COM': e = COM;
+            break;
+
+            case 'DEC': e = DEC;
+            break;
+
+            default: undefined
             }
-            console.log(e);
-        
-        // Reseting DOM content    
-            hardLeveling.innerHTML = '';
-            softLeveling.innerHTML = '';
-        
+        // Default values;
+
         // Measure the object length.
             const entries = Object.entries(e);
 
+        // Update Hard-skills
         // Iterate and applies to each entry;
+        if (e == BIM || e == DWG || e == TXT || e == OBJ || e == IMG || e == SWG || e == CGI ) 
+        {
+        hardLeveling.innerHTML = '';
         for (let i=0; i<entries.length; i++) {
 
             // Convert the object into a array using Destructing
@@ -65,6 +83,15 @@
             skill.setAttribute('class', 'skill');
             symbol.setAttribute('class', 'symbol');
             bar.setAttribute('class', 'bar');
+            
+            bar.style.padding = '1em';
+            bar.style.display = 'flex';
+            bar.style.justifyContent = 'flex-start';
+            bar.style.alignItems = 'center'
+
+            symbol.style.display = 'flex';
+            symbol.style.justifyContent = 'center';
+            symbol.style.alignItems = 'center'
 
             bar.style.background = `linear-gradient(to right, white ${value.completed}%, transparent ${value.completed+10}%)`;
             bar.innerHTML = key;
@@ -72,13 +99,50 @@
 
             skill.appendChild(symbol);
             skill.appendChild(bar);
-            hardLeveling.appendChild(skill);}
-        };
+            hardLeveling.appendChild(skill);
+        }
+        }
+        else if (e == ART || e == THC || e == MAN || e == CLB || e == COM || e == DEC ) {
+            softLeveling.innerHTML = '';
+            for (let i=0; i<entries.length; i++) {
+
+                // Convert the object into a array using Destructing
+                const [key, value] = entries[i];
+    
+                // Adding content to DOM
+                const skill = document.createElement('div');
+                const symbol = document.createElement('div');
+                const bar = document.createElement ('div');
+    
+                skill.setAttribute('class', 'skill');
+                symbol.setAttribute('class', 'symbol');
+                bar.setAttribute('class', 'bar');
+    
+        
+                bar.style.padding = '1em';
+                bar.style.display = 'flex';
+                bar.style.justifyContent = 'flex-start';
+                bar.style.alignItems = 'center'
+    
+                symbol.style.display = 'flex';
+                symbol.style.justifyContent = 'center';
+                symbol.style.alignItems = 'center'
+
+                bar.style.background = `linear-gradient(to right, white ${value.completed}%, transparent ${value.completed+10}%)`;
+                bar.innerHTML = key;
+                symbol.innerHTML = value.symbol;
+    
+                skill.appendChild(symbol);
+                skill.appendChild(bar);
+                softLeveling.appendChild(skill);
+        }
+        }
+        else {console.log('no skill to show')}
+        }
 
     abilitiesBtn.forEach((btn) => {btn.addEventListener('click', () => {showLevel(`${btn.className}`)} )});
     
     // DEFAULT
-        showLevel('BIM');
 
     // CONSTRUCTORS
     class Project{
@@ -140,7 +204,13 @@
             const canvas        = document.getElementById('canvas');
             let canvasWidth     = canvas.clientWidth;
             let canvasHeight    = canvas.clientHeight;
-            
+
+        function updateCanvasSize() {
+            let canvasWidth     = canvas.clientWidth;
+            let canvasHeight    = canvas.clientHeight;
+
+        window.addEventListener('resize', updateCanvasSize);
+    }
         // CAMERA
             const cameraAspect = canvasWidth / canvasHeight;
             const cameraFar = 2000;

@@ -1,9 +1,5 @@
 // #region HARD-SKILLS
 const BIM = {
-    Completed: {
-        symbol: '&#10004',
-        completed: 50},
-
     Management: {
         symbol: '&#129517',
         completed: 20},
@@ -296,298 +292,295 @@ const CGI = {
 
 // #region SOFT-SKILLS
 const ART = {
-    Completed: {
-        symbol: '&#10004',
-        completed: 50},
-
-    Management: {
+    CreativeDirection: {
         symbol: '&#129517',
-        completed: 20},
+        completed: 28},
 
-    Layouting: {
+    SpatialComposition: {
         symbol: '&#128208',
-        completed: 10},
+        completed: 18},
 
-    ModelingBIM: {
+    ConceptDevelopment: {
         symbol: '&#128736',
-        completed: 20},
+        completed: 42},
 
-    Documentation: {
+    TechnicalDrafting: {
         symbol: '&#128196',
-        completed: 30},
+        completed: 53},
 
-    Collaboration: {
+    StakeholderEngagement: {
         symbol: '&#129309',
-        completed: 40},
+        completed: 61},
 
-    DataManagement: {
+    InformationCoordination: {
         symbol: '&#128452',
-        completed: 50},
+        completed: 72},
 
-    Interoperability: {
+    CrossDisciplineAlignment: {
         symbol: '&#128279',
-        completed: 40},
+        completed: 58},
 
-    Optimisation: {
+    ProcessRefinement: {
         symbol: '&#9881',
-        completed: 80},
+        completed: 87},
         
-    Automatization: {
+    WorkflowAutomation: {
         symbol: '&#9881',
-        completed: 60}
+        completed: 74}
 }
 
 const THC = {
-    Proficiency: {
+    TechnicalJudgment: {
         symbol: '&#11088', 
-        completed: 40},
+        completed: 47},
 
-    Management: {
+    ResourcePlanning: {
         symbol: '&#129517',
-        completed: 20},
+        completed: 33},
 
-    Layouting: {
+    SpatialAnalysis: {
         symbol: '&#128208',
-        completed: 35},
+        completed: 44},
 
-    Modeling: {
+    StructuralUnderstanding: {
         symbol: '&#128736',
-        completed: 50},
+        completed: 63},
 
-    Shading: {
+    MaterialBehavior: {
         symbol: '&#127912',
-        completed: 45},
+        completed: 57},
 
-    Lighting: {
+    DaylightEvaluation: {
         symbol: '&#128161',
-        completed: 55},
+        completed: 68},
 
-    Animating: {
+    MovementFlowAnalysis: {
         symbol: '&#128640',
-        completed: 30},
+        completed: 38},
 
-    Rendering: {
+    VisualCommunication: {
         symbol: '&#128247',
-        completed: 60},
+        completed: 77},
 
-    Optimisation: {
+    EfficiencyAssessment: {
         symbol: '&#9881',
-        completed: 70}, 
+        completed: 83}, 
 
-    Automatization: {
+    SystematizedMethods: {
         symbol: '&#129302',
-        completed: 50}
+        completed: 59}
 }
 
 const MAN = { 
-Proficiency: {
-    symbol: '&#11088',
-    completed: 30},
+    OrganizationalProficiency: {
+        symbol: '&#11088',
+        completed: 37},
 
-TextFormating: {
-    symbol: '&#128196',
-    completed: 40},
+    DocumentHierarchy: {
+        symbol: '&#128196',
+        completed: 52},
 
-ParagraphSpace: {
-    symbol: '&#128204',
-    completed: 35},
+    InformationClarity: {
+        symbol: '&#128204',
+        completed: 43},
 
-HeadersFooters: {
-    symbol: '&#128220',
-    completed: 45},
+    FormalStructure: {
+        symbol: '&#128220',
+        completed: 57},
 
-ListMultilevels: {
-    symbol: '&#128221',
-    completed: 50},
+    LogicalSequencing: {
+        symbol: '&#128221',
+        completed: 63},
 
-TablesAlignment: {
-    symbol: '&#128203',
-    completed: 55},
+    DataStructuring: {
+        symbol: '&#128203',
+        completed: 67},
 
-PageNumbering: {
-    symbol: '&#128290',
-    completed: 35},
+    VersionControl: {
+        symbol: '&#128290',
+        completed: 48},
 
-TrackChanges: {
-    symbol: '&#128065',
-    completed: 45},
+    ReviewManagement: {
+        symbol: '&#128065',
+        completed: 54},
 
-Templates: {
-    symbol: '&#128196',
-    completed: 60},
+    Standardization: {
+        symbol: '&#128196',
+        completed: 73},
 
-Automatization: {
-    symbol: '&#129302',
-    completed: 30}
+    ProcessAutomation: {
+        symbol: '&#129302',
+        completed: 42}
 }
 
 const CLB = {
-    Proficiency: {
+    CollaborationProficiency: {
         symbol: '&#11088',
-        completed: 10},
+        completed: 22},
 
-    LayerManagement: {
+    RoleCoordination: {
         symbol: '&#128196',
-        completed: 50},
+        completed: 58},
 
-    SelectionMasking: {
+    RequirementInterpretation: {
         symbol: '&#128272',
-        completed: 45},
+        completed: 52},
 
-    DigitalPainting: {
+    VisualIdeation: {
         symbol: '&#127912',
-        completed: 55},
+        completed: 63},
 
-    ColorCorrection: {
+    AestheticConsistency: {
         symbol: '&#127912',
-        completed: 60},
+        completed: 67},
 
-    BlendingModes: {
+    CommunicationAlignment: {
         symbol: '&#127912',
-        completed: 50},
+        completed: 56},
 
-    TransformWarp: {
+    AdaptiveProblemSolving: {
         symbol: '&#128259',
-        completed: 45},
+        completed: 51},
 
-    FiltersEffects: {
+    FeedbackIntegration: {
         symbol: '&#128248',
-        completed: 55},
+        completed: 62},
 
-    NonDestructive: {
+    RevisionDiscipline: {
         symbol: '&#128230',
-        completed: 50},
+        completed: 57},
 
-    ExportOptimization: {
+    DeliveryPreparation: {
         symbol: '&#128190',
-        completed: 60}
+        completed: 72}
 }
 
 const COM = {
-    Proficiency: {
+    CommunicationProficiency: {
         symbol: '&#11088',
-        completed: 35},
+        completed: 42},
 
-    VectorShapes: {
+    DiagrammaticThinking: {
         symbol: '&#11036',
-        completed: 40},
+        completed: 47},
 
-    PenToolCurves: {
+    PrecisionSketching: {
         symbol: '&#9998',
-        completed: 45},
+        completed: 52},
 
-    NodeEditing: {
+    LogicalStructuring: {
         symbol: '&#128195',
-        completed: 35},
+        completed: 44},
 
-    Organizations: {
+    InformationHierarchy: {
         symbol: '&#128736',
-        completed: 30},
+        completed: 38},
 
-    StrokeFill: {
+    VisualClarity: {
         symbol: '&#127912',
-        completed: 50},
+        completed: 57},
 
-    TypographyText: {
+    TypographicDiscipline: {
         symbol: '&#128196',
-        completed: 45},
+        completed: 51},
 
-    ColorManagement: {
+    ColorReasoning: {
         symbol: '&#127912',
-        completed: 55},
+        completed: 63},
 
-    BooleanOperations: {
+    AnalyticalReduction: {
         symbol: '&#128209',
-        completed: 50},
+        completed: 56},
 
-    ExportFormats: {
+    OutputConsistency: {
         symbol: '&#128190',
-        completed: 60}
+        completed: 73}
 }
 
 const DEC = {
-    Proficiency: {
+    DecisionProficiency: {
         symbol: '&#11088',
-        completed: 40},
+        completed: 48},
 
-    Composition: {
+    SpatialPrioritization: {
         symbol: '&#128247',
-        completed: 45},
+        completed: 52},
 
-    CameraSetup: {
+    PerspectiveControl: {
         symbol: '&#128247',
-        completed: 50},
+        completed: 56},
 
-    Lighting: {
+    LightQualityJudgment: {
         symbol: '&#128161',
-        completed: 55},
+        completed: 62},
 
-    Shading: {
+    MaterialSelection: {
         symbol: '&#127912',
-        completed: 50},
+        completed: 58},
 
-    AssetManagement: {
+    AssetAllocation: {
         symbol: '&#128452',
-        completed: 45},
+        completed: 53},
 
-    Environment: {
+    EnvironmentalAwareness: {
         symbol: '&#127758',
-        completed: 55},
+        completed: 63},
 
-    Rendering: {
+    PresentationQuality: {
         symbol: '&#128248',
-        completed: 60},
+        completed: 72},
 
-    PostProcessing: {
+    RefinementDecisions: {
         symbol: '&#127912',
-        completed: 50},
+        completed: 57},
 
-    Effects: {
+    ImpactAssessment: {
         symbol: '&#9889',
-        completed: 55}
+        completed: 61}
 }
 
 const TEM = {
-    Proficiency: {
+    TeamProficiency: {
         symbol: '&#11088',
-        completed: 40},
+        completed: 43},
 
-    Composition: {
+    TeamRoleDefinition: {
         symbol: '&#128247',
-        completed: 45},
+        completed: 49},
 
-    CameraSetup: {
+    ResponsibilityDistribution: {
         symbol: '&#128247',
-        completed: 50},
+        completed: 54},
 
-    Lighting: {
+    TeamCommunication: {
         symbol: '&#128161',
-        completed: 55},
+        completed: 59},
 
-    Shading: {
+    ConflictNavigation: {
         symbol: '&#127912',
-        completed: 50},
+        completed: 53},
 
-    AssetManagement: {
+    ResourceSharing: {
         symbol: '&#128452',
-        completed: 45},
+        completed: 48},
 
-    Environment: {
+    CollectiveAwareness: {
         symbol: '&#127758',
-        completed: 55},
-
-    Rendering: {
-        symbol: '&#128248',
         completed: 60},
 
-    PostProcessing: {
-        symbol: '&#127912',
-        completed: 50},
+    TeamOutputQuality: {
+        symbol: '&#128248',
+        completed: 69},
 
-    Effects: {
+    ReviewCulture: {
+        symbol: '&#127912',
+        completed: 54},
+
+    TeamResilience: {
         symbol: '&#9889',
-        completed: 55}
+        completed: 58}
 }
+
 
 // #endregion
 

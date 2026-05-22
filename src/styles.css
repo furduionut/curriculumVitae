@@ -43,8 +43,8 @@
 
 
     /* sizes */
-    --personalsVW: 15%;
-    --projectsVW: 45%;
+    --personalsVW: 12.5%;
+    --projectsVW: 50em;
     --experiencesVW: 25%;
     --abilitiesVW: 25%;
     --creditsVW: 25%;
@@ -87,10 +87,10 @@ li {
 
 /* Testing board */
 
-*{
+/* *{
     border: 1px solid red;
 
-}
+} */
 
 /* Level 0 - Page layout*/
 body {
@@ -108,14 +108,13 @@ body {
 /* Level 1 - Sections layout */
 .aboutMe {
     padding: 1.0em;
-    
-    position: fixed;
-    z-index: 3;
+
+    z-index: 5;
 
     width: 100%;
     height: var(--personalsVW);
 
-
+    position: fixed;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
@@ -158,21 +157,20 @@ body {
 }
 
 .navBar {
+    position: relative;
+    top: .5em;
     width: auto;
     height: 7.5%;
 
     display: flex;
+    flex-shrink: 0;
     flex-wrap: wrap; 
-    justify-content: flex-end;
-
-    position: fixed;
-    top: 10%;
+    justify-content: flex-start;
     gap: 1em;
-
-
 }
 
 .navItem {
+    height: 5em;
     width: 10em;
 
     display: flex;
@@ -185,8 +183,10 @@ body {
 }
 
 .projects {
-    z-index: 1;
+
+    z-index: 3;
     
+    background-color: var(--first-background-color);
     width: 100%;
     height: var(--projectsVW);
 
@@ -205,11 +205,11 @@ body {
 
 .canvas {
     width: 100%;
-    height: auto;
+    height: 25em;
     
     display: flex;
     justify-content: center;
-    align-items: center ;
+    align-items: center;
     
 
     border: 2px solid var(--second-background-color);
@@ -279,7 +279,7 @@ body {
     padding: 1.0em;
 
     width: 100%;
-    height: var(--experiencesVW);
+    height: auto;
     
     z-index: 1;
     display: flex;
@@ -291,8 +291,6 @@ body {
 }
 
 .abilities{
-    position:relative;
-    bottom: em;
 
     width: 100%;
     height: auto;
@@ -302,6 +300,8 @@ body {
     flex-flow: column wrap;
     justify-content: space-evenly;
     align-items: center;
+
+    background-color: var(--first-background-color);
     
 }
 
@@ -309,6 +309,13 @@ body {
     width: 100%;
     height: auto;
     box-shadow: 0em 0em 2em var(--shadow-color);
+
+}
+
+.abHeader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .hard-leveling{
@@ -340,9 +347,9 @@ body {
 } */
 
 
-/* .credits {
+.credits {
     padding: 1.0em;
-    position: fixed;
+    position: sticky;
     bottom: 0em;
 
     width: 100%;
@@ -352,7 +359,7 @@ body {
     box-shadow: 0em 0em 2em var(--shadow-color);
     background-color:var(--first-background-color);
 
-} */
+}
 
 /* Level 2 - Elements layout */
 
@@ -387,12 +394,12 @@ body {
 }
 
 
-.experiences > div:nth-child(even){
+.experiences > div:nth-child(even):not(:last-child){
     width: 20em;
     align-self: flex-start;
 }
 
-.experiences > div:nth-child(odd){
+.experiences > div:nth-child(odd):not(:last-child){
     width: 20em;
     align-self: flex-end;
 }
@@ -412,23 +419,43 @@ body {
 }
 
 .timeline {
-    display:none;
-    position: sticky;
-    width: auto;
-    height: 10em;
-    z-index: 5;
+    position: absolute;
+    
+    display:flex;
+    align-items: center;
+    
+    /* background-color: red; */
+    justify-content: center;
+
+    width: 100%;
+    height: 50%;
+
+    z-index: 0;
+
 }
 
 .mainPipe {
     width: 2em;
-    height: 100%;
+    height: auto;
+    
+    display: flex;
+    flex-wrap: wrap;
+    flex-shrink: 1;
+    gap: 1em;
+}
+
+.lineBreak {
+    width: 100%;
+    height: 15em;
     background-color: white;
+    border-radius: var(--general-border-radius);
 }
 
 .digitalAb {
     width: 100vw;
     height: 100%;
 
+    background-color: var(--first-background-color);
     padding: 1em;
     display: flex;
     flex-direction: row-reverse;
@@ -505,6 +532,8 @@ div[class^='skill'] {
 
     border-radius: var(--general-border-radius);
     background-color: white;
+    
+    transition: linear-gradient(to right, white 5%, transparent 10%);
 }
 
 div[class^='skill']:nth-child(odd) > .bar {
@@ -561,16 +590,16 @@ div[class^='geometry'] {
 
 .base-left {
     background-color: white;
-
     position: relative;
+    width: 50vw;
     right: 1em;
-    width: 49vw;
     height: 1em;
 }
 
 .treeBind-right {
     position: relative;
     bottom: 2em;
+    left: 1em;
     transform: scaleX(-1);
 
 }
@@ -628,7 +657,7 @@ div[class^='geometry'] {
         width: 100%;
         height: auto;
     
-        z-index: 1;
+        z-index: 3;
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
