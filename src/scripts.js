@@ -11,12 +11,17 @@
 
     // DOM
     const abilitiesBtn = document.querySelectorAll('#abilityBtn');
+    const rootProps = document.documentElement;
+    
+    let backgroundColor3 = getComputedStyle(rootProps).getPropertyValue('--third-background-color').trim();
 
+
+    console.log (backgroundColor3);
     // FUNCTION
     const showLevel = (e) => {
         let hardLeveling = document.getElementById('hard-leveling');
         let softLeveling = document.getElementById('soft-leveling');
-        
+
         // Choosing object based on className
         switch (e) {
             case 'BIM': e = BIM;
@@ -70,6 +75,9 @@
         if (e == BIM || e == DWG || e == TXT || e == OBJ || e == IMG || e == SWG || e == CGI ) 
         {
         hardLeveling.innerHTML = '';
+        hardLeveling.style.display = 'flex';
+        hardLeveling.style.flexFlow = 'column wrap'
+        hardLeveling.style.justifyContent = 'space-between';
         for (let i=0; i<entries.length; i++) {
 
             // Convert the object into a array using Destructing
@@ -84,7 +92,6 @@
             symbol.setAttribute('class', 'symbol');
             bar.setAttribute('class', 'bar');
             
-            bar.style.padding = '1em';
             bar.style.display = 'flex';
             bar.style.justifyContent = 'flex-start';
             bar.style.alignItems = 'center'
@@ -93,7 +100,7 @@
             symbol.style.justifyContent = 'center';
             symbol.style.alignItems = 'center'
 
-            bar.style.background = `linear-gradient(to right, white ${value.completed}%, transparent ${value.completed+10}%)`;
+            bar.style.background = `linear-gradient(to right, ${backgroundColor3} ${value.completed}%, transparent ${value.completed+10}%)`;
             bar.innerHTML = key;
             symbol.innerHTML = value.symbol;
 
@@ -104,6 +111,9 @@
         }
         else if (e == ART || e == THC || e == MAN || e == CLB || e == COM || e == DEC ) {
             softLeveling.innerHTML = '';
+            softLeveling.style.display = 'flex';
+            softLeveling.style.flexFlow = 'column wrap'
+            softLeveling.style.justifyContent = 'space-between';
             for (let i=0; i<entries.length; i++) {
 
                 // Convert the object into a array using Destructing
@@ -128,13 +138,14 @@
                 symbol.style.justifyContent = 'center';
                 symbol.style.alignItems = 'center'
 
-                bar.style.background = `linear-gradient(to right, white ${value.completed}%, transparent ${value.completed+10}%)`;
+                bar.style.background = `linear-gradient(to right, ${backgroundColor3} ${value.completed}%, transparent ${value.completed+10}%)`;
                 bar.innerHTML = key;
                 symbol.innerHTML = value.symbol;
     
                 skill.appendChild(symbol);
                 skill.appendChild(bar);
                 softLeveling.appendChild(skill);
+
         }
         }
         else {console.log('no skill to show')}
