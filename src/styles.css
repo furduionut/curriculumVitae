@@ -118,8 +118,8 @@ li {
     margin: 0;
     border: 0;
     padding: 0;
-
-    border: 1px solid red;
+/* 
+    border: 1px solid red; */
 }
 
 body {
@@ -186,12 +186,14 @@ body {
     /* size */
     /* position */
     /* distance */
+    gap: .5em;
     /* geometry */
     /* style */
     font-size: var(--subtitle-fontSize);
     font-style: var(--subtitle-fontStyle);
     /* color */
     /* display */
+    display: flex;
     /* content */
 }
 .informations {
@@ -297,6 +299,7 @@ body {
     flex-flow: column wrap;
     justify-content: space-evenly;
     align-items: center;
+    flex-shrink: 1;
     /* content */
 }
 .canvas {
@@ -671,7 +674,7 @@ div[class^='geometry'] {
     width: auto;
     /* position */
     position: absolute;
-    left: 50vw;
+    left: 50%;
     z-index: 6;
     /* distance */
     /* geometry */
@@ -688,7 +691,7 @@ div[class^='geometry'] {
     height: 135em;
     /* position */
     position: relative;
-    right: 1vw;
+    right: 1%;
     /* distance */
     gap: var(--general-gap);
     /* geometry */
@@ -915,21 +918,205 @@ div[class^='geometry'] {
 }
 
 /* Responsive Behaviour */
-@media (width <= 680px) {
+@media (width <= 720px) {
+/* ----ABOUT ME-----*/
+.aboutMe {
+    /* box */
+    /* size */
+    /* position */
+    position: sticky;
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    /* content */
+}
 
-    body {
-        width: 100%;
-        height: auto;
-    }
-    
-    .aboutMe {
-        width: 100%;
-        height: 7.5em;
+.contact {
+    /* box */
+    /* size */
+    width: 100%;
+    height: auto;
+    /* position */
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    display:flex;
+    flex-flow: column wrap;
+    justify-content: space-between;
+    align-items: center;
+    /* content */
+}
+.name {
+    /* box */
+    /* size */
+    /* position */
+    /* distance */ 
+    gap: 0.25em;
+    /* geometry */
+    /* style */
+    font-size: 1.5em;
+    /* color */
+    /* display */
+    flex-flow: column wrap;
+    align-items: center;
+    /* content */
+}
+.navBar {
+    /* box */
+    /* size */
+    /* position */
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    flex-flow: row wrap;
+    /* content */
+}
+/* ----PROJECTS-----*/
+.projects {
+    /* box */
+    /* size */
+    width: 100%;
+    height: var(--projectsVW);
+    /* position */
+    z-index: var(--banner-order);
+    /* distance */
+    gap: var(--general-gap);
+    /* geometry */
+    /* style */
+    /* color */
+    background-color: var(--first-background-color);
+    /* display */
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-shrink: 1;
+    /* content */
+}
+.viewport {
+    /* box */
+    padding: var(--general-padding);
+    padding-top: 17.5em;
+    /* size */
+    width: 100%;
+    height: auto;
+    /* position */
+    /* distance */
+    gap: var(--general-gap);
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-shrink: 1;
+    /* content */
+}
+.controls{
+    /* box */
+    /* size */
+    width: 100%;
+    height: 5em;
+    /* position */
+    /* distance */
+    gap: var(--general-gap);
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    display: flex;
+    align-items: flex-end;
+    /* content */
+}
+.stageNav {
+    /* box */
+    /* size */
+    width: 100%;
+    height: 100%;
+    /* position */
+    /* distance */
+    gap: 0.75em;
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: space-between;
+    /* content */
+}
+.stageBtn {
+    /* box */
+    /* size */
+    height: 2em;
+    /* position */
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    /* content */
+}
+.navBtn {
+    /* box */
+    /* size */
+    width: 5em;
+    /* position */
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    /* content */
+}
 
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: center;
-
-        gap: 1px;
-    }}
+/* ----EXPERIENCES-----*/
+.timeline {
+    /* box */
+    /* size */
+    /* position */
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    display:none;
+    /* content */
+}
+.treeBind-left {
+    /* box */
+    /* size */
+    /* position */
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    display:none;
+    /* content */   
+}
+.treeBind-right {
+    /* box */
+    /* size */
+    /* position */
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    display: none;
+    /* content */
+}
+}

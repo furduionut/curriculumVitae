@@ -92,6 +92,7 @@
             symbol.setAttribute('class', 'symbol');
             bar.setAttribute('class', 'bar');
             
+            bar.style.padding = '1em';
             bar.style.display = 'flex';
             bar.style.justifyContent = 'flex-start';
             bar.style.alignItems = 'center'
@@ -128,7 +129,6 @@
                 symbol.setAttribute('class', 'symbol');
                 bar.setAttribute('class', 'bar');
     
-        
                 bar.style.padding = '1em';
                 bar.style.display = 'flex';
                 bar.style.justifyContent = 'flex-start';
@@ -213,12 +213,14 @@
     // PARAMETERS
         // CANVAS
             const canvas        = document.getElementById('canvas');
-            let canvasWidth     = canvas.clientWidth;
-            let canvasHeight    = canvas.clientHeight;
+            const viewport      = document.getElementById('viewport');
+
+            let canvasWidth     = viewport.clientWidth;
+            let canvasHeight    = viewport.clientHeight;
 
         function updateCanvasSize() {
-            let canvasWidth     = canvas.clientWidth;
-            let canvasHeight    = canvas.clientHeight;
+            let canvasWidth     = viewport.clientWidth;
+            let canvasHeight    = viewport.clientHeight;
 
         window.addEventListener('resize', updateCanvasSize);
     }
