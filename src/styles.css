@@ -52,7 +52,8 @@
     --subject-font-familiy: arial;
     --description-font-familiy: arial;
     --border-style: .1em solid;
-    --shadow-style: 0em 0em 2em;
+    --shadow-style: 0em 0em 3em;
+    --outline-style: .2em solid;
 
     --general-fontStyle: bold;
     --title-fontStyle: bold;
@@ -67,6 +68,7 @@
     --subject-color: #1c3166;
     --description-color: #1c3166;
     --font-color: rgba(18, 24, 77, 1);
+    --outline-color: rgba(18, 24, 77, 1);
 
     --border-color: rgba(138, 153, 161, 1);
     --background-color: #b6cad4;
@@ -82,7 +84,11 @@
 }
 /* General styles */
 
-
+a {
+    text-decoration: none;
+    color: var(--title-color);
+    font-weight: bold;
+}
 
 span {
     color: var(--title-color);
@@ -118,8 +124,8 @@ li {
     margin: 0;
     border: 0;
     padding: 0;
-/* 
-    border: 1px solid red; */
+
+    /* border: 1px solid red; */
 }
 
 body {
@@ -143,7 +149,7 @@ body {
     padding: var(--general-padding);
     /* size */
     width: 100%;
-    height: 7.50em;
+    height: 13.5em;
     /* position */
     position: fixed;
     z-index: var(--ends-order);
@@ -151,7 +157,7 @@ body {
     gap: var(--general-gap);
     /* geometry */
     /* style */
-    box-shadow: 0em 0em 2em var(--shadow-color);
+    box-shadow: var(--shadow-style) var(--shadow-color);
     /* color */
     background-color:var(--first-background-color);
     /* display */
@@ -164,8 +170,8 @@ body {
 .photo{
     /* box */
     /* size */
-    width: 10em;
-    height: 10em;
+    width: 15em;
+    height: 15em;
     /* position */
     position: relative;
     /* distance */
@@ -177,7 +183,7 @@ body {
     flex-shrink: 0;
     /* content */
     background-image: var(--profile-image);
-    background-size: 12.5em;
+    background-size: 15em;
     background-repeat: no-repeat;
     background-position: center;
 }
@@ -194,6 +200,21 @@ body {
     /* color */
     /* display */
     display: flex;
+    /* content */
+}
+.personal {
+    /* box */
+    /* size */
+    width: 100%;
+    /* position */
+    /* distance */
+    gap: var(--general-gap);
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    display: flex;
+    flex-flow: column wrap;
     /* content */
 }
 .informations {
@@ -214,16 +235,29 @@ body {
     align-items: flex-start;
     /* content */
 }
+.contact {
+    /* box */
+    /* size */
+    /* position */
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
+    /* content */
+}
 .navBar {
     /* box */
+    padding-top: 3.25em;
     /* size */
     width: 100%;
     height: auto;
     /* position */
-    position: relative;
-    top: .5em;
     /* distance */
-    gap: 1em;
+    gap: var(--general-gap);
     /* geometry */
     /* style */
     /* color */
@@ -420,7 +454,7 @@ body {
     gap: var(--general-gap);
     /* geometry */
     /* style */
-    box-shadow: 0em 0em 2em var(--shadow-color);
+    box-shadow: var(--shadow-style) var(--shadow-color);
     /* color */
     /* display */
     display: flex;
@@ -480,11 +514,14 @@ body {
 }
 .expDescription {
     /* box */
+    padding: var(--general-padding);
     /* size */
     /* position */
     /* distance */
     /* geometry */
     /* style */
+    text-align: left;
+    text-justify: left;
     /* color */
     /* display */
     display: none;
@@ -607,9 +644,10 @@ div[class^='geometry'] {
     /* box */
     /* size */
     height: 1em;
+    width: 50vw;
     /* position */
     position: relative;
-    width: 50vw;
+    right: 1vw;
     /* distance */
     /* geometry */
     /* style */
@@ -653,10 +691,11 @@ div[class^='geometry'] {
 .base-right {
     /* box */
     /* size */
-    width: 45vw;
+    width: 49vw;
     height: 1em;
     /* position */
     position: relative;
+    right: 1.5vw;
     /* distance */
     /* geometry */
     /* style */
@@ -674,7 +713,7 @@ div[class^='geometry'] {
     width: auto;
     /* position */
     position: absolute;
-    left: 50%;
+    left: 48.25vw;
     z-index: 6;
     /* distance */
     /* geometry */
@@ -691,7 +730,6 @@ div[class^='geometry'] {
     height: 135em;
     /* position */
     position: relative;
-    right: 1%;
     /* distance */
     gap: var(--general-gap);
     /* geometry */
@@ -708,7 +746,7 @@ div[class^='geometry'] {
 .lineBreak {
     /* box */
     /* size */
-    width: 3.5em;
+    width: 2em;
     height: 15em;
     /* position */
     /* distance */
@@ -725,6 +763,7 @@ div[class^='geometry'] {
 /* ----ABILITIES-----*/
 .abilities{
     /* box */
+    padding-bottom: 5em;
     /* size */
     width: 100%;
     height: auto;
@@ -764,6 +803,11 @@ div[class^='geometry'] {
     align-items: center;
     /* content */
 }
+
+.digitalAb > div:hover {
+    outline: var(--outline-style) var(--outline-color);
+}
+
 .hardAbilities{
     /* box */
     /* size */
@@ -876,6 +920,7 @@ div[class^='geometry'] {
     border-radius: var(--general-border-radius);
     aspect-ratio: 1/1;
     /* style */
+    border: var(--border-style) var(--border-color);
     /* color */
     background-color: var(--third-background-color);
     /* display */
@@ -905,21 +950,29 @@ div[class^='geometry'] {
     width: 100%;
     height: auto;
     /* position */
-    position: sticky;
+    position: fixed;
+    bottom: 0;
     z-index: var(--ends-order);
     /* distance */
     /* geometry */
     /* style */
-    box-shadow: 0em 0em 2em var(--shadow-color);
+    box-shadow: var(--shadow-style) var(--shadow-color);
     /* color */
     background-color:var(--first-background-color);
     /* display */
     /* content */
 }
+.thanks {
+    display: none;
+}
+.credits:active .thanks{
+    display:block;
+}
 
 /* Responsive Behaviour */
 @media (width <= 720px) {
-/* ----ABOUT ME-----*/
+
+    /* ----ABOUT ME-----*/
 .aboutMe {
     /* box */
     /* size */
@@ -937,23 +990,48 @@ div[class^='geometry'] {
     /* content */
 }
 
-.contact {
+.personal {
     /* box */
     /* size */
-    width: 100%;
-    height: auto;
     /* position */
     /* distance */
     /* geometry */
     /* style */
     /* color */
     /* display */
-    display:flex;
-    flex-flow: column wrap;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     /* content */
 }
+
+.informations {
+    /* box */
+    /* size */
+    /* position */
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    justify-content: center;
+    align-items: center;
+    /* content */
+}
+
+.contact {
+    /* box */
+    /* size */
+    /* position */
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    justify-content: center;
+    align-items: center;
+    /* content */
+}
+
 .name {
     /* box */
     /* size */
@@ -971,6 +1049,7 @@ div[class^='geometry'] {
 }
 .navBar {
     /* box */
+    padding-top: 0;
     /* size */
     /* position */
     /* distance */
@@ -981,6 +1060,7 @@ div[class^='geometry'] {
     flex-flow: row wrap;
     /* content */
 }
+
 /* ----PROJECTS-----*/
 .projects {
     /* box */
@@ -1118,5 +1198,10 @@ div[class^='geometry'] {
     /* display */
     display: none;
     /* content */
+}
+/* ----ABILITIES-----*/
+.digitalAb {
+    justify-content: center;
+    gap: 2em;
 }
 }

@@ -226,12 +226,12 @@
     }
         // CAMERA
             const cameraAspect = canvasWidth / canvasHeight;
-            const cameraFar = 2000;
-            const cameraNear = 0.1;
-            const cameraTop = 15;
-            const cameraBottom = -15;
-            const cameraRight = 15;
-            const cameraLeft = -15;
+            const cameraFar = 6000;
+            const cameraNear = 0.01;
+            const cameraTop = 35;
+            const cameraBottom = -35;
+            const cameraRight = 35;
+            const cameraLeft = -35;
 
         // RENDERER
             const rendererWidth     = canvasWidth;
@@ -270,8 +270,7 @@
         );
         
         // SETUP
-        camera.position.set(15, 5,15);
-        camera.lookAt(new THREE.Vector3(-5,-10, -5));
+        camera.position.set(25, 5, 15);
 
     // FUNCTIONS
 
