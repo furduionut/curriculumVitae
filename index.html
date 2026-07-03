@@ -1,30 +1,316 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PORTOFOLIU Furdu Mihael Ionut</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div class="container">
-        <div class="banner-img">
-            <img src="public/banner.png" alt="banner" class="banner">
-        </div>
-        
-        <div class="viewport">
-            <div class="stage-label"></div> 
-            <div class="axo" id="axo"></div>
-            <div class="slider-container">
-                <div class="draggable-circle" id="draggable-circle"></div>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>CurriculumVitae</title>
+        <link type='module' rel="stylesheet" href="./src/styles.css">
+        <script type="module" src="./src/scripts.js"></script>
+    </head>
+    <body>
+        <div class="aboutMe" id="aboutMe">
+            <div class="photo"></div>
+            <div class="personal">
+                <div class="informations">
+                        <h2 class="name">Mihael-Ionut FURDU</h2>
+                        <div class="contact">
+                            <p class="email"> furdu.mihaelionut@outlook.com</p>
+                            <p class="location">Iași, România</p>
+                            <p class="phone"> 0722 282 767</p>
+                        </div>  
+                </div>   
+                <div class="navBar">
+                        <div class="navItem"><a href="#aboutMe">About Me</a></div>
+                        <div class="navItem"><a href="#projects">Projects</a></div>
+                        <div class="navItem"><a href="#experiences">Experiences</a></div>
+                        <div class="navItem"><a href="#abilities">Abilities</a></div>
+                        <div class="navItem"><a href="#credits">Credits</a></div>
+                </div>
             </div>
-        </div>
-    
-        <div class="cv-img">
-            <img src="public/curriculum.png" alt="cv" class="cv">
+            
         </div>
 
-    </div>
-    <script type="module" src="script.js"></script>
-</body>
+        <div class="projects" id="projects">
+            <div id='viewport' class='viewport'>
+                <div id='canvas' class="canvas"></div>
+                <div id="controls" class="controls">
+                    <div id="prevBtn" class="navBtn"></div>
+                    <div id="stageNav" class="stageNav">
+                        <div id="upBtn" class="stageBtn"></div>
+                        <div id="downBtn" class="stageBtn"></div>
+                    </div>
+                    <div id="nextBtn" class="navBtn"></div>
+                </div>
+            </div>
+            <div class="description">
+                <h2>Project name</h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+            </div>
+        </div>
+
+        <div class="experiences" id="experiences">
+            <div class="experience-7">
+                <div class='geometry-up'></div>
+                <div id='content' class="content">
+                    <h3>Obținerea dreptului de semnătură</h3>
+                    <ul class="expDescription" id="expDescription"></ul>
+                </div>
+                <div class='geometry-down'></div>
+                <div class='treeBind-right'>
+                    <div class='branch-right'></div>
+                    <div class='base-right'></div>
+                </div>
+            </div>
+
+            <div class="experience-6">
+                <div class='geometry-up'></div>
+                <div id='content' class="content">
+                    <h3>Proiectare tehnică în toate fazele</h3>
+                    <ul class="expDescription" id="expDescription">
+                        <li>Preliminar: documentații de urbanism</li>
+                        <li>Pregătitor: certificat de urbanism</li>
+                        <li>Conceptual: ilustrare și prezentare a temei</li>
+                        <li>Definitor: soluționare tehnică a conceptului</li>
+                        <li>Simplificat: documentații pentru autorizare</li>
+                        <li>Detaliat: proiect de execuție</li>
+                        <li>Prezentare: proiect de marketing</li>
+                    </ul>
+                </div>
+                <div class='geometry-down'></div>
+                <div class='treeBind-left'>
+                    <div class='branch-left'></div>
+                    <div class='base-left'></div>
+                </div>
+            </div>
+            
+            <div class="experience-5">
+                <div class='geometry-up'></div>
+                <div id='content' class="content">
+                    <h3>Consultanță și marketing</h3>
+                    <ul class="expDescription" id="expDescription">
+                        <li>Analiza etapelor proiectului</li>
+                        <li>Consultanță de specialitate</li>
+                        <li>Modelare, texturare și animare</li>
+                        <li>Ilustrare stilizată în format video</li>
+                        <li>Creare conținut marketing</li>
+                    </ul>
+                </div>
+                <div class='geometry-down'></div>
+                <div class='treeBind-right'>
+                    <div class='branch-right'></div>
+                    <div class='base-right'></div>
+                </div>
+            </div>
+
+            <div class="experience-4">
+                <div class='geometry-up'></div>
+                <div id='content' class="content">
+                    <h3>Contractare și ofertare</h3>
+                    <ul class="expDescription" id="expDescription">
+                        <li>Analiza și ințelegerea etapelor</li>
+                        <li>Elaborare contracte și anexe</li>
+                        <li>Realizarea ofertelor de preț</li>
+                        <li>Prezentare servicii</li>
+                        <li>Modelare, animare și export</li>
+                    </ul>
+                </div>
+                <div class='geometry-down'></div>
+                <div class='treeBind-left'>
+                    <div class='branch-left'></div>
+                    <div class='base-left'></div>
+                </div>
+            </div>
+
+            <div class="experience-3">
+                <div class='geometry-up'></div>
+                <div id='content' class="content">
+                    <h3>Organizare de proiect</h3>
+                    <ul class="expDescription" id="expDescription">
+                        <li>Gestionarea timpilor în lucrul la distanță</li>
+                        <li>Înțelegerea etapelor de proiectare</li>
+                        <li>Evaluarea complexității proiectului</li>
+                        <li>Stabilirea tipului de lucrare</li>
+                        <li>Studiu de fezabilitate și prefezabilitate</li>
+                        <li>Proiect tehnic și detalii de execuție</li>
+                        <li>Listă de cantități și caiet de sarcini</li>
+                        <li>Proiectare BIM</li>
+                    </ul>
+                </div>
+                <div class='geometry-down'></div>
+                <div class='treeBind-right'>
+                    <div class='branch-right'></div>
+                    <div class='base-right'></div>
+                </div>
+            </div>
+
+            <div class="experience-2">
+                <div class='geometry-up'></div>
+                <div id='content' class="content">
+                    <h3>Coordonare și colaborare</h3>
+                    <ul class="expDescription" id="expDescription">
+                        <li>Discuții cu clientul pe concept</li>
+                        <li>Ilustrare și prezentare de proiect</li>
+                        <li>Elaborare temă de proiectare pentru specialități</li>
+                        <li>Documentație pentru lucrări de intervenție</li>
+                        <li>Proiect tehnic și autorizații de construire</li>
+                        <li>Proiect de mobilier și amenajare interioară</li>
+                        <li>Caiet de sarcini și stereotomii</li>
+                        <li>Extras de cantități, tabele și deviz general</li>
+                    </ul>
+                </div>
+                <div class='geometry-down'></div>
+                <div class='treeBind-left'>
+                    <div class='branch-left'></div>
+                    <div class='base-left'></div>
+                </div>
+            </div>
+
+            <div class="experience-1">
+                <div class='geometry-up'></div>
+                <div id='content' class="content">
+                    <h3>Proiectare și verificare tehnică</h3>
+                    <ul class="expDescription" id="expDescription">
+                        <li>Elaborare referate de verificare</li>
+                        <li>Analiza urbanistică și studiu fotografic</li>
+                        <li>Măsurători, relevee și studii de însorire</li>
+                        <li>Proiectare în fazele pregătitoare și concept</li>
+                        <li>Elaborare documentație urbanism (PUD) și (PUZ)</li>
+                        <li>Depunere documentație pentru CU</li>
+                        <li>Verificare tehnică a proiectelor</li>
+                        <li>Scheme și diagrame 2D</li>
+                    </ul>
+                </div>
+                <div class='geometry-down'></div>
+                <div class='treeBind-right'>
+                    <div class='branch-right'></div>
+                    <div class='base-right'></div>
+                </div>
+            </div>
+
+            <div class="experience-0">
+                <div class='geometry-up'></div>
+                <div id='content' class="content">
+                    <h3>Studii, concursuri și voluntariat</h3>
+                    <ul class="expDescription" id="expDescription">
+                        <li>Finalizarea studiilor univesitare</li>
+                        <li>Proiect de amenajare peisageră T13-T14</li>
+                        <li>Proiect de amenajare perisageră T4</li>
+                        <li>Voluntariat în domeniu</li>
+                    </ul>
+                </div>
+                <div class='geometry-down'></div>
+                <div class='treeBind-left'>
+                    <div class='branch-left'></div>
+                    <div class='base-left'></div>
+                </div>
+            </div>
+
+            <div class="timeline">
+                <div class="mainPipe">
+                    <div class="lineBreak"></div>
+                    <div class="lineBreak"></div>
+                    <div class="lineBreak"></div>
+                    <div class="lineBreak"></div>
+                    <div class="lineBreak"></div>
+                    <div class="lineBreak"></div>
+                    <div class="lineBreak"></div>
+                    <div class="lineBreak"></div>
+                    <div class="lineBreak"></div>
+                    <div class="lineBreak"></div>
+                    <div class="lineBreak"></div>
+                    <div class="lineBreak"></div>
+                    <div class="lineBreak"></div>
+                    <div class="lineBreak"></div>
+                    <div class="lineBreak"></div>
+                    <div class="lineBreak"></div>
+                </div>
+            </div>
+        </div> 
+
+        <div class="abilities" id="abilities">
+            <div class="hardAbilities">
+                <div class="digitalAb">
+                    <div class="BIM" id="abilityBtn">
+                        <h2 class="abHeader">BIM</h2>
+                        <p>Archicad</p>
+                        <p>Allplan</p>
+                    </div>
+                    
+                    <div class="CGI" id="abilityBtn">
+                        <h2 class="abHeader">CGI</h2>
+                        <p>Cycles</p>
+                        <p>Lumion</p>
+                    </div>
+
+                    <div class="SWG" id="abilityBtn">
+                        <h2 class="abHeader">SWG</h2>
+                        <p>Inkscape</p>
+                        <p>Ilustrator</p>
+                    </div>
+
+                    <div class="IMG" id="abilityBtn">
+                        <h2 class="abHeader">IMG</h2>
+                        <p>Photoshop</p>
+                        <p>Gimp/Krita</p>
+                    </div>
+
+                    <div class="OBJ" id="abilityBtn">
+                        <h2 class="abHeader">OBJ</h2>
+                        <p>Blender</p>
+                        <p>Sketchup</p>
+                    </div>
+
+                    <div class="TXT" id="abilityBtn">
+                        <h2 class="abHeader">TXT</h2>
+                        <p>MS Office</p>
+                        <p>LibreOffice</p>
+                    </div>
+
+                    <div class="DWG" id="abilityBtn">
+                        <h2 class="abHeader">DWG</h2>
+                        <p>Autocad</p>
+                        <p>Zwcad</p>
+                    </div>
+                </div>
+                <div class="hard-leveling" id="hard-leveling">
+                </div>
+            </div>
+            <div class="softAbilities">
+                <div class="digitalAb">
+                    <div class="ART" id="abilityBtn">
+                        <h2 class="abHeader">ARTISTIC</h2>
+                    </div>
+                    <div class="THC" id="abilityBtn">
+                        <h2 class="abHeader">TECHNICAL</h2>
+                    </div>
+                    <div class="CLB" id="abilityBtn">
+                        <h2 class="abHeader">COLLAB</h2>
+                    </div>
+                    <div class="MAN" id="abilityBtn">
+                        <h2 class="abHeader">MANAGEMENT</h2>
+                    </div>
+                    <div class="DEC" id="abilityBtn">
+                        <h2 class="abHeader">DECISION</h2>
+                    </div>
+                    <div class="COM" id="abilityBtn">
+                        <h2 class="abHeader">COMMUNI</h2>
+                    </div>
+                    <div class="DEC" id="abilityBtn">
+                        <h2 class="abHeader">TEAM</h2>
+                    </div>
+                </div>
+                <div class="soft-leveling" id="soft-leveling"></div>
+            </div>
+        </div>
+
+        <div class="credits" id="credits">
+            <h2>Thanks to:</h2>
+            <div class="thanks">
+                <p id="plp">People</p>
+                <p id="org">Organizations</p>
+                <p id="soft">Softwares: </p>
+                <p id="ver">Version: 0.0.1</p>
+            </div>
+        </div>
+    </body>
 </html>
