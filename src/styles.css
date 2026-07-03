@@ -1,6 +1,5 @@
 /* Imports */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-
 /* Parameteres */
 :root
 {  
@@ -74,7 +73,7 @@
     --background-color: #b6cad4;
     --first-background-color: rgba(173, 182, 211, 1);
     --second-background-color: rgba(138, 153, 161, 1);
-    --third-background-color: rgb(242, 244, 239);
+    --third-background-color: rgba(242, 244, 239, 1);
     --shadow-color: rgba(148, 156, 191, 1);
 
     /* display */
@@ -83,6 +82,15 @@
     --profile-image: url("./public/assets/images/profilePicture.jpg");
 }
 /* General styles */
+* {
+
+    box-sizing: border-box;
+    margin: 0;
+    border: 0;
+    padding: 0;
+
+    /* border: 1px solid red; */
+}
 
 a {
     text-decoration: none;
@@ -118,16 +126,6 @@ li {
     color: var(--general-color);
 }
 
-* {
-
-    box-sizing: border-box;
-    margin: 0;
-    border: 0;
-    padding: 0;
-
-    /* border: 1px solid red; */
-}
-
 body {
     /* box */
     /* size */
@@ -149,7 +147,7 @@ body {
     padding: var(--general-padding);
     /* size */
     width: 100%;
-    height: 13.5em;
+    height: 10em;
     /* position */
     position: fixed;
     z-index: var(--ends-order);
@@ -170,8 +168,8 @@ body {
 .photo{
     /* box */
     /* size */
-    width: 15em;
-    height: 15em;
+    width: 11.75em;
+    height: 11.75em;
     /* position */
     position: relative;
     /* distance */
@@ -251,7 +249,6 @@ body {
 }
 .navBar {
     /* box */
-    padding-top: 3.25em;
     /* size */
     width: 100%;
     height: auto;
@@ -318,7 +315,7 @@ body {
 .viewport {
     /* box */
     padding: var(--general-padding);
-    padding-top: 12.5em;
+    padding-top: 14em;
     /* size */
     width: 100%;
     height: auto;
@@ -355,11 +352,12 @@ body {
     /* content */
     overflow: hidden;
 }
-.controls{
+.controls {
     /* box */
+    padding-top: 1em;
     /* size */
     width: 100%;
-    height: 11em;
+    height: 12em;
     /* position */
     /* distance */
     gap: var(--general-gap);
@@ -404,27 +402,6 @@ body {
     /* display */
     /* content */
 }
-.description{
-    /* box */
-    padding: var(--general-padding);
-    /* size */
-    width: 100vw;
-    height: auto;
-    /* position */
-    z-index: var(--banner-order);
-    /* distance */
-    gap: var(--general-gap);
-    /* geometry */
-    /* style */
-    box-shadow: var(--shadow-style) var(--shadow-color);
-    /* color */
-    /* display */
-    display: flex;
-    flex-flow: column wrap;
-    justify-content: space-around;
-    align-items: center;
-    /* content */
-}
 .navBtn {
     /* box */
     /* size */
@@ -449,6 +426,7 @@ body {
     width: 100%;
     height: auto;
     /* position */
+    position: relative;
     z-index: var(--banner-order);
     /* distance */
     gap: var(--general-gap);
@@ -456,6 +434,7 @@ body {
     /* style */
     box-shadow: var(--shadow-style) var(--shadow-color);
     /* color */
+    background-color: var(--first-background-color);
     /* display */
     display: flex;
     flex-flow: column wrap;
@@ -803,11 +782,9 @@ div[class^='geometry'] {
     align-items: center;
     /* content */
 }
-
 .digitalAb > div:hover {
     outline: var(--outline-style) var(--outline-color);
 }
-
 .hardAbilities{
     /* box */
     /* size */
@@ -989,7 +966,6 @@ div[class^='geometry'] {
     align-items: center;
     /* content */
 }
-
 .personal {
     /* box */
     /* size */
@@ -1003,7 +979,6 @@ div[class^='geometry'] {
     align-items: center;
     /* content */
 }
-
 .informations {
     /* box */
     /* size */
@@ -1017,7 +992,6 @@ div[class^='geometry'] {
     align-items: center;
     /* content */
 }
-
 .contact {
     /* box */
     /* size */
@@ -1031,7 +1005,6 @@ div[class^='geometry'] {
     align-items: center;
     /* content */
 }
-
 .name {
     /* box */
     /* size */
@@ -1060,6 +1033,12 @@ div[class^='geometry'] {
     flex-flow: row wrap;
     /* content */
 }
+.navBar > div:first-child{
+    display: none;
+}
+.navBar > div:last-child{
+    display: none;
+}
 
 /* ----PROJECTS-----*/
 .projects {
@@ -1086,7 +1065,7 @@ div[class^='geometry'] {
 .viewport {
     /* box */
     padding: var(--general-padding);
-    padding-top: 17.5em;
+    padding-top: 16.5em;
     /* size */
     width: 100%;
     height: auto;
@@ -1104,11 +1083,12 @@ div[class^='geometry'] {
     flex-shrink: 1;
     /* content */
 }
+
 .controls{
     /* box */
     /* size */
-    width: 100%;
-    height: 5em;
+    max-width: 100%;
+    height: 7.5em;
     /* position */
     /* distance */
     gap: var(--general-gap);
@@ -1127,10 +1107,11 @@ div[class^='geometry'] {
     height: 100%;
     /* position */
     /* distance */
-    gap: 0.75em;
+    gap: 0.25em;
     /* geometry */
     /* style */
     /* color */
+
     /* display */
     display: flex;
     flex-flow: column wrap;
@@ -1140,7 +1121,8 @@ div[class^='geometry'] {
 .stageBtn {
     /* box */
     /* size */
-    height: 2em;
+    height: 3em;
+    min-width: 6em;
     /* position */
     /* distance */
     /* geometry */
@@ -1152,7 +1134,7 @@ div[class^='geometry'] {
 .navBtn {
     /* box */
     /* size */
-    width: 5em;
+    max-width: 6.5em;
     /* position */
     /* distance */
     /* geometry */

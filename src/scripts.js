@@ -13,14 +13,24 @@
     const abilitiesBtn = document.querySelectorAll('#abilityBtn');
     const rootProps = document.documentElement;
     
+    let backgroundColor1 = getComputedStyle(rootProps).getPropertyValue('--first-background-color').trim();
+    let backgroundColor2 = getComputedStyle(rootProps).getPropertyValue('--second-background-color').trim();
     let backgroundColor3 = getComputedStyle(rootProps).getPropertyValue('--third-background-color').trim();
+    console.log(backgroundColor1, backgroundColor2, backgroundColor3)
 
+    let hardLeveling = document.getElementById('hard-leveling');
+    hardLeveling.style.display = 'flex';
+    hardLeveling.style.flexFlow = 'column wrap'
+    hardLeveling.style.justifyContent = 'space-between';
 
-    console.log (backgroundColor3);
+    let softLeveling = document.getElementById('soft-leveling');   
+    softLeveling.style.display = 'flex';
+    softLeveling.style.flexFlow = 'column wrap'
+    softLeveling.style.justifyContent = 'center';
+    
     // FUNCTION
     const showLevel = (e) => {
-        let hardLeveling = document.getElementById('hard-leveling');
-        let softLeveling = document.getElementById('soft-leveling');
+
 
         // Choosing object based on className
         switch (e) {
@@ -75,9 +85,6 @@
         if (e == BIM || e == DWG || e == TXT || e == OBJ || e == IMG || e == SWG || e == CGI ) 
         {
         hardLeveling.innerHTML = '';
-        hardLeveling.style.display = 'flex';
-        hardLeveling.style.flexFlow = 'column wrap'
-        hardLeveling.style.justifyContent = 'space-between';
         for (let i=0; i<entries.length; i++) {
 
             // Convert the object into a array using Destructing
@@ -112,9 +119,7 @@
         }
         else if (e == ART || e == THC || e == MAN || e == CLB || e == COM || e == DEC ) {
             softLeveling.innerHTML = '';
-            softLeveling.style.display = 'flex';
-            softLeveling.style.flexFlow = 'column wrap'
-            softLeveling.style.justifyContent = 'space-between';
+
             for (let i=0; i<entries.length; i++) {
 
                 // Convert the object into a array using Destructing
@@ -170,6 +175,16 @@
     }
 
     const projects = [ 
+        new Project(
+            'testRun',
+            '', 
+            './public/assets/meshes/casaTest/casaBacau_OUTTER-SHELL.glb',
+            ['./public/assets/meshes/casaTest/casaBacau_OUTTER-SHELL.glb',
+            './public/assets/meshes/casaTest/casaBacau_2ND-FLOOR.glb',
+            './public/assets/meshes/casaTest/casaBacau_1ST-FLOOR.glb',
+            './public/assets/meshes/casaTest/casaBacau_BASEMENT.glb']
+        ),
+        
         new Project(
             'casaBacau',
             'Bacau', 
@@ -228,10 +243,10 @@
             const cameraAspect = canvasWidth / canvasHeight;
             const cameraFar = 6000;
             const cameraNear = 0.01;
-            const cameraTop = 35;
-            const cameraBottom = -35;
-            const cameraRight = 35;
-            const cameraLeft = -35;
+            const cameraTop = 20;
+            const cameraBottom = -20;
+            const cameraRight = 20;
+            const cameraLeft = -20;
 
         // RENDERER
             const rendererWidth     = canvasWidth;
@@ -249,9 +264,9 @@
     
     // LIGHTS
         // CREATE
-        const ambientLight = new THREE.AmbientLight(0xffffff, 3);
-        const directionalLight01 = new THREE.DirectionalLight(0xffffff, 5); // Directional light 01
-        const directionalLight02 = new THREE.DirectionalLight(0xffffff, 5); // Directional light 02
+        const ambientLight = new THREE.AmbientLight(0xffffff, 7.5);
+        const directionalLight01 = new THREE.DirectionalLight(0xffffff, 1); // Directional light 01
+        const directionalLight02 = new THREE.DirectionalLight(0xffffff, 1); // Directional light 02
         scene.add(ambientLight, directionalLight01, directionalLight02);
     
         // POSITION
@@ -273,8 +288,7 @@
         camera.position.set(25, 5, 15);
 
     // FUNCTIONS
-
-        // INDEX UPDATING
+        // CHANGE BUILDING
         const nextBuildingIndex = () => {
                 if (buildingIndex < buildings.length - 1) {
                     // INCREMETING
@@ -292,7 +306,6 @@
 
                 }
         };
-
         const prevBuildingIndex = () => {
                 if (buildingIndex > 0) {
                     // INCREMETING
@@ -311,7 +324,7 @@
                 }
         };
 
-        // NEXT MODEL
+        // CHANGE MODEL
         const prevModelIndex = () => {
             if (buildingModelIndex < models[buildingIndex].length - 1) {
                 // INCREMETING
@@ -329,8 +342,7 @@
 
             // TESTING
             console.log(`model ${buildingModelIndex+1} out of ${models[buildingIndex].length} is ${models[buildingIndex][buildingModelIndex]}`)    
-            }
-
+        };
         const nextModelIndex = () => {
             if (buildingModelIndex > 0) {
                 // INCREMETING
@@ -351,6 +363,22 @@
             console.log(`model ${buildingModelIndex+1} out of ${models[buildingIndex].length} is ${models[buildingIndex][buildingModelIndex]}`)            
         };
 
+    // TEXTURE LOADER
+        const diffuseTexture = new THREE.TextureLoader().load('./public/assets/textures/casaTest/casaBacau_diffuse_1k.jpg');
+        diffuseTexture.colorSpace = THREE.SRGBColorSpace;
+        diffuseTexture.flipY = false;
+
+        const roughnessTexture = new THREE.TextureLoader().load('./public/assets/textures/casaTest/casaBacau_roughness_1k.jpg');
+        roughnessTexture.colorSpace = THREE.NoColorSpace;
+        roughnessTexture.flipY = false;
+
+        const normalMapTexture = new THREE.TextureLoader().load('./public/assets/textures/casaTest/casaBacau_normalMap_1k.jpg');
+        normalMapTexture.colorSpace = THREE.NoColorSpace;
+        normalMapTexture.flipY = false;
+
+        const alphaMapTexture = new THREE.TextureLoader().load('./public/assets/textures/casaTest/casaBacau_transmitionMap_1k.jpg');
+        alphaMapTexture.colorSpace = THREE.NoColorSpace;
+        alphaMapTexture.flipY = false;
 
     // MODELS
         // LOADER
@@ -375,12 +403,44 @@
                     // REMOVE BUILDING
                     if (currentBuilding) {scene.remove(currentBuilding);}
 
-                    // ADDING BUILDING
+                    // ADDING NEW BUILDING OR LOCALSTORAGE
+                        // RETRIEVE OR LOAD (localStorage.getItem('name'))
+                        // CONVERT JSON -> GLTF (function)
                     currentBuilding = gltf.scene;
                     scene.add(currentBuilding);
         
+                    // CHECK TEXTURES
+                    scene.traverse((currentBuilding)=>{
+                        if(currentBuilding.material?.name == '') 
+                            {
+                            currentBuilding.material = new THREE.MeshStandardMaterial({
+                                map: diffuseTexture,
+                                roughnessMap: roughnessTexture,
+                                normalMap: normalMapTexture,
+                                transparent: true,
+                                alphaMap: alphaMapTexture});
+
+                            currentBuilding.material.doubleSide = true;
+
+                            scene.traverse(child =>{
+                                if (child.isMesh && child.name.includes('section')){child.material = new THREE.MeshBasicMaterial({
+                                    color: 0xffffff
+                                })}
+                            })
+                            }
+                            });
+
+                    // STORE IN LOCALSTORAGE
+                            // CONVERT FILE GLTF -> JSON (const json = JSON.stringfy(mesh.toJSON))
+                            // SAVE TO LOCAL (localStorage.setItem('name', json)) (max 10mb)
+
                     // POSITION BUILDING
-                    currentBuilding.position.set(5,-25,0);
+                    currentBuilding.position.set(5,-12.5,0);
+                    
+                    // SET DIRECTIONAL LIGHT
+                    directionalLight01.lookAt(currentBuilding);
+                    directionalLight02.lookAt(currentBuilding);
+
             })}
 
             // CURENT MODEL
@@ -393,12 +453,43 @@
                     // REMOVE MODEL
                     if (currentModel) {scene.remove(currentModel);}
 
+                   // ADDING NEW BUILDING OR LOCALSTORAGE
+                        // RETRIEVE OR LOAD (localStorage.getItem('name'))
+                        // CONVERT JSON -> GLTF (function)
+
                     // ADDING MODEL
                     currentModel = gltf.scene;
                     scene.add(currentModel);
-                            
+
+                    // CHECK TEXTURES
+                    scene.traverse((currentBuilding)=>{
+                        if(currentBuilding.material?.name == '') 
+                            {
+                            currentBuilding.material = new THREE.MeshStandardMaterial({
+                                map: diffuseTexture,
+                                roughnessMap: roughnessTexture,
+                                normalMap: normalMapTexture,
+                                transparent: true,
+                                alphaMap: alphaMapTexture});
+
+                            scene.traverse(child => {
+                                if (child.isMesh && child.name.includes('section')){child.material = new THREE.MeshBasicMaterial({
+                                    color: backgroundColor2
+                            })}
+                            })
+                            }
+                            });
+
+                    // STORE IN LOCALSTORAGE
+                            // CONVERT FILE GLTF -> JSON (const json = JSON.stringfy(mesh.toJSON))
+                            // SAVE TO LOCAL (localStorage.setItem('name', json)) (max 10mb)
+                                                   
                     // POSITION MODEL
-                    currentModel.position.set(5,-25,0);
+                    currentModel.position.set(5,-12.5,0);
+
+                    // SET DIRECTIONAL LIGHT
+                    directionalLight01.lookAt(currentBuilding);
+                    directionalLight02.lookAt(currentBuilding);
                 })
             }
 
