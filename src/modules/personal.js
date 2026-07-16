@@ -1,0 +1,3 @@
+const personal = {}
+
+export { personal }
