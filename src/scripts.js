@@ -79,8 +79,8 @@
         let dom       = domain;
 
     /* INDEXES */
-        let buildingIndex       = 0;
-        let buildingModelIndex  = 0;
+        var buildingIndex       = 0;
+        var buildingModelIndex  = 0;
 
     /* SCENES */
         let scene       = scenes.mainScene;
@@ -99,23 +99,36 @@
         let texturePaths    = textures[buildingIndex];
 
     /* TEXTURES */
-        const textureLoader = new THREE.TextureLoader();
-        let material = new THREE.MeshStandardMaterial({ color: 0xFFFF00 });
-        let diffuseMap              = textureLoader.load(texturePaths.diffuse);
-            diffuseMap.flipY        = false;
-        let roughnessMap            = textureLoader.load(texturePaths.roughness);
-            roughnessMap.flipY      = false;
-        let normalMap               = textureLoader.load(texturePaths.normal);
-            normalMap.flipY         = false;
-        let transmissionMap         = textureLoader.load(texturePaths.transmission);
-            transmissionMap.flipY   = false;
+        
+        const manager = new THREE.LoadingManager(() => {updateMaterial();});
+        const textureLoader = new THREE.TextureLoader(manager);
+        
+        
+    /* MATERIAL */ 
+        function buildMaterial(texturePaths) {
+            const loader = new THREE.TextureLoader();
+        
+            const diffuseMap      = loader.load(texturePaths.diffuse);
+            const roughnessMap    = loader.load(texturePaths.roughness);
+            const normalMap       = loader.load(texturePaths.normal);
+            const transmissionMap = loader.load(texturePaths.transmission);
+        
+            diffuseMap.flipY      = false;
+            roughnessMap.flipY    = false;
+            normalMap.flipY       = false;
+            transmissionMap.flipY = false;
+        
+            const mat = new THREE.MeshStandardMaterial({
+                map: diffuseMap,
+                roughnessMap: roughnessMap,
+                normalMap: normalMap
+            });
+        
+            mat.needsUpdate = true;
+            return mat;
+        }
 
-        let loadedTextures = {
-            diffuse: diffuseMap,
-            roughness: roughnessMap,
-            normal: normalMap,
-            transmission: transmissionMap
-        };
+        let material = buildMaterial(texturePaths);
 
     /* LIGHTS */
         let light       = lights;
@@ -147,6 +160,8 @@
                 building            = buildings[buildingIndex];
                 model               = models[buildingIndex][buildingModelIndex];
                 texturePaths        = textures[buildingIndex];
+                material            = buildMaterial(texturePaths);
+                
                 console.log (
                 `Updated references to:
                 building ${building}
@@ -155,7 +170,7 @@
 
     /* COMMITS */
         console.log(`Changed indexes ${buildingIndex+1} / ${buildings.length}`);
-        loaders.loadBuilding(scene, light, building, loadedTextures);
+        loaders.loadBuilding(scene, light, building, material);
         updateReferences();
 
     /* RENDERER */
@@ -171,31 +186,31 @@
 
     /* ACTIONS */
         dom.nextBtn.addEventListener    
-            ('click', async ()=>{
+            ('click', ()=>{
                 nextBuildingIndex();
                 updateReferences();
-                loaders.loadBuilding(scene, light, building, loadedTextures);
+                loaders.loadBuilding(scene, light, building, material);
             });
 
         dom.prevBtn.addEventListener    
             ('click', ()=>{
                 prevBuildingIndex();
                 updateReferences();
-                loaders.loadBuilding(scene, light, building, loadedTextures);
+                loaders.loadBuilding(scene, light, building, material);
             });
 
         dom.upBtn.addEventListener      
             ('click', ()=>{
                 nextModelIndex();
                 updateReferences();
-                loaders.loadModel(scene, light, model, loadedTextures);
+                loaders.loadModel(scene, light, model, material);
             });
 
         dom.downBtn.addEventListener    
             ('click', ()=>{
                 prevModelIndex();
                 updateReferences();
-                loaders.loadModel(scene, light, model, loadedTextures);
+                loaders.loadModel(scene, light, model, material);
             });
             
         dom.abilitiesBtn.forEach        ((btn) => {btn.addEventListener

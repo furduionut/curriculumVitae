@@ -13,9 +13,10 @@ import { domain as dom } from "./domain.js";
 
     let currentBuilding
     let currentModel
-    
+ 
 
-    const loadingBuilding       = (scene, light, building, textures) => { 
+
+    const loadingBuilding       = (scene, light, building, material) => { 
         gltfLoader.load( building, (gltf) => 
             {
             if (currentModel || currentBuilding) {
@@ -26,12 +27,7 @@ import { domain as dom } from "./domain.js";
             console.log(`Changed building to ${building}`);
             
             currentBuilding.traverse((child) => {
-                if (child.isMesh) {child.material = 
-                    new THREE.MeshStandardMaterial({
-                        map: textures.diffuse,
-                        roughnessMap: textures.roughness,
-                        normalMap: textures.normal
-                    });}
+                if (child.isMesh) {child.material = material;}
             console.log(`Changed material to ${child.material}`)
             });
             
@@ -40,7 +36,7 @@ import { domain as dom } from "./domain.js";
             })
         };
 
-    const loadingModel          = (scene, light, model, textures) => { 
+    const loadingModel          = (scene, light, model, material) => { 
         gltfLoader.load( model, (gltf) => 
             {
             if (currentModel || currentBuilding) {
@@ -50,12 +46,7 @@ import { domain as dom } from "./domain.js";
             currentModel = gltf.scene;
             console.log(`Changed model to ${model}`);
             currentModel.traverse((child) => {  
-                if (child.isMesh) {child.material = 
-                    new THREE.MeshStandardMaterial({
-                        map: textures.diffuse,
-                        roughnessMap: textures.roughness,
-                        normalMap: textures.normal
-                    });}
+                if (child.isMesh) {child.material = material;}
             console.log(`Changed material to ${child.material}`)
             }); 
             
