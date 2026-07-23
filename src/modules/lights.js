@@ -1,6 +1,5 @@
 /* IMPORTS */
 import * as THREE from "three";
-import { scenes } from "./scene";
 
 /* DOM ELEMETS */
 
@@ -8,11 +7,13 @@ import { scenes } from "./scene";
 
 const LightColor = 0xffffff;
 const LightIntensity = 7.5;
+const LightIntensity02 = 10;
+
 
 /* LIGHTS INITIATION */
 
 const lights = {
-    ambientLight  : new THREE.AmbientLight(LightColor, LightIntensity),
+    ambientLight  : new THREE.AmbientLight(LightColor, LightIntensity02),
     keyLight      : new THREE.DirectionalLight(LightColor, LightIntensity),
     fillLight     : new THREE.DirectionalLight(LightColor, LightIntensity),
     backLight     : new THREE.DirectionalLight(LightColor, LightIntensity)

@@ -76,11 +76,10 @@ const projects =
 
                     {
                     arc:{
-                        main:   './public/assets/meshes/casaStolnicu/casaStolnicu_baked/casaBacau_outterShell.glb',
+                        main:   './public/assets/meshes/casaStolnicu/casaStolnicu_baked/casaStolnicu_groundFloor.glb',
                         meshes: 
                             [
                                 './public/assets/meshes/casaStolnicu/casaStolnicu_baked/casaStolnicu_outterShell.glb',
-                                './public/assets/meshes/casaStolnicu/casaStolnicu_baked/casaStolnicu_baseFloor.glb',
                                 './public/assets/meshes/casaStolnicu/casaStolnicu_baked/casaStolnicu_groundFloor.glb', 
                                 './public/assets/meshes/casaStolnicu/casaStolnicu_baked/casaStolnicu_firstFloor.glb'
                             ],

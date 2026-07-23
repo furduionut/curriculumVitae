@@ -351,6 +351,9 @@ body {
     align-items: center;
     /* content */
     overflow: hidden;
+    /* filter */
+    background: rgba(173, 182, 211, 0.35);
+    mix-blend-mode: multiply;
 }
 .controls {
     /* box */

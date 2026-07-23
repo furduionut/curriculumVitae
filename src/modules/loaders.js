@@ -6,7 +6,6 @@ import { BIM, DWG, TXT, OBJ, IMG, SWG, CGI, ART, THC, MAN, CLB, COM, DEC } from 
 import { styles } from "./styles.js";
 import { domain as dom } from "./domain.js";
 
-    const textureLoader = new THREE.TextureLoader();
     const gltfLoader = new GLTFLoader();
     const dracoLoader = new DRACOLoader();
     dracoLoader.setDecoderPath('./src/utils/draco/');
@@ -14,28 +13,54 @@ import { domain as dom } from "./domain.js";
 
     let currentBuilding
     let currentModel
+    
 
-    const loadingBuilding       = (scene, lights, building, material) => { 
+    const loadingBuilding       = (scene, light, building, textures) => { 
         gltfLoader.load( building, (gltf) => 
             {
-            if (currentModel || currentBuilding) {scene.remove(currentModel, currentBuilding)};
+            if (currentModel || currentBuilding) {
+                scene.remove(currentModel, currentBuilding)
+                currentBuilding = null;
+                currentModel = null;};
             currentBuilding = gltf.scene;
-            currentBuilding.traverse(mesh => {if(mesh.isMesh) {mesh.material = material}});
-            scene.add(lights.ambientLight, lights.keyLight);
+            console.log(`Changed building to ${building}`);
+            
+            currentBuilding.traverse((child) => {
+                if (child.isMesh) {child.material = 
+                    new THREE.MeshStandardMaterial({
+                        map: textures.diffuse,
+                        roughnessMap: textures.roughness,
+                        normalMap: textures.normal
+                    });}
+            console.log(`Changed material to ${child.material}`)
+            });
+            
+            scene.add(light.ambientLight, light.keyLight);
             scene.add(currentBuilding);
-            console.log(currentBuilding);
             })
         };
 
-    const loadingModel          = (scene, lights, model, material) => { 
+    const loadingModel          = (scene, light, model, textures) => { 
         gltfLoader.load( model, (gltf) => 
             {
-            if (currentModel || currentBuilding) {scene.remove(currentModel, currentBuilding)};
+            if (currentModel || currentBuilding) {
+                scene.remove(currentModel, currentBuilding);
+                currentBuilding = null;
+                currentModel = null;};
             currentModel = gltf.scene;
-            currentModel.traverse(mesh => {if(mesh.isMesh){mesh.material = material}});
-            scene.add(lights.ambientLight, lights.keyLight);
+            console.log(`Changed model to ${model}`);
+            currentModel.traverse((child) => {  
+                if (child.isMesh) {child.material = 
+                    new THREE.MeshStandardMaterial({
+                        map: textures.diffuse,
+                        roughnessMap: textures.roughness,
+                        normalMap: textures.normal
+                    });}
+            console.log(`Changed material to ${child.material}`)
+            }); 
+            
+            scene.add(light.ambientLight, light.keyLight);
             scene.add(currentModel);
-            console.log(currentModel);
             })
         };
 
@@ -243,30 +268,6 @@ import { domain as dom } from "./domain.js";
         else {console.log('no skill to show')}
         }
 
-    const loadingMaterial   = (textures) => {
-            let texture      = textures;
-            let texturePath  = {
-                diffuse       : textureLoader.load(texture.diffuse),
-                roughness     : textureLoader.load(texture.roughness),
-                normal        : textureLoader.load(texture.normal),
-                transmission  : textureLoader.load(texture.transmission)};
-        
-                texturePath.diffuse.flipY = false;
-                texturePath.roughness.flipY = false;
-                texturePath.normal.flipY = false;
-                texturePath.transmission.flipY = false;
-        
-            let standardMaterial = new THREE.MeshStandardMaterial({
-                transparent:    true,
-                map:            texturePath.diffuse,        
-                roughness:      texturePath.roughness, 
-                normalMap:      texturePath.normal,
-                alphaMap:       texturePath.transmission,       
-            });
-
-            console.log(standardMaterial)
-            return standardMaterial
-    }
 
 
     const loaders = {
@@ -274,8 +275,7 @@ import { domain as dom } from "./domain.js";
         loadModel:          loadingModel,
         loadExperience:     loadingExperience,
         loadSkill:          loadingSkill,
-        showLevel:          showLevel,
-        loadMaterial:    loadingMaterial
+        loadLevel:          showLevel
     };
 
     export { loaders }

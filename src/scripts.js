@@ -88,18 +88,34 @@
     /* CAMERAS */
         let camera      = cameras.orhographic;
         
-    /* MESHES */
+    /* EXTRACTS */
         let buildings   = meshes.buildingsList;
         let models      = meshes.modelsList;
-
-        let building    = meshes.buildingsList[buildingIndex];
-        let model       = meshes.modelsList[buildingIndex][buildingModelIndex];
+        let textures    = meshes.texturesList;
+        
+    /* PATHS */
+        let building        = buildings[buildingIndex];
+        let model           = models[buildingIndex][buildingModelIndex];
+        let texturePaths    = textures[buildingIndex];
 
     /* TEXTURES */
-        let textures    = meshes.texturesList;
+        const textureLoader = new THREE.TextureLoader();
+        let material = new THREE.MeshStandardMaterial({ color: 0xFFFF00 });
+        let diffuseMap              = textureLoader.load(texturePaths.diffuse);
+            diffuseMap.flipY        = false;
+        let roughnessMap            = textureLoader.load(texturePaths.roughness);
+            roughnessMap.flipY      = false;
+        let normalMap               = textureLoader.load(texturePaths.normal);
+            normalMap.flipY         = false;
+        let transmissionMap         = textureLoader.load(texturePaths.transmission);
+            transmissionMap.flipY   = false;
 
-    /* MATERIALS */
-        let material    = loaders.loadMaterial(textures[0]);
+        let loadedTextures = {
+            diffuse: diffuseMap,
+            roughness: roughnessMap,
+            normal: normalMap,
+            transmission: transmissionMap
+        };
 
     /* LIGHTS */
         let light       = lights;
@@ -108,31 +124,39 @@
         const nextBuildingIndex = () => {
             if      (buildingIndex < buildings.length - 1) {buildingIndex++;} 
             else    {buildingIndex = 0;}
-            console.log(buildingIndex)};
+            console.log(`Changed indexes ${buildingIndex+1} / ${buildings.length}`);};
             
         const prevBuildingIndex = () => {
             if      (buildingIndex > 0) {buildingIndex--;} 
             else    {buildingIndex = buildings.length - 1;}
-            console.log(buildingIndex)};
+            console.log(`Changed indexes ${buildingIndex+1} / ${buildings.length}`)};
         
         const prevModelIndex = () => {
             if (buildingModelIndex > 0) {buildingModelIndex--;} 
             else {buildingModelIndex = models.length - 1;}
-            console.log(buildingModelIndex)};
+            console.log(`Changed indexes are: 
+                model ${buildingModelIndex} / ${models.length} of building ${buildingIndex+1}`)};
             
         const nextModelIndex = () => {
             if (buildingModelIndex < models.length - 1) {buildingModelIndex++;} 
             else {buildingModelIndex = 0;}
-            console.log(buildingModelIndex);};
+            console.log(`Changed indexes are: 
+                model ${buildingModelIndex} / ${models.length} of building ${buildingIndex+1}`);};
 
-            // setInterval(()=>{console.log(`this is ${buildingIndex}`)}, 2000);
+        function updateReferences() {
+                building            = buildings[buildingIndex];
+                model               = models[buildingIndex][buildingModelIndex];
+                texturePaths        = textures[buildingIndex];
+                console.log (
+                `Updated references to:
+                building ${building}
+                model ${model} 
+                textures: ${Object.values(texturePaths).join('\n')}`);}
 
     /* COMMITS */
-        loaders.loadBuilding(
-            scene, 
-            light, 
-            building, 
-            material)
+        console.log(`Changed indexes ${buildingIndex+1} / ${buildings.length}`);
+        loaders.loadBuilding(scene, light, building, loadedTextures);
+        updateReferences();
 
     /* RENDERER */
         const renderer = renders(
@@ -147,47 +171,31 @@
 
     /* ACTIONS */
         dom.nextBtn.addEventListener    
-            ('click', ()=>{
+            ('click', async ()=>{
                 nextBuildingIndex();
-                loaders.loadMaterial(textures);
-                loaders.loadBuilding(
-                    scene, 
-                    light, 
-                    building,
-                    material);
+                updateReferences();
+                loaders.loadBuilding(scene, light, building, loadedTextures);
             });
 
         dom.prevBtn.addEventListener    
             ('click', ()=>{
                 prevBuildingIndex();
-                loaders.loadMaterial(textures);
-                loaders.loadBuilding(
-                    scene, 
-                    light, 
-                    building, 
-                    material);
+                updateReferences();
+                loaders.loadBuilding(scene, light, building, loadedTextures);
             });
 
         dom.upBtn.addEventListener      
             ('click', ()=>{
                 nextModelIndex();
-                loaders.loadMaterial(textures);
-                loaders.loadModel(
-                    scene, 
-                    light, 
-                    model,
-                    material);
+                updateReferences();
+                loaders.loadModel(scene, light, model, loadedTextures);
             });
 
         dom.downBtn.addEventListener    
             ('click', ()=>{
                 prevModelIndex();
-                loaders.loadMaterial(textures);
-                loaders.loadModel(
-                    scene, 
-                    light, 
-                    model, 
-                    material);
+                updateReferences();
+                loaders.loadModel(scene, light, model, loadedTextures);
             });
             
         dom.abilitiesBtn.forEach        ((btn) => {btn.addEventListener
@@ -199,5 +207,4 @@
             control.update();
             renderer.render(scene, camera);
         }
-
         animate()
