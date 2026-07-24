@@ -8,6 +8,14 @@
     import { PLP, ORG, SOFT } from "./modules/creditsInfomations.js";
     import { BIM, DWG, TXT, OBJ, IMG, SWG, CGI, ART, THC, MAN, CLB, COM, DEC } from "./modules/abilitiesContent.js";
     import { DSS, DSIGN, GRS, POINT, ARCHIZ, REZVINCI } from "./modules/experiencesContent.js";
+    import { ModelAnimationController } from "./modules/modelAnimation.js";   
+
+    import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+    import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
+    import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
+    import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
+    import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
+
 
     // DOM
     const abilitiesBtn = document.querySelectorAll('#abilityBtn');
@@ -177,12 +185,9 @@
     const projects = [ 
         new Project(
             'testRun',
-            '', 
-            './public/assets/meshes/casaTest/casaBacau_OUTTER-SHELL.glb',
-            ['./public/assets/meshes/casaTest/casaBacau_OUTTER-SHELL.glb',
-            './public/assets/meshes/casaTest/casaBacau_2ND-FLOOR.glb',
-            './public/assets/meshes/casaTest/casaBacau_1ST-FLOOR.glb',
-            './public/assets/meshes/casaTest/casaBacau_BASEMENT.glb']
+            'Logo', 
+            './public/assets/meshes/casaTest/Logo.glb',
+            ['./public/assets/meshes/casaTest/Logo.glb']
         ),
         
         new Project(
@@ -242,11 +247,12 @@
         // CAMERA
             const cameraAspect = canvasWidth / canvasHeight;
             const cameraFar = 6000;
-            const cameraNear = 0.01;
-            const cameraTop = 20;
-            const cameraBottom = -20;
-            const cameraRight = 20;
-            const cameraLeft = -20;
+            const cameraNear = 0.001;
+            const cameraTop = 30;
+            const cameraBottom = -30;
+            const cameraRight = 30;
+            const cameraLeft = -30;
+            
 
         // RENDERER
             const rendererWidth     = canvasWidth;
@@ -264,9 +270,9 @@
     
     // LIGHTS
         // CREATE
-        const ambientLight = new THREE.AmbientLight(0xffffff, 7.5);
-        const directionalLight01 = new THREE.DirectionalLight(0xffffff, 1); // Directional light 01
-        const directionalLight02 = new THREE.DirectionalLight(0xffffff, 1); // Directional light 02
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        const directionalLight01 = new THREE.DirectionalLight(0xffffff, 0.2); // Directional light 01
+        const directionalLight02 = new THREE.DirectionalLight(0xffffff, 0.1); // Directional light 02
         scene.add(ambientLight, directionalLight01, directionalLight02);
     
         // POSITION
@@ -285,7 +291,7 @@
         );
         
         // SETUP
-        camera.position.set(25, 5, 15);
+        camera.position.set(13, 5, 13);
 
     // FUNCTIONS
         // CHANGE BUILDING
@@ -380,6 +386,9 @@
         alphaMapTexture.colorSpace = THREE.NoColorSpace;
         alphaMapTexture.flipY = false;
 
+
+const animationController = new ModelAnimationController();
+
     // MODELS
         // LOADER
         const gltfLoader = new GLTFLoader();
@@ -388,6 +397,117 @@
         // SETUP
         dracoLoader.setDecoderPath('./src/utils/draco/');
         gltfLoader.setDRACOLoader(dracoLoader);
+
+        // MATERIALS TEXTURE FOR LOGO
+        const applyLogoMaterials = (model) => {
+            const purple = new THREE.Color(0xb57cff);
+            const glassPurple = new THREE.Color(0xc9b8ff);
+
+            model.traverse((child) => {
+                if (!child.isMesh) return;
+
+                const name = child.name.toLowerCase();
+
+                const isArchSegment =
+                    name.startsWith("archmov");
+
+                const isItizerSegment =
+                    name.startsWith("itizermov");
+
+                if (isArchSegment || isItizerSegment) {
+                    child.material =
+                        new THREE.MeshBasicMaterial({
+                            color: glassPurple.clone(),
+
+                            color: 0x8e93f8,
+                            transparent: true,
+                            opacity: 1,
+                            depthWrite: false,
+                            depthTest: true,
+                            fog: false
+                        });
+                    child.castShadow = false;
+                    child.receiveShadow = false;
+                    child.renderOrder = 3;
+                    child.material.needsUpdate = true;
+
+                    
+                    console.log(
+                        "Prepared independent segment:",
+                        child.name,
+                        child.material.id
+                    );
+
+                    return;
+                }
+
+                if (name === "bec") {
+                    const brightPurple = purple
+                        .clone()
+                        .multiplyScalar(6);
+
+                    child.material =
+                        new THREE.MeshBasicMaterial({
+                            color: brightPurple,
+
+                            transparent: true,
+                            blending:
+                                THREE.AdditiveBlending,
+
+                            depthWrite: false,
+                            depthTest: true,
+
+                            toneMapped: false,
+                            side: THREE.DoubleSide
+                        });
+
+                    child.renderOrder = 6;
+                    child.frustumCulled = false;
+                    child.material.needsUpdate = true;
+
+                    return;
+                }
+
+                if (name === "traseu") {
+                    child.material =
+                        new THREE.MeshPhysicalMaterial({
+                            color: 0xffffff,
+
+                            transparent: true,
+                            opacity: 0.45,
+                            transmission: 0.85,
+
+                            roughness: 0.08,
+                            metalness: 0,
+
+                            thickness: 0.35,
+                            ior: 1.45,
+
+                            attenuationColor:
+                                new THREE.Color(0xffffff),
+
+                            attenuationDistance: 2,
+
+                            clearcoat: 1,
+                            clearcoatRoughness: 0.03,
+
+                            envMapIntensity: 1.5,
+
+                            side: THREE.DoubleSide,
+                            depthWrite: false,
+                            depthTest: true
+                        });
+
+                    child.renderOrder = 1;
+                    child.material.needsUpdate = true;
+                }
+            });
+        };
+
+
+
+
+
 
         // LOADING
             // CURENT BUILDING
@@ -409,6 +529,14 @@
                     currentBuilding = gltf.scene;
                     scene.add(currentBuilding);
         
+                    currentBuilding.traverse((child) => {
+                        if (child.isMesh) {
+                            console.log("Building mesh:", child.name);
+                        }
+                    });
+
+
+
                     // CHECK TEXTURES
                     scene.traverse((currentBuilding)=>{
                         if(currentBuilding.material?.name == '') 
@@ -429,6 +557,26 @@
                             })
                             }
                             });
+                    if (buildingIndex === 0) {
+                        applyLogoMaterials(currentBuilding);
+
+                        console.log("Animation count:", gltf.animations.length);
+
+                        gltf.animations.forEach((clip) => {
+                            console.log("Animation clip:", clip.name);
+
+                            clip.tracks.forEach((track) => {
+                                console.log("Animation track:", track.name);
+                            });
+                        });
+
+                        animationController.play(
+                            currentBuilding,
+                            gltf.animations,
+                            0
+                        );
+                    }
+
 
                     // STORE IN LOCALSTORAGE
                             // CONVERT FILE GLTF -> JSON (const json = JSON.stringfy(mesh.toJSON))
@@ -445,7 +593,11 @@
 
             // CURENT MODEL
             let currentModel
+
             const loadingModels = () => {
+
+              animationController.stop();
+
                 gltfLoader.load(models[buildingIndex][buildingModelIndex], (gltf) => {
                     // REMOVE CURENT BUILDING
                     scene.remove(currentBuilding); 
@@ -460,25 +612,18 @@
                     // ADDING MODEL
                     currentModel = gltf.scene;
                     scene.add(currentModel);
+                    
+                    //animationController.play(
+                        //currentModel,
+                        //gltf.animations,
+                        //0
+                    //);
 
-                    // CHECK TEXTURES
-                    scene.traverse((currentBuilding)=>{
-                        if(currentBuilding.material?.name == '') 
-                            {
-                            currentBuilding.material = new THREE.MeshStandardMaterial({
-                                map: diffuseTexture,
-                                roughnessMap: roughnessTexture,
-                                normalMap: normalMapTexture,
-                                transparent: true,
-                                alphaMap: alphaMapTexture});
+                    applyLogoMaterials(currentModel);
 
-                            scene.traverse(child => {
-                                if (child.isMesh && child.name.includes('section')){child.material = new THREE.MeshBasicMaterial({
-                                    color: backgroundColor2
-                            })}
-                            })
-                            }
-                            });
+// HERE WAS MATERIAL IN GENERAL //
+
+
 
                     // STORE IN LOCALSTORAGE
                             // CONVERT FILE GLTF -> JSON (const json = JSON.stringfy(mesh.toJSON))
@@ -511,34 +656,212 @@
         renderer.setSize(rendererWidth, rendererHeight);
         canvas.appendChild(renderer.domElement);
 
+        
+        const hdriUrl =
+            `${import.meta.env.BASE_URL}assets/images/hdri.hdr`;
+
+        const hdrLoader = new RGBELoader();
+
+        hdrLoader.load(
+            hdriUrl,
+
+            (hdrTexture) => {
+                hdrTexture.mapping = THREE.EquirectangularReflectionMapping;
+
+                scene.environment = hdrTexture;
+
+                console.log("HDRI environment loaded:", hdriUrl);
+            },
+
+            undefined,
+
+            (error) => {
+                console.error("Could not load HDRI:", error);
+            }
+        );
+
+
+
+
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1;
+        const composer = new EffectComposer(renderer);
+        const renderPass = new RenderPass(scene, camera);
+        composer.addPass(renderPass);
+        
+        const bloomPass = new UnrealBloomPass(
+            new THREE.Vector2(rendererWidth, rendererHeight),
+            1.3,  // strength
+            0.55,  // radius
+            4   // threshold
+        );
+
+        composer.addPass(bloomPass);
+        const outputPass = new OutputPass();
+        composer.addPass(outputPass);
+
+
+        // Disable mouse wheel scrolling over the viewport
+        renderer.domElement.addEventListener(
+            "wheel",
+            (e) => {
+                e.preventDefault();
+            },
+            { passive: false }
+        );
+
     // CONTROL
         // CREATE
         const controls = new OrbitControls(camera, renderer.domElement);
 
         // SETUP
-        controls.target.set(-5,-10, -5);
+        controls.target.set(-5 ,-10, -5);
 
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
         controls.screenSpacePanning = false;
-        controls.enableZoom = true;
+        controls.enableZoom = false;
         controls.zoomToCursor = false;
         controls.enablePan = true;
 
-        // LIMITS
+        // LIMITS - - - Fix clipping plane
         controls.zoomSpeed = 1.2;
-        controls.minDistance = 10;  // Limit zoom to a certain minimum distance
-        controls.maxDistance = 10; // Limit zoom to a certain maximum distance
+        controls.minDistance = 30;  // Limit zoom to a certain minimum distance - here fix clipping plane
+        controls.maxDistance = 30; // Limit zoom to a certain maximum distance - here fix clipping plane
         controls.maxPolarAngle = Math.PI / 3; // Prevent vertical rotation (limit pitch to 90 degrees)
         controls.minPolarAngle = Math.PI / 3; // Lock vertical axis at 90 degrees (horizontal only)
 
+        // SAVE INITIAL CAMERA VIEW
+        const initialCameraPosition = camera.position.clone();
+        const initialControlsTarget = controls.target.clone();
+        const initialCameraZoom = camera.zoom;
+
+        let isReturningCamera = false;
+
+        // RETURN TO INITIAL CAMERA POSITION WITH A NUDGE
+        const returnCameraToInitialView = () => {
+
+            if (isReturningCamera) return;
+
+            isReturningCamera = true;
+            controls.enabled = false;
+
+            const startPosition = camera.position.clone();
+            const startTarget = controls.target.clone();
+            const startZoom = camera.zoom;
+
+            const duration = 1000;
+            const startTime = performance.now();
+
+            // Cute overshoot / nudge easing
+            const easeOutBack = (t) => {
+
+                const overshoot = 1.4;
+                const value = t - 1;
+
+                return (
+                    1 +
+                    (overshoot + 1) * value * value * value +
+                    overshoot * value * value
+                );
+            };
+
+            const animateReturn = (currentTime) => {
+
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const easedProgress = easeOutBack(progress);
+
+                camera.position.lerpVectors(
+                    startPosition,
+                    initialCameraPosition,
+                    easedProgress
+                );
+
+                controls.target.lerpVectors(
+                    startTarget,
+                    initialControlsTarget,
+                    easedProgress
+                );
+
+                camera.zoom = THREE.MathUtils.lerp(
+                    startZoom,
+                    initialCameraZoom,
+                    easedProgress
+                );
+
+                camera.updateProjectionMatrix();
+                controls.update();
+
+                if (progress < 1) {
+
+                    requestAnimationFrame(animateReturn);
+
+                } else {
+
+                    // Ensure exact final values
+                    camera.position.copy(initialCameraPosition);
+                    controls.target.copy(initialControlsTarget);
+                    camera.zoom = initialCameraZoom;
+
+                    camera.updateProjectionMatrix();
+                    controls.update();
+
+                    controls.enabled = true;
+                    isReturningCamera = false;
+                }
+            };
+
+            requestAnimationFrame(animateReturn);
+        };
+
+        controls.addEventListener("end", () => {
+            returnCameraToInitialView();
+        });
+
+
+
     // RENDERING
             function rendering() {
+
                 requestAnimationFrame(rendering);
+
+                animationController.update();
+
                 controls.update();
-                renderer.render(scene, camera);
+                composer.render();
             }
+        
             rendering();
+
+
+                window.addEventListener("keydown", (e) => {
+
+                    if (e.key === "p") {
+
+                        console.log("camera.position.set(",
+                            camera.position.x,
+                            ",",
+                            camera.position.y,
+                            ",",
+                            camera.position.z,
+                            ");"
+                        );
+
+                        console.log("controls.target.set(",
+                            controls.target.x,
+                            ",",
+                            controls.target.y,
+                            ",",
+                            controls.target.z,
+                            ");"
+                        );
+
+                        console.log("camera.zoom =", camera.zoom);
+                    }
+
+                });
+
 
                 // CONTROLS
  

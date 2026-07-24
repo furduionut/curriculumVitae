@@ -71,9 +71,9 @@
 
     --border-color: rgba(138, 153, 161, 1);
     --background-color: #b6cad4;
-    --first-background-color: rgba(173, 182, 211, 1);
-    --second-background-color: rgba(138, 153, 161, 1);
-    --third-background-color: rgba(242, 244, 239, 1);
+    --first-background-color: rgb(220, 220, 220);
+    --second-background-color: rgb(220, 220, 220);
+    --third-background-color: rgb(220, 220, 220);
     --shadow-color: rgba(148, 156, 191, 1);
 
     /* display */
