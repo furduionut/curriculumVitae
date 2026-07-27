@@ -1,0 +1,1189 @@
+/* Imports */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+/* Parameteres */
+:root
+{  
+    /* box */
+    /* size */
+    /* position */
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    /* content */
+
+    /* box */
+    --general-padding: 1em;
+
+    /* sizes */
+    --bodyHeight: 300vh; 
+
+    --personalsVW: 12.5%;
+    --projectsVW: 30%;
+    --experiencesVW: 30%;
+    --abilitiesVW: auto;
+    --creditsVW: 3.5%;
+
+    --general-fontSize: 2em;
+    --title-fontSize: 2.5em;
+    --subtitle-fontSize: 2em;
+    --subject-fontSize: 1em;
+    --description-fontSize: 1em;
+
+    /* position */
+    --background-order: 0;
+    --content-order: 1;
+    --banner-order: 2;
+    --buttons-order: 3;
+    --ends-order: 4;
+
+    /* distance */
+    --general-gap: 1em;
+
+    /* geometry */
+    --general-border-radius: 1em;
+
+    /* style */
+    --general-font-familiy: arial;
+    --title-font-family: arial;
+    --subtitle-font-familiy: arial;
+    --subject-font-familiy: arial;
+    --description-font-familiy: arial;
+    --border-style: .1em solid;
+    --shadow-style: 0em 0em 3em;
+    --outline-style: .2em solid;
+
+    --general-fontStyle: bold;
+    --title-fontStyle: bold;
+    --subtitle-fontStyle: bold;
+    --subject-fontStyle: thin;
+    --description-fontStyle: thin;
+
+    /* colors */
+    --general-color: #465b7b;
+    --title-color: #1c3166;
+    --subtitle-color: #1c3166;
+    --subject-color: #1c3166;
+    --description-color: #1c3166;
+    --font-color: rgba(18, 24, 77, 1);
+    --outline-color: rgba(18, 24, 77, 1);
+
+    --border-color: rgba(138, 153, 161, 1);
+    --background-color: #b6cad4;
+    --first-background-color: rgb(220, 220, 220);
+    --second-background-color: rgb(220, 220, 220);
+    --third-background-color: rgb(220, 220, 220);
+    --shadow-color: rgba(148, 156, 191, 1);
+
+    /* display */
+
+    /* content */
+    --profile-image: url("./public/assets/images/profilePicture.jpg");
+}
+/* General styles */
+* {
+
+    box-sizing: border-box;
+    margin: 0;
+    border: 0;
+    padding: 0;
+
+    /* border: 1px solid red; */
+}
+
+a {
+    text-decoration: none;
+    color: var(--title-color);
+    font-weight: bold;
+}
+
+span {
+    color: var(--title-color);
+}
+
+h1 {
+    color: var(--title-color);
+    font-family: var(--title-font-family);
+}
+
+h2 {
+    color: var(--subtitle-color);
+    font-family: var(--subtitle-font-family);
+}
+
+h3 {
+    color: var(--subject-color);
+    font-family: var(--subject-font-family);
+}
+
+p {
+    color: var(--description-color);
+    font-family: var(--description-font-family);
+}
+
+li {
+    color: var(--general-color);
+}
+
+body {
+    /* box */
+    /* size */
+    height: auto;
+    /* position */
+    /* distance */
+    /* style */
+    /* color */
+    background-color: var(--first-background-color);
+    /* display */
+    display: flex;
+    flex-flow: column wrap;
+    /* content */
+}
+
+/* ----ABOUT ME-----*/
+.aboutMe {
+    /* box */
+    padding: var(--general-padding);
+    /* size */
+    width: 100%;
+    height: 10em;
+    /* position */
+    position: fixed;
+    z-index: var(--ends-order);
+    /* distance */
+    gap: var(--general-gap);
+    /* geometry */
+    /* style */
+    box-shadow: var(--shadow-style) var(--shadow-color);
+    /* color */
+    background-color:var(--first-background-color);
+    /* display */
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    /* content */
+}
+.photo{
+    /* box */
+    /* size */
+    width: 11.75em;
+    height: 11.75em;
+    /* position */
+    position: relative;
+    /* distance */
+    /* geometry */
+    /* style */
+    border-radius: var(--general-border-radius);
+    /* color */
+    /* display */
+    flex-shrink: 0;
+    /* content */
+    background-image: var(--profile-image);
+    background-size: 15em;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.name {
+    /* box */
+    /* size */
+    /* position */
+    /* distance */
+    gap: .5em;
+    /* geometry */
+    /* style */
+    font-size: var(--subtitle-fontSize);
+    font-style: var(--subtitle-fontStyle);
+    /* color */
+    /* display */
+    display: flex;
+    /* content */
+}
+.personal {
+    /* box */
+    /* size */
+    width: 100%;
+    /* position */
+    /* distance */
+    gap: var(--general-gap);
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    display: flex;
+    flex-flow: column wrap;
+    /* content */
+}
+.informations {
+    /* box */
+    /* size */
+    width: 100%;
+    height: auto;
+    /* position */
+    /* distance */
+    /* geometry */
+    /* style */
+    font-size: var(--description-fontSize);
+    /* color */
+    /* display */
+    display:flex;
+    flex-flow: column wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    /* content */
+}
+.contact {
+    /* box */
+    /* size */
+    /* position */
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
+    /* content */
+}
+.navBar {
+    /* box */
+    /* size */
+    width: 100%;
+    height: auto;
+    /* position */
+    /* distance */
+    gap: var(--general-gap);
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    display: flex;
+    flex-flow: row nowrap;
+    flex-grow: 1;
+    flex-shrink: 1;
+    align-self: flex-end;
+    /* content */
+}
+.navItem {
+    /* box */
+    /* size */
+    height: 5em;
+    width: 5em;
+    max-width: auto;
+    /* position */
+    /* distance */
+    /* geometry */
+    border-radius: var(--general-border-radius);
+    aspect-ratio: 1/1;
+    /* style */
+    box-shadow: var(--shadow-style) var(--shadow-color);
+    /* color */
+    background-color:var(--first-background-color);
+    /* display */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    flex-shrink: 1;
+    /* content */
+}
+
+/* ----PROJECTS-----*/
+.projects {
+    /* box */
+    /* size */
+    width: 100%;
+    height: var(--projectsVW);
+    /* position */
+    z-index: var(--banner-order);
+    /* distance */
+    gap: var(--general-gap);
+    /* geometry */
+    /* style */
+    /* color */
+    background-color: var(--first-background-color);
+    /* display */
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-shrink: 1;
+    /* content */
+}
+.viewport {
+    /* box */
+    padding: var(--general-padding);
+    padding-top: 14em;
+    /* size */
+    width: 100%;
+    height: auto;
+    /* position */
+    /* distance */
+    gap: var(--general-gap);
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-shrink: 1;
+    /* content */
+}
+.canvas {
+    /* box */
+    /* size */
+    width: 100%;
+    height: 30em;
+    /* position */
+    /* distance */
+    /* geometry */
+    border-radius: var(--general-border-radius);
+    /* style */
+    /* color */
+    border: var(--border-style) var(--border-color);
+    /* display */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* content */
+    overflow: hidden;
+}
+.controls {
+    /* box */
+    padding-top: 1em;
+    /* size */
+    width: 100%;
+    height: 12em;
+    /* position */
+    /* distance */
+    gap: var(--general-gap);
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    display: flex;
+    align-items: flex-end;
+    /* content */
+}
+.stageNav {
+    /* box */
+    /* size */
+    width: 100%;
+    height: 10em + var(--general-gap);
+    /* position */
+    /* distance */
+    gap: var(--general-gap);
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    display: flex;
+    flex-flow: column wrap;
+    /* content */
+}
+.stageBtn {
+    /* box */
+    /* size */
+    width: 100%;
+    height: 5em;
+    /* position */
+    /* distance */
+    gap: var(--general-gap);
+    /* geometry */
+    border-radius: var(--general-border-radius);
+    /* style */
+    box-shadow: var(--shadow-style) var(--shadow-color);
+    /* color */
+    background-color: var(--third-background-color);
+    /* display */
+    /* content */
+}
+.navBtn {
+    /* box */
+    /* size */
+    width: 10em;
+    height: 100%;
+    /* position */
+    /* distance */
+    /* geometry */
+    border-radius: var(--general-border-radius);
+    /* style */
+    box-shadow: var(--shadow-style) var(--shadow-color);
+    /* color */
+    background-color: var(--third-background-color);
+    /* display */
+    flex-shrink: 0;
+    /* content */
+}
+.description{
+    /* box */
+    padding: var(--general-padding);
+    /* size */
+    width: 100%;
+    height: auto;
+    /* position */
+    position: relative;
+    z-index: var(--banner-order);
+    /* distance */
+    gap: var(--general-gap);
+    /* geometry */
+    /* style */
+    box-shadow: var(--shadow-style) var(--shadow-color);
+    /* color */
+    background-color: var(--first-background-color);
+    /* display */
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: space-around;
+    align-items: center;
+    /* content */
+}
+
+/* ----EXPERIENCES-----*/
+.experiences{
+    /* box */
+    padding: var(--general-padding);
+    /* size */
+    width: 100%;
+    height: auto;
+    /* position */
+    z-index: var(--content-order);
+    /* distance */
+    gap: var(--general-gap);
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    display: flex;
+    flex-flow: column wrap;
+    /* content */
+    overflow: hidden;
+}
+.experiences > div:nth-child(even):not(:last-child){
+    /* box */
+    /* size */
+    height: auto;
+    width: 20em;
+    /* position */
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    align-self: flex-start;
+    /* content */
+}
+.experiences > div:nth-child(odd):not(:last-child){
+    /* box */
+    /* size */
+    height: auto;
+    width: 20em;
+    /* position */
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    align-self: flex-end;
+    /* content */
+}
+.expDescription {
+    /* box */
+    padding: var(--general-padding);
+    /* size */
+    /* position */
+    /* distance */
+    /* geometry */
+    /* style */
+    text-align: left;
+    text-justify: left;
+    /* color */
+    /* display */
+    display: none;
+    /* content */
+}
+.experiences > div > div:not(:last-child) {
+    display: flex;
+    flex-wrap: wrap;
+    background-color: var(--third-background-color);
+}
+.content {
+    /* box */
+    padding: var(--general-padding);    
+    /* size */
+    width: 100%;
+    height: auto;
+    /* position */
+    position: relative;
+    z-index: var(--banner-order);
+    /* distance */
+    /* geometry */
+    /* style */
+    box-shadow: var(--shadow-style) var(--shadow-color);
+    /* color */
+    border-radius: var(--general-border-radius);
+    /* display */
+    display: flex;
+    flex-flow: column wrap;
+    align-items: center;
+    justify-content: center;
+    text-align: flex-end;
+    overflow: hidden;
+    white-space: normal;
+    /* content */
+}
+.content:hover > .expDescription {
+    display: flex;
+    flex-flow: column wrap;
+}
+div[class^='geometry'] {
+    /* box */
+    /* size */
+    width: 50%;
+    height: 1.5em;
+    /* position */
+    position: relative;
+    z-index: var(--content-order);
+    /* distance */
+    /* geometry */
+    /* style */
+    box-shadow: var(--shadow-style) var(--shadow-color);
+    /* color */
+    background-color: var(--third-background-color);
+    /* display */
+    /* content */
+}
+.geometry-up {
+    /* box */
+    /* size */
+    position: relative;
+    left: 10%;
+    /* position */
+    /* distance */
+    /* geometry */
+    border-top-left-radius: var(--general-border-radius);
+    border-top-right-radius: var(--general-border-radius);
+    /* style */
+    /* color */
+    background-color: var(--third-background-color);
+    /* display */
+    /* content */
+}
+.geometry-down {
+    /* box */
+    /* size */
+    /* position */
+    position: relative;
+    left: 35%;
+    /* distance */
+    /* geometry */
+    border-bottom-left-radius: var(--general-border-radius);
+    border-bottom-right-radius: var(--general-border-radius);
+    /* style */
+    /* color */
+    background-color: var(--third-background-color);
+    /* display */
+    /* content */
+}
+.treeBind-left {
+    /* box */
+    /* size */
+    /* position */
+    position: relative;
+    bottom: 2em;
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    /* content */
+    
+}
+.branch-left {
+    /* box */
+    /* size */
+    width: 1em;
+    height: 5em;
+    /* position */
+    position: relative;
+    left: 12.5em;
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    background-color: var(--third-background-color);
+    /* display */
+    /* content */
+}
+.base-left {
+    /* box */
+    /* size */
+    height: 1em;
+    width: 50vw;
+    /* position */
+    position: relative;
+    right: 1vw;
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    background-color: var(--third-background-color);
+    /* display */
+    /* content */
+}
+.treeBind-right {
+    /* box */
+    /* size */
+    /* position */
+    position: relative;
+    bottom: 2em;
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    transform: scaleX(-1);
+    /* content */
+
+}
+.branch-right {
+    /* box */
+    /* size */
+    width: 1em;
+    height: 5em;
+    /* position */
+    position: relative;
+    left: 10em;
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    background-color: var(--third-background-color);
+    /* display */
+    transform: scaleX(-1);
+    /* content */
+}
+.base-right {
+    /* box */
+    /* size */
+    width: 49vw;
+    height: 1em;
+    /* position */
+    position: relative;
+    right: 1.5vw;
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    background-color: var(--third-background-color);
+    /* display */
+    justify-self: flex-start;
+    transform: scaleX(-1);
+    /* content */
+}
+.timeline {
+    /* box */
+    /* size */
+    height: auto;
+    width: auto;
+    /* position */
+    position: absolute;
+    left: 48.25vw;
+    z-index: 6;
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    display:flex;
+    /* content */
+}
+.mainPipe {
+    /* box */
+    /* size */
+    width: auto;
+    height: 135em;
+    /* position */
+    position: relative;
+    /* distance */
+    gap: var(--general-gap);
+    /* geometry */
+    /* style */
+    /* color */
+    background-color: var(--first-background-color);
+    /* display */
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    flex-shrink: 1;
+    /* content */
+}
+.lineBreak {
+    /* box */
+    /* size */
+    width: 2em;
+    height: 15em;
+    /* position */
+    /* distance */
+    /* geometry */
+    border-radius: var(--general-border-radius);
+    /* style */
+    /* color */
+    background-color: var(--third-background-color);
+    /* display */
+
+    /* content */
+}
+
+/* ----ABILITIES-----*/
+.abilities{
+    /* box */
+    padding-bottom: 5em;
+    /* size */
+    width: 100%;
+    height: auto;
+    /* position */
+    z-index: var(--banner-order);
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    background-color: var(--first-background-color);
+    /* display */
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: space-evenly;
+    align-items: center;
+    /* content */
+}
+.digitalAb {
+    /* box */
+    padding: var(--general-padding);
+    /* size */
+    width: 100%;
+    height: auto;
+    /* position */
+    /* distance */
+    gap: var(--general-gap);
+    /* geometry */
+    /* style */
+    box-shadow: var(--shadow-style) var(--shadow-color);
+    /* color */
+    background-color: var(--first-background-color);
+    /* display */
+    display: flex;
+    flex-direction: row-reverse;
+    flex-wrap: wrap-reverse;
+    justify-content: space-between;
+    align-items: center;
+    /* content */
+}
+.digitalAb > div:hover {
+    outline: var(--outline-style) var(--outline-color);
+}
+.hardAbilities{
+    /* box */
+    /* size */
+    width: 100%;
+    height: auto;
+    /* position */
+    z-index: var(--content-order);
+    /* distance */
+    gap: var(--general-gap);
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: space-between;
+    /* content */
+}
+.softAbilities{
+    /* box */
+    /* size */
+    width: 100%;
+    height: auto;
+    /* position */
+    z-index: var(--content-order);
+    /* distance */
+    gap: var(--general-gap);
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    display: flex;
+    flex-flow: column wrap;
+    /* content */
+}
+.digitalAb > div {   
+        /* box */
+        /* size */
+        width: 5em;
+        height: 5em;
+        /* position */
+        z-index: var(--buttons-order);
+        /* distance */
+        /* geometry */
+        border-radius: var(--general-border-radius);
+        /* style */
+        box-shadow: var(--shadow-style) var(--shadow-color);
+        /* color */
+        background-color: var(--third-background-color); 
+        /* display */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        /* content */
+}
+
+/* ----LEVELING-----*/
+.soft-leveling {
+    /* box */
+    padding: var(--general-padding);
+    /* size */
+    width: 100%;
+    /* position */
+    /* distance */
+    gap: var(--general-gap);
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    /* content */
+}
+.hard-leveling {
+    /* box */
+    padding: var(--general-padding);
+    /* size */
+    width: 100%;
+    /* position */
+    /* distance */
+    gap: var(--general-gap);
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    /* content */
+}
+.skill {
+    /* box */
+    /* size */
+    width: 100%;
+    height: 2.5em;
+    /* position */
+    /* distance */
+    gap: 1em;
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    display: flex;
+    /* content */
+}
+.symbol {
+    /* box */
+    /* size */
+    height: 2.5;
+    width: 2.5em;
+    /* position */
+    /* distance */
+    /* geometry */
+    border-radius: var(--general-border-radius);
+    aspect-ratio: 1/1;
+    /* style */
+    border: var(--border-style) var(--border-color);
+    /* color */
+    background-color: var(--third-background-color);
+    /* display */
+    /* content */
+}
+.bar {
+    /* box */
+    border: var(--border-style) var(--border-color);
+    /* size */
+    height: 100%;
+    width: 100%;
+    /* position */
+    /* distance */
+    /* geometry */
+    border-radius: var(--general-border-radius);
+    /* style */
+    /* color */
+    /* display */
+    /* content */
+}
+
+/* ----CREDITS-----*/
+.credits {
+    /* box */
+    padding: var(--general-padding);
+    /* size */
+    width: 100%;
+    height: auto;
+    /* position */
+    position: fixed;
+    bottom: 0;
+    z-index: var(--ends-order);
+    /* distance */
+    /* geometry */
+    /* style */
+    box-shadow: var(--shadow-style) var(--shadow-color);
+    /* color */
+    background-color:var(--first-background-color);
+    /* display */
+    /* content */
+}
+.thanks {
+    display: none;
+}
+.credits:active .thanks{
+    display:block;
+}
+
+/* Responsive Behaviour */
+@media (width <= 720px) {
+
+    /* ----ABOUT ME-----*/
+.aboutMe {
+    /* box */
+    /* size */
+    /* position */
+    position: sticky;
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    /* content */
+}
+.personal {
+    /* box */
+    /* size */
+    /* position */
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    justify-content: center;
+    align-items: center;
+    /* content */
+}
+.informations {
+    /* box */
+    /* size */
+    /* position */
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    justify-content: center;
+    align-items: center;
+    /* content */
+}
+.contact {
+    /* box */
+    /* size */
+    /* position */
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    justify-content: center;
+    align-items: center;
+    /* content */
+}
+.name {
+    /* box */
+    /* size */
+    /* position */
+    /* distance */ 
+    gap: 0.25em;
+    /* geometry */
+    /* style */
+    font-size: 1.5em;
+    /* color */
+    /* display */
+    flex-flow: column wrap;
+    align-items: center;
+    /* content */
+}
+.navBar {
+    /* box */
+    padding-top: 0;
+    /* size */
+    /* position */
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    flex-flow: row wrap;
+    /* content */
+}
+.navBar > div:first-child{
+    display: none;
+}
+.navBar > div:last-child{
+    display: none;
+}
+
+/* ----PROJECTS-----*/
+.projects {
+    /* box */
+    /* size */
+    width: 100%;
+    height: var(--projectsVW);
+    /* position */
+    z-index: var(--banner-order);
+    /* distance */
+    gap: var(--general-gap);
+    /* geometry */
+    /* style */
+    /* color */
+    background-color: var(--first-background-color);
+    /* display */
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-shrink: 1;
+    /* content */
+}
+.viewport {
+    /* box */
+    padding: var(--general-padding);
+    padding-top: 16.5em;
+    /* size */
+    width: 100%;
+    height: auto;
+    /* position */
+    /* distance */
+    gap: var(--general-gap);
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-shrink: 1;
+    /* content */
+}
+
+.controls{
+    /* box */
+    /* size */
+    max-width: 100%;
+    height: 7.5em;
+    /* position */
+    /* distance */
+    gap: var(--general-gap);
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    display: flex;
+    align-items: flex-end;
+    /* content */
+}
+.stageNav {
+    /* box */
+    /* size */
+    width: 100%;
+    height: 100%;
+    /* position */
+    /* distance */
+    gap: 0.25em;
+    /* geometry */
+    /* style */
+    /* color */
+
+    /* display */
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: space-between;
+    /* content */
+}
+.stageBtn {
+    /* box */
+    /* size */
+    height: 3em;
+    min-width: 6em;
+    /* position */
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    /* content */
+}
+.navBtn {
+    /* box */
+    /* size */
+    max-width: 6.5em;
+    /* position */
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    /* content */
+}
+
+/* ----EXPERIENCES-----*/
+.timeline {
+    /* box */
+    /* size */
+    /* position */
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    display:none;
+    /* content */
+}
+.treeBind-left {
+    /* box */
+    /* size */
+    /* position */
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    display:none;
+    /* content */   
+}
+.treeBind-right {
+    /* box */
+    /* size */
+    /* position */
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    display: none;
+    /* content */
+}
+/* ----ABILITIES-----*/
+.digitalAb {
+    justify-content: center;
+    gap: 2em;
+}
+}
