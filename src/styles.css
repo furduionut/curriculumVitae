@@ -92,6 +92,7 @@
     /* border: 1px solid red; */
 }
 
+
 a {
     text-decoration: none;
     color: var(--title-color);
@@ -142,6 +143,23 @@ body {
 }
 
 /* ----ABOUT ME-----*/
+.firmLogo {
+    /* box */
+    padding: var(--general-padding);
+    /* size */
+    /* position */
+    position: absolute;
+    right: 1em;
+    top: 0;
+    /* distance */
+    /* geometry */
+    width: 7.5em;
+    /* style */
+    /* color */
+    /* display */
+    /* content */
+}
+
 .aboutMe {
     /* box */
     padding: var(--general-padding);
@@ -344,7 +362,6 @@ body {
     border-radius: var(--general-border-radius);
     /* style */
     /* color */
-    border: var(--border-style) var(--border-color);
     /* display */
     display: flex;
     justify-content: center;
@@ -763,6 +780,19 @@ div[class^='geometry'] {
     align-items: center;
     /* content */
 }
+
+.navBtn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.stageBtn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .digitalAb {
     /* box */
     padding: var(--general-padding);
@@ -952,7 +982,24 @@ div[class^='geometry'] {
 /* Responsive Behaviour */
 @media (width <= 720px) {
 
-    /* ----ABOUT ME-----*/
+/* ----ABOUT ME-----*/
+.firmLogo {
+    /* box */
+    padding: var(--general-padding);
+    /* size */
+    /* position */
+    position: absolute;
+    right: 1em;
+    top: 1.5em;
+    /* distance */
+    /* geometry */
+    width: 7.5em;
+    /* style */
+    /* color */
+    /* display */
+    /* content */
+    }
+
 .aboutMe {
     /* box */
     /* size */

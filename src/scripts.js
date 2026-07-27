@@ -17,121 +17,57 @@
 
     import { domain }       from "./modules/domain.js";
     import { loaders }      from "./modules/loaders.js"
-    import { styles }       from "./modules/styles.js";
     import { scenes }       from "./modules/scene.js";
     import { meshes }       from "./modules/objects.js";
+    import { informations }       from "./modules/abouts.js";
     import { lights }       from "./modules/lights.js";
     import { cameras }      from "./modules/cameras.js";
     import { renders }      from "./modules/render.js";
     import { controls }     from "./modules/controls.js";
-    import { materials }     from "./modules/materials.js";
-
-    /* MODULES 
-        File level scope, nothing leaks globally.
-        Modules are loaded asynchronously.
-        Imports are hoisted and live bindings are created.
-
-        Global namespace pollution 
-        cluttering the global scope with identifier 
-        that any script can accidently overwrite.
-        Because of 
-            naming collisions, 
-            hard-to-debug, 
-            hidden dependencies, 
-            security risks, 
-            fragile architecture.
-
-        Circular depedencies
-        when two or more modules depend on each other in a loop, 
-        preventing a clean, linear loading order.
-
-        Improper export/import
-        any mismatch, misuse, or incorrect structure in 
-        how modules export values and how other modules import them. 
-            Use named exports for utilities;
-            Use default export when module has one purpose;
-            Use consistent file extensions/paths
-            Dont mix ESM with commonJs unless necesary;
-
-        Wrong module format (commonJS / ESM)
-            commonJS (const x = require('./utils.js')) [ no type=module attribute]
-            .cjs (commonJS file extension)
-            ESM (import {x} from './utils.js')
-            .mjs (module js file extension) OR .js type=module
-
-        Debbuging issues: 
-            module failing to load, 
-            exporting imcomplete,
-            undefined imports,
-            unpredictably behaviour,
-            global leakage
-    */
-
-    /* IDEAS 
-        Use a global variable for indexes
-        Divide into smaller, manageable modules and document relationships.
-        Extract shared logic into a third module (A → Shared ← B)
-        Let modules communicate without calling each other directly 
-            by using events/callbacks or by use dynamic import for delay 'await import('./B.js')
-    */
 
     /* ELEMENTS */
-        let dom       = domain;
+        let dom                 = domain;
 
     /* INDEXES */
-        var buildingIndex       = 0;
-        var buildingModelIndex  = 0;
+        let buildingIndex       = 0;
+        let buildingModelIndex  = 0;
 
     /* SCENES */
-        let scene       = scenes.mainScene;
+        let scene               = scenes.mainScene;
 
     /* CAMERAS */
-        let camera      = cameras.orhographic;
+        let camera              = cameras.orhographic;
         
     /* EXTRACTS */
-        let buildings   = meshes.buildingsList;
-        let models      = meshes.modelsList;
-        let textures    = meshes.texturesList;
-        
-    /* PATHS */
-        let building        = buildings[buildingIndex];
-        let model           = models[buildingIndex][buildingModelIndex];
-        let texturePaths    = textures[buildingIndex];
+        let buildings           = meshes.buildingsList;
+        let models              = meshes.modelsList;
+        let textures            = meshes.texturesList;
 
+    /* INFORMATIONS */
+        let names               = informations.names;
+        let abouts              = informations.abouts;
+        let types               = informations.types;
+        let styles              = informations.styles;
+
+        let name                = informations.names[buildingIndex];
+        let about               = informations.abouts[buildingIndex];
+        let type                = informations.types[buildingIndex];
+        let style               = informations.styles[buildingIndex];
+
+        console.log(names, abouts, types, styles);
+        
+    /* MESHES */
+        let building            = buildings[buildingIndex];
+        let model               = models[buildingIndex][buildingModelIndex];
+        
     /* TEXTURES */
-        
-        const manager = new THREE.LoadingManager(() => {updateMaterial();});
-        const textureLoader = new THREE.TextureLoader(manager);
-        
-        
-    /* MATERIAL */ 
-        function buildMaterial(texturePaths) {
-            const loader = new THREE.TextureLoader();
-        
-            const diffuseMap      = loader.load(texturePaths.diffuse);
-            const roughnessMap    = loader.load(texturePaths.roughness);
-            const normalMap       = loader.load(texturePaths.normal);
-            const transmissionMap = loader.load(texturePaths.transmission);
-        
-            diffuseMap.flipY      = false;
-            roughnessMap.flipY    = false;
-            normalMap.flipY       = false;
-            transmissionMap.flipY = false;
-        
-            const mat = new THREE.MeshStandardMaterial({
-                map: diffuseMap,
-                roughnessMap: roughnessMap,
-                normalMap: normalMap
-            });
-        
-            mat.needsUpdate = true;
-            return mat;
-        }
+        let texturePaths        = textures[buildingIndex];
 
-        let material = buildMaterial(texturePaths);
+    /* MATERIAL */ 
+        let material            = loaders.loadMaterial(texturePaths);
 
     /* LIGHTS */
-        let light       = lights;
+        let light               = lights;
 
     /* ACTIONS */
         const nextBuildingIndex = () => {
@@ -160,7 +96,13 @@
                 building            = buildings[buildingIndex];
                 model               = models[buildingIndex][buildingModelIndex];
                 texturePaths        = textures[buildingIndex];
-                material            = buildMaterial(texturePaths);
+                material            = loaders.loadMaterial(texturePaths);
+                building            = buildings[buildingIndex];
+                model               = models[buildingIndex][buildingModelIndex];
+                name                = informations.names[buildingIndex];
+                about               = informations.abouts[buildingIndex];
+                type                = informations.types[buildingIndex];
+                style               = informations.styles[buildingIndex];
                 
                 console.log (
                 `Updated references to:
@@ -170,8 +112,9 @@
 
     /* COMMITS */
         console.log(`Changed indexes ${buildingIndex+1} / ${buildings.length}`);
-        loaders.loadBuilding(scene, light, building, material);
         updateReferences();
+        // loaders.loadPage();
+        loaders.loadBuilding(scene, light, building, material);
 
     /* RENDERER */
         const renderer = renders(
@@ -185,11 +128,13 @@
             renderer.domElement);
 
     /* ACTIONS */
+        console.log(dom.abouts)
         dom.nextBtn.addEventListener    
             ('click', ()=>{
                 nextBuildingIndex();
                 updateReferences();
                 loaders.loadBuilding(scene, light, building, material);
+                loaders.loadInfo(name, about, type, style);
             });
 
         dom.prevBtn.addEventListener    
@@ -197,6 +142,7 @@
                 prevBuildingIndex();
                 updateReferences();
                 loaders.loadBuilding(scene, light, building, material);
+                loaders.loadInfo(name, about, type, style);
             });
 
         dom.upBtn.addEventListener      
@@ -204,6 +150,7 @@
                 nextModelIndex();
                 updateReferences();
                 loaders.loadModel(scene, light, model, material);
+                loaders.loadInfo(name, about, type, style);
             });
 
         dom.downBtn.addEventListener    
@@ -211,10 +158,11 @@
                 prevModelIndex();
                 updateReferences();
                 loaders.loadModel(scene, light, model, material);
+                loaders.loadInfo(name, about, type, style);
             });
             
         dom.abilitiesBtn.forEach        ((btn) => {btn.addEventListener
-            ('click', () => {loaders.showLevel(`${btn.className}`)} )});
+            ('click', () => {loaders.loadLevel(`${btn.className}`)} )});
     
     // RENDERING
         function animate() {

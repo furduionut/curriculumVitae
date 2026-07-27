@@ -7,7 +7,11 @@ const projects =
                     name: 'Bacau House',
                     type: 'Residential',
                     style: 'Mediteranian',
-                    about: 'A refreshing design'
+                    about: `A traditional two‑story residential house with intersecting gable roofs clad 
+                    in warm reddish shingles. The light-toned façade features symmetrical window placement 
+                    and an arched entrance supported by columns, giving it a classic suburban character. 
+                    The geometry mixes simple rectangular volumes with layered roof planes, while the 
+                    chromatic palette contrasts soft wall colors with the saturated roof tone.`
                 },
 
                 {   
@@ -39,7 +43,10 @@ const projects =
                     name: 'Clim House',
                     type: 'Residential',
                     style: 'Modern/Contemporan',
-                    about: 'A refreshing design',
+                    about: `A modern two‑story house with clean rectangular volumes, 
+                    flat roof, and large horizontal windows. The façade blends light grey concrete, 
+                    warm wood panels, and dark metal trims, creating a crisp minimalist look with 
+                    strong geometric contrast.`,
                 },
 
                 {
@@ -72,11 +79,11 @@ const projects =
                         type: 'Residential',
                         style: 'Eclectism',
                         about: 'A refreshing design'
-                    },
+                },
 
                     {
                     arc:{
-                        main:   './public/assets/meshes/casaStolnicu/casaStolnicu_baked/casaStolnicu_groundFloor.glb',
+                        main:   './public/assets/meshes/casaStolnicu/casaStolnicu_baked/casaStolnicu_outterShell.glb',
                         meshes: 
                             [
                                 './public/assets/meshes/casaStolnicu/casaStolnicu_baked/casaStolnicu_outterShell.glb',
@@ -93,8 +100,8 @@ const projects =
                         },
                     str: {},
                     ins: {}
-                    }
-            ) 
+                }
+            )
 } 
 
 export {projects}

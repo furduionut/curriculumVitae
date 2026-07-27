@@ -10,10 +10,10 @@
     let cameraAspect    = canvasWidth / canvasHeight;
     let cameraFar       = 6000;
     let cameraNear      = 0.01;
-    let cameraTop       = 50;
-    let cameraBottom    = -50;
-    let cameraRight     = 50;
-    let cameraLeft      = -50;
+    let cameraTop       = 25;
+    let cameraBottom    = -25;
+    let cameraRight     = 25;
+    let cameraLeft      = -25;
 
 /* CAMERA INITIATION */
     const cameras = {
@@ -26,7 +26,6 @@
                     cameraFar)}
 
 /* CAMERA SETUP */
-    cameras.orhographic.position.set(0,0,0);
 
 /* EXPORTS */
     export {cameras} 

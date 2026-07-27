@@ -7,7 +7,7 @@ import * as THREE from "three";
 
 const LightColor = 0xffffff;
 const LightIntensity = 7.5;
-const LightIntensity02 = 10;
+const LightIntensity02 = 5;
 
 
 /* LIGHTS INITIATION */

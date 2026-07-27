@@ -8,15 +8,82 @@ import { domain as dom } from "./domain.js";
 
     const gltfLoader = new GLTFLoader();
     const dracoLoader = new DRACOLoader();
+    const textureLoader = new THREE.TextureLoader();
+
     dracoLoader.setDecoderPath('./src/utils/draco/');
     gltfLoader.setDRACOLoader(dracoLoader);
 
     let currentBuilding
     let currentModel
  
+    function createLoadingPage() {
+        const loading = document.createElement('div');
+        loading.id = 'loading-page';
+        loading.style.cssText = `
+            position: fixed;
+            inset: 0;
+            background: ${styles.color1};
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity .6s ease;
+        `;
+    
+        const logo = document.createElement('img');
+        logo.src = './assets/images/firmLogoAnimated.gif';
+        logo.style.cssText = `
+            width: 120px;
+            opacity: .95;
+            transition: transform 1s ease;
+        `;
+    
+        loading.appendChild(logo);
+        document.body.appendChild(loading);
+    
+        // Rotate every 4 seconds
+        setInterval(() => {
+            logo.style.transform = `rotate(360deg)`;
+        }, 500);
+    
+        // Auto-hide after 2 seconds
+        setTimeout(() => hideLoadingPage(), 6000);
+    }
 
+    function hideLoadingPage() {
+        const loading = document.getElementById('loading-page');
+        if (!loading) return;
+        loading.style.opacity = '0';
+        setTimeout(() => loading.remove(), 600);
+    }
 
-    const loadingBuilding       = (scene, light, building, material) => { 
+    function loadingInformations    (name, about, type, style){
+        const informations       = dom.abouts;
+        informations.innerHTML   = '';
+
+        const clasifications     = document.createElement('div');
+
+        const title              = document.createElement('h2');
+        title.textContent        = name;
+
+        const description        = document.createElement('p');
+        description.textContent  = about;
+
+        const category           = document.createElement('p');
+        category.textContent     = type;
+
+        const archType           = document.createElement('p');
+        archType.textContent     = style;
+    
+        clasifications.appendChild(category);
+        clasifications.appendChild(archType);
+
+        informations.appendChild(title);
+        informations.appendChild(description);
+        informations.appendChild(clasifications);
+        };
+
+    function loadingBuilding        (scene, light, building, material){ 
         gltfLoader.load( building, (gltf) => 
             {
             if (currentModel || currentBuilding) {
@@ -24,6 +91,7 @@ import { domain as dom } from "./domain.js";
                 currentBuilding = null;
                 currentModel = null;};
             currentBuilding = gltf.scene;
+            
             console.log(`Changed building to ${building}`);
             
             currentBuilding.traverse((child) => {
@@ -36,7 +104,7 @@ import { domain as dom } from "./domain.js";
             })
         };
 
-    const loadingModel          = (scene, light, model, material) => { 
+    function loadingModel           (scene, light, model, material){ 
         gltfLoader.load( model, (gltf) => 
             {
             if (currentModel || currentBuilding) {
@@ -44,6 +112,7 @@ import { domain as dom } from "./domain.js";
                 currentBuilding = null;
                 currentModel = null;};
             currentModel = gltf.scene;
+            
             console.log(`Changed model to ${model}`);
             currentModel.traverse((child) => {  
                 if (child.isMesh) {child.material = material;}
@@ -53,6 +122,33 @@ import { domain as dom } from "./domain.js";
             scene.add(light.ambientLight, light.keyLight);
             scene.add(currentModel);
             })
+        };
+
+    function loadingMaterial        (texturePaths){
+            const diffuseMap      = textureLoader.load(texturePaths.diffuse);
+            const roughnessMap    = textureLoader.load(texturePaths.roughness);
+            const normalMap       = textureLoader.load(texturePaths.normal);
+            const transmissionMap = textureLoader.load(texturePaths.transmission);
+        
+            diffuseMap.flipY      = false;
+            roughnessMap.flipY    = false;
+            normalMap.flipY       = false;
+            transmissionMap.flipY = false;
+        
+            const mat = new THREE.MeshStandardMaterial({
+                map: diffuseMap,
+                roughnessMap: roughnessMap,
+                normalMap: normalMap,
+                alphaMap: transmissionMap,
+                transparent: true
+
+            });
+        
+            mat.needsUpdate = true;
+            return mat;
+        };
+
+    function loadingAbility         (){
         };
 
     const loadingExperience     = (dom, experiences) => {
@@ -262,8 +358,11 @@ import { domain as dom } from "./domain.js";
 
 
     const loaders = {
+        loadPage:           createLoadingPage,
+        loadInfo:           loadingInformations,
         loadBuilding:       loadingBuilding,
         loadModel:          loadingModel,
+        loadMaterial:       loadingMaterial,
         loadExperience:     loadingExperience,
         loadSkill:          loadingSkill,
         loadLevel:          showLevel

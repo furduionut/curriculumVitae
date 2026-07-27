@@ -11,6 +11,7 @@
         <div class="aboutMe" id="aboutMe">
             <div class="photo"></div>
             <div class="personal">
+                <img class='firmLogo' src='./assets/images/firmLogoAnimated.gif' width='1em'>
                 <div class="informations">
                         <h2 class="name">Mihael-Ionut FURDU</h2>
                         <div class="contact">
@@ -33,24 +34,56 @@
         <div class="projects" id="projects">
             <div id='viewport' class='viewport'>
                 <div id='canvas' class="canvas"></div>
-                <div id="controls" class="controls">
-                    <div id="prevBtn" class="navBtn"></div>
-                    <div id="stageNav" class="stageNav">
-                        <div id="upBtn" class="stageBtn"></div>
-                        <div id="downBtn" class="stageBtn"></div>
+                <div id="controls" class="controls"> 
+                    <div id="prevBtn" class="navBtn">
+                        <icon>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="5em" height="5em" viewBox="0 0 24 24">
+                                <title xmlns="">previous-fill</title>
+                                <path fill="#1c3166" d="M3.885 21.06a.76.76 0 0 1-.75-.75V3.69a.75.75 0 0 1 1.5 0v16.6a.75.75 0 0 1-.75.77m16.98-15.713v13.25a2.35 2.35 0 0 1-.32 1.13a2.2 2.2 0 0 1-1.89 1.07h-.1a2.1 2.1 0 0 1-1.11-.36l-9.13-6.12a2.25 2.25 0 0 1-.71-.76a2.3 2.3 0 0 1-.27-1a2.2 2.2 0 0 1 .2-1a2.2 2.2 0 0 1 .64-.81l9.14-7.09a2.2 2.2 0 0 1 1.13-.44a2.2 2.2 0 0 1 2.09 1.02c.204.335.318.718.33 1.11"/>
+                            </svg>
+                        </icon>
                     </div>
-                    <div id="nextBtn" class="navBtn"></div>
+                    <div id="stageNav" class="stageNav">
+                        <div id="upBtn" class="stageBtn">
+                            <icon>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" viewBox="0 0 80 80">
+                                    <title xmlns="">layer-plus-bold</title>
+                                    <g fill="#1c3166">
+                                        <path fill-rule="evenodd" d="M60.376 11.256a3 3 0 0 1 3 3v5h5a3 3 0 0 1 0 6h-5v5a3 3 0 0 1-6 0v-5h-5a3 3 0 0 1 0-6h5v-5a3 3 0 0 1 3-3" clip-rule="evenodd"/>
+                                        <path d="M41.25 29.594a2 2 0 0 0-1.576 0L16.75 39.417c-1.617.693-1.617 2.984 0 3.677l22.923 9.824a2 2 0 0 0 1.575 0l22.923-9.824c1.616-.693 1.616-2.984 0-3.677z"/><path d="m16.75 50.418l4.102-1.758l17.443 7.475a5.5 5.5 0 0 0 4.333 0l17.443-7.475l4.101 1.758c1.616.692 1.616 2.983 0 3.676l-22.923 9.824a2 2 0 0 1-1.575 0L16.75 54.094c-1.617-.693-1.617-2.984 0-3.677"/></g>
+                                </svg>
+                            </icon>
+                        </div>
+                        <div id="downBtn" class="stageBtn">
+                            <icon>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" viewBox="0 0 80 80">
+                                    <title xmlns="">layer-minus-bold</title>
+                                        <g fill="#1c3166">
+                                            <path fill-rule="evenodd" d="M49.461 22.256a3 3 0 0 1 3-3h16a3 3 0 1 1 0 6h-16a3 3 0 0 1-3-3" clip-rule="evenodd"/>
+                                            <path d="M39.674 29.594a2 2 0 0 1 1.575 0l22.923 9.823c1.616.693 1.616 2.984 0 3.677l-22.923 9.824a2 2 0 0 1-1.575 0L16.75 43.094c-1.617-.693-1.617-2.984 0-3.677z"/>
+                                            <path d="m20.852 48.66l-4.101 1.758c-1.617.692-1.617 2.983 0 3.676l22.923 9.824a2 2 0 0 0 1.575 0l22.923-9.824c1.616-.693 1.616-2.984 0-3.677l-4.101-1.757l-17.443 7.475a5.5 5.5 0 0 1-4.333 0z"/>
+                                        </g>
+                                    </svg>
+                            </icon>
+                        </div>
+                    </div>
+                    <div id="nextBtn" class="navBtn">
+                        <icon>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="5em" height="5em" viewBox="0 0 24 24">
+                                <title xmlns="">next-fill</title>
+                                <path fill="#1c3166" d="M20.095 21a.75.75 0 0 1-.75-.75V3.75a.75.75 0 0 1 1.5 0v16.5a.74.74 0 0 1-.75.75m-3.4-9.589a2.25 2.25 0 0 1-.85 1.82l-9.11 7.09c-.326.247-.713.4-1.12.44h-.23a2.14 2.14 0 0 1-1-.22a2.2 2.2 0 0 1-.9-.81a2.17 2.17 0 0 1-.33-1.16V5.421a2.2 2.2 0 0 1 .31-1.12a2.25 2.25 0 0 1 .85-.8a2.18 2.18 0 0 1 2.24.1l9.12 6.08c.29.191.53.448.7.75a2.3 2.3 0 0 1 .32.98"/>
+                            </svg>
+                        </icon>
+                    </div>
                 </div>
             </div>
-            <div class="description">
-                <h2>Project name</h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+            <div class="description" id="description"> Description
             </div>
         </div>
 
-        <div class="experiences" id="experiences">
-            <!-- <div class="experience-7">
-                <div class='geometry-up'></div>
+        <div class="experiences" id="experiences"> Experiences
+            <div class="experience-7">
+                <div class='geometry-up'>2026+</div>
                 <div id='content' class="content">
                     <h3>Obținerea dreptului de semnătură</h3>
                     <ul class="expDescription" id="expDescription"></ul>
@@ -63,7 +96,7 @@
             </div>
 
             <div class="experience-6">
-                <div class='geometry-up'></div>
+                <div class='geometry-up'>2025 - 2026</div>
                 <div id='content' class="content">
                     <h3>Proiectare tehnică în toate fazele</h3>
                     <ul class="expDescription" id="expDescription">
@@ -76,7 +109,7 @@
                         <li>Prezentare: proiect de marketing</li>
                     </ul>
                 </div>
-                <div class='geometry-down'></div>
+                <div class='geometry-down'>REZ VINCI</div>
                 <div class='treeBind-left'>
                     <div class='branch-left'></div>
                     <div class='base-left'></div>
@@ -84,7 +117,7 @@
             </div>
             
             <div class="experience-5">
-                <div class='geometry-up'></div>
+                <div class='geometry-up'>2024-2025</div>
                 <div id='content' class="content">
                     <h3>Consultanță și marketing</h3>
                     <ul class="expDescription" id="expDescription">
@@ -95,7 +128,7 @@
                         <li>Creare conținut marketing</li>
                     </ul>
                 </div>
-                <div class='geometry-down'></div>
+                <div class='geometry-down'>ARCHITIZER</div>
                 <div class='treeBind-right'>
                     <div class='branch-right'></div>
                     <div class='base-right'></div>
@@ -103,7 +136,7 @@
             </div>
 
             <div class="experience-4">
-                <div class='geometry-up'></div>
+                <div class='geometry-up'>2023-2024</div>
                 <div id='content' class="content">
                     <h3>Contractare și ofertare</h3>
                     <ul class="expDescription" id="expDescription">
@@ -114,7 +147,7 @@
                         <li>Modelare, animare și export</li>
                     </ul>
                 </div>
-                <div class='geometry-down'></div>
+                <div class='geometry-down'>MOBOTIQ SAS</div>
                 <div class='treeBind-left'>
                     <div class='branch-left'></div>
                     <div class='base-left'></div>
@@ -122,7 +155,7 @@
             </div>
 
             <div class="experience-3">
-                <div class='geometry-up'></div>
+                <div class='geometry-up'>2022-2023</div>
                 <div id='content' class="content">
                     <h3>Organizare de proiect</h3>
                     <ul class="expDescription" id="expDescription">
@@ -136,7 +169,7 @@
                         <li>Proiectare BIM</li>
                     </ul>
                 </div>
-                <div class='geometry-down'></div>
+                <div class='geometry-down'>POINT ARCHITECTS</div>
                 <div class='treeBind-right'>
                     <div class='branch-right'></div>
                     <div class='base-right'></div>
@@ -144,7 +177,7 @@
             </div>
 
             <div class="experience-2">
-                <div class='geometry-up'></div>
+                <div class='geometry-up'>2021-2022</div>
                 <div id='content' class="content">
                     <h3>Coordonare și colaborare</h3>
                     <ul class="expDescription" id="expDescription">
@@ -158,7 +191,7 @@
                         <li>Extras de cantități, tabele și deviz general</li>
                     </ul>
                 </div>
-                <div class='geometry-down'></div>
+                <div class='geometry-down'>GRS GLOBAL PROJECT</div>
                 <div class='treeBind-left'>
                     <div class='branch-left'></div>
                     <div class='base-left'></div>
@@ -166,7 +199,7 @@
             </div>
 
             <div class="experience-1">
-                <div class='geometry-up'></div>
+                <div class='geometry-up'>2020-2021</div>
                 <div id='content' class="content">
                     <h3>Proiectare și verificare tehnică</h3>
                     <ul class="expDescription" id="expDescription">
@@ -180,7 +213,7 @@
                         <li>Scheme și diagrame 2D</li>
                     </ul>
                 </div>
-                <div class='geometry-down'></div>
+                <div class='geometry-down'>3D SIGN CLASIC</div>
                 <div class='treeBind-right'>
                     <div class='branch-right'></div>
                     <div class='base-right'></div>
@@ -188,7 +221,7 @@
             </div>
 
             <div class="experience-0">
-                <div class='geometry-up'></div>
+                <div class='geometry-up'>2014-2020</div>
                 <div id='content' class="content">
                     <h3>Studii, concursuri și voluntariat</h3>
                     <ul class="expDescription" id="expDescription">
@@ -198,7 +231,7 @@
                         <li>Voluntariat în domeniu</li>
                     </ul>
                 </div>
-                <div class='geometry-down'></div>
+                <div class='geometry-down'>DSS / FUNDATIA COMUNITARA</div>
                 <div class='treeBind-left'>
                     <div class='branch-left'></div>
                     <div class='base-left'></div>
@@ -224,86 +257,145 @@
                     <div class="lineBreak"></div>
                     <div class="lineBreak"></div>
                 </div>
-            </div> -->
+            </div>
         </div> 
 
         <div class="abilities" id="abilities">
-            <div class="hardAbilities">
-                <div class="digitalAb">
-                    <div class="BIM" id="abilityBtn">
-                        <h2 class="abHeader">BIM</h2>
-                        <p>Archicad</p>
-                        <p>Allplan</p>
-                    </div>
-                    
+            <div class="hardAbilities"> Hard skills
+                <div class="digitalAb"> 
                     <div class="CGI" id="abilityBtn">
-                        <h2 class="abHeader">CGI</h2>
-                        <p>Cycles</p>
-                        <p>Lumion</p>
+                        <icon>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" viewBox="0 0 24 24">
+                                <title xmlns="">camera-rounded</title>
+                                <path fill="#1c3166" d="M12.5 9q-.275 0-.425-.25t0-.5L15 3.175q.2-.325.5-.387t.65.112q1.725.775 3.05 2.162T21.25 8.2q.125.325-.038.563T20.7 9zm-3.575 1.225l-3-5.2q-.2-.325-.1-.65t.4-.525Q7.425 3 8.888 2.5T12 2q.375 0 .825.038t.75.087q.35.05.463.3t-.063.55L9.8 10.225q-.15.25-.437.25t-.438-.25M2.85 14q-.275 0-.5-.187t-.275-.463t-.062-.6T2 12q0-1.575.513-3.137T4.1 5.9q.275-.35.638-.35t.562.375l4.2 7.325q.15.25-.012.5T9.05 14zm5 7.1q-1.65-.8-3.025-2.175T2.75 15.8q-.125-.325.05-.562T3.325 15h8.15q.275 0 .425.25t0 .5l-2.875 5.025q-.2.325-.5.425t-.675-.1M12 22q-.35 0-.788-.038t-.762-.087q-.35-.05-.475-.3t.05-.55l4.125-7.2q.15-.25.5-.25t.5.25l2.95 5.125q.175.275.113.6t-.413.6q-1.15.85-2.687 1.35T12 22m6.775-3.875l-4.25-7.375q-.15-.25.013-.5t.437-.25h6.175q.275 0 .5.188t.275.462t.062.6T22 12q0 1.575-.513 3.163T19.9 18.125q-.2.275-.575.288t-.55-.288"/>
+                            </svg>
+                        </icon>
                     </div>
 
                     <div class="SWG" id="abilityBtn">
-                        <h2 class="abHeader">SWG</h2>
-                        <p>Inkscape</p>
-                        <p>Ilustrator</p>
-                    </div>
-
-                    <div class="IMG" id="abilityBtn">
-                        <h2 class="abHeader">IMG</h2>
-                        <p>Photoshop</p>
-                        <p>Gimp/Krita</p>
-                    </div>
-
-                    <div class="OBJ" id="abilityBtn">
-                        <h2 class="abHeader">OBJ</h2>
-                        <p>Blender</p>
-                        <p>Sketchup</p>
-                    </div>
-
-                    <div class="TXT" id="abilityBtn">
-                        <h2 class="abHeader">TXT</h2>
-                        <p>MS Office</p>
-                        <p>LibreOffice</p>
+                        <icon>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" viewBox="0 0 24 24">
+                                <title xmlns="">vector</title>
+                                <path fill="none" stroke="#1c3166" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1zm14 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1zm0 14a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1zM3 18a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1zM5 7v10M19 7v10M7 5h10M7 19h10"/>
+                            </svg>
+                        </icon>
                     </div>
 
                     <div class="DWG" id="abilityBtn">
-                        <h2 class="abHeader">DWG</h2>
-                        <p>Autocad</p>
-                        <p>Zwcad</p>
+                        <icon>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" viewBox="0 0 24 24">
+                                <title xmlns="">autocad</title>
+                                <path fill="#1c3166" d="M3.867 1.053v.015L0 3.385v17.914l3.897-2.332h18.34V2.33c0-.702-.578-1.277-1.28-1.277zm7.506 4.01h3.3l2.985 9.95H15.07l-.568-2.189h-2.984l-.57 2.162H8.53zm11.863.027v14.877H4.172l-2.068 1.238v.465c0 .702.579 1.277 1.28 1.277H24V5.09zm-10.27 1.592l-.993 4.324h2.046z"/>
+                            </svg>
+                        </icon>
                     </div>
+
+                    <div class="BIM" id="abilityBtn">
+                        <icon>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" viewBox="0 0 24 24">
+                                <title xmlns="">archicad</title>
+                                <path fill="#1c3166" d="M22.59 16.322a1.41 1.41 0 1 1 0-2.82a1.41 1.41 0 0 1 0 2.82M.15 19.827a1.41 1.41 0 0 0 2.52 1.268S10.52 5.083 16.926 4.946c4.23-.09 4.232 5.642 4.232 5.642a1.41 1.41 0 1 0 2.82 0s.057-8.381-7.02-8.457C8.764 1.871.152 19.827.152 19.827"/>
+                            </svg>
+                        </icon>
+                    </div>
+
+                    <div class="OBJ" id="abilityBtn">
+                        <icon>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" viewBox="0 0 512 512">
+                                <title xmlns="">blender</title>
+                                <path fill="#1c3166" d="M449.5 177.293L289.101 54.105c-10.506-8.067-28.159-8.031-39.695.043c-11.681 8.158-13.028 21.682-2.647 30.21l66.707 54.286H109.794c-16.813.007-32.975 11.265-36.164 25.214c-3.297 14.202 8.115 25.848 25.596 25.902h103.08L17.632 331.506C.277 344.786-5.324 366.893 5.607 380.87c11.085 14.228 34.682 14.256 52.217.08l100.405-82.166s-1.473 11.084-1.356 17.742c3.019 56.204 45.868 108.306 98.923 131.381c91.42 40.492 214.849 3.424 249.557-102.103c16.506-55.355 3.852-121.18-55.854-168.51M279.463 373.509c-72.203-37.792-72.204-132.787 0-170.58s162.948 9.705 162.948 85.29s-90.744 123.083-162.948 85.29m21.989-34.01c-46.055-24.087-46.055-84.633 0-108.72s103.935 6.185 103.935 54.36s-57.881 78.448-103.935 54.36"/>
+                            </svg>
+                        </icon>
+                    </div>
+
+                    <div class="IMG" id="abilityBtn">
+                        <icon>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" viewBox="0 0 24 24">
+                                <title xmlns="">image-edit</title>
+                                <path fill="#1c3166" d="m22.7 14.3l-1 1l-2-2l1-1c.1-.1.2-.2.4-.2c.1 0 .3.1.4.2l1.3 1.3c.1.2.1.5-.1.7M13 19.9V22h2.1l6.1-6.1l-2-2zM21 5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h6v-1.9l1.1-1.1H5l3.5-4.5l2.5 3l3.5-4.5l1.6 2.1l4.9-5z"/>
+                            </svg>
+                        </icon>
+                    </div>
+
+                    <div class="TXT" id="abilityBtn">
+                        <icon>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" viewBox="0 0 24 24">
+                                <title xmlns="">file</title>
+                                <path fill="#1c3166" d="M13 9V3.5L18.5 9M6 2c-1.11 0-2 .89-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/>
+                            </svg>
+                        </icon>
+                    </div>
+
+
+                    
                 </div>
                 <div class="hard-leveling" id="hard-leveling">
                 </div>
             </div>
-            <div class="softAbilities">
+            <div class="softAbilities"> Soft skills
                 <div class="digitalAb">
                     <div class="ART" id="abilityBtn">
-                        <h2 class="abHeader">ARTISTIC</h2>
+                        <icon>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" viewBox="0 0 20 20">
+                                <title xmlns="">art</title>
+                                <path fill="#1c3166" d="M8.55 3.06c1.01.34-1.95 2.01-.1 3.13c1.04.63 3.31-2.22 4.45-2.86c.97-.54 2.67-.65 3.53 1.23c1.09 2.38.14 8.57-3.79 11.06c-3.97 2.5-8.97 1.23-10.7-2.66c-2.01-4.53 3.12-11.09 6.61-9.9m1.21 6.45c.73 1.64 4.7-.5 3.79-2.8c-.59-1.49-4.48 1.25-3.79 2.8"/>
+                            </svg>
+                        </icon>
                     </div>
                     <div class="THC" id="abilityBtn">
-                        <h2 class="abHeader">TECHNICAL</h2>
+                        <icon>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" viewBox="0 0 256 256">
+                                <title xmlns="">gear-fill</title>
+                                <path fill="#1c3166" d="M216 130.16q.06-2.16 0-4.32l14.92-18.64a8 8 0 0 0 1.48-7.06a107.6 107.6 0 0 0-10.88-26.25a8 8 0 0 0-6-3.93l-23.72-2.64q-1.48-1.56-3-3L186 40.54a8 8 0 0 0-3.94-6a107.3 107.3 0 0 0-26.25-10.86a8 8 0 0 0-7.06 1.48L130.16 40h-4.32L107.2 25.11a8 8 0 0 0-7.06-1.48a107.6 107.6 0 0 0-26.25 10.88a8 8 0 0 0-3.93 6l-2.64 23.76q-1.56 1.49-3 3L40.54 70a8 8 0 0 0-6 3.94a107.7 107.7 0 0 0-10.87 26.25a8 8 0 0 0 1.49 7.06L40 125.84v4.32L25.11 148.8a8 8 0 0 0-1.48 7.06a107.6 107.6 0 0 0 10.88 26.25a8 8 0 0 0 6 3.93l23.72 2.64q1.49 1.56 3 3L70 215.46a8 8 0 0 0 3.94 6a107.7 107.7 0 0 0 26.25 10.87a8 8 0 0 0 7.06-1.49L125.84 216q2.16.06 4.32 0l18.64 14.92a8 8 0 0 0 7.06 1.48a107.2 107.2 0 0 0 26.25-10.88a8 8 0 0 0 3.93-6l2.64-23.72q1.56-1.48 3-3l23.78-2.8a8 8 0 0 0 6-3.94a107.7 107.7 0 0 0 10.87-26.25a8 8 0 0 0-1.49-7.06ZM128 168a40 40 0 1 1 40-40a40 40 0 0 1-40 40"/>
+                            </svg>
+                        </icon>
                     </div>
                     <div class="CLB" id="abilityBtn">
-                        <h2 class="abHeader">COLLAB</h2>
+                         <icon>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" viewBox="0 0 24 24">
+                                <title xmlns="">workflow-teamwork-fistbump-2-bold</title>
+                                <path fill="#1c3166" d="M20.54 2.64a.75.75 0 0 0-1.06 0l-1.61 1.61a.75.75 0 0 0 0 1.06a.75.75 0 0 0 1.06 0l1.61-1.61a.75.75 0 0 0 0-1.06M15.19.28a.74.74 0 0 0-.75.75v2.14a.75.75 0 0 0 1.5 0V1a.75.75 0 0 0-.75-.72m6.96 6.96H20a.75.75 0 0 0 0 1.5h2.14a.75.75 0 0 0 0-1.5ZM4.1 18l-1.6 1.62a.74.74 0 0 0 0 1.06a.73.73 0 0 0 .5.22a.74.74 0 0 0 .53-.22l1.6-1.61a.74.74 0 0 0 0-1.06A.75.75 0 0 0 4.1 18m3.75 1.4a.75.75 0 0 0-.75.75v2.14a.75.75 0 0 0 1.5 0v-2.14a.76.76 0 0 0-.75-.75m-4.07-4.07a.76.76 0 0 0-.78-.75H.88a.75.75 0 0 0 0 1.5H3a.76.76 0 0 0 .78-.75M21.76 17l-.57-1.7a5.4 5.4 0 0 0-1.35-2.18L17.7 11a1.23 1.23 0 0 0-1.74 0L12 14a1.23 1.23 0 0 0 0 1.74L14.21 18a.49.49 0 1 1-.7.7l-1.27-1.26a2.15 2.15 0 0 0 .43 2.47l.4.4a4.17 4.17 0 0 0 3 1.21h1.2l2.22 2.21L24 19.24ZM12 8.58L9.79 6.32a.5.5 0 0 1 0-.71a.48.48 0 0 1 .7 0l1.27 1.26a2.15 2.15 0 0 0-.43-2.47l-.4-.4a4.2 4.2 0 0 0-3-1.21h-1.2L4.51.59L0 5.08l2.24 2.21L2.81 9a5.5 5.5 0 0 0 1.35 2.18l2.17 2.17a1.23 1.23 0 0 0 1.74 0l3.95-3A1.24 1.24 0 0 0 12 8.58"/>
+                            </svg>
+                        </icon>
+                    </div>
+                    <div class="DEC" id="abilityBtn">
+                        <icon>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" viewBox="0 0 24 24">
+                                <title xmlns="">arrow-decision</title>
+                                <path fill="#1c3166" d="M11 5H8l4-4l4 4h-3v4.43c-.75.46-1.42 1.03-2 1.69zm11 6l-4-4v3a6.747 6.747 0 0 0-7 6.17A3.006 3.006 0 0 0 9.17 20A3.006 3.006 0 0 0 13 21.83A3.01 3.01 0 0 0 14.83 18c-.3-.86-.98-1.53-1.83-1.83c.47-4 4.47-4.2 4.95-4.2v3zm-11.37.59A7.63 7.63 0 0 0 6 10V7l-4 4l4 4v-3c1.34.03 2.63.5 3.64 1.4c.25-.64.58-1.25.99-1.81"/>
+                            </svg>
+                        </icon>
                     </div>
                     <div class="MAN" id="abilityBtn">
-                        <h2 class="abHeader">MANAGEMENT</h2>
-                    </div>
-                    <div class="DEC" id="abilityBtn">
-                        <h2 class="abHeader">DECISION</h2>
+                        <icon>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" viewBox="0 0 16 16">
+                                <title xmlns="">management-filled</title>
+                                <path fill="#1c3166" fill-rule="evenodd" d="M5.5 1a.5.5 0 0 0-.485.621L5.11 2H3.5a.5.5 0 0 0-.5.5v12a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5v-12a.5.5 0 0 0-.5-.5h-1.61l.095-.379A.5.5 0 0 0 10.5 1zm.64 1h3.72l-.25 1H6.39zM8.5 6.5V7H5v1h3.5v.5h1V8H11V7H9.5v-.5zm-2 3v.5H5v1h1.5v.5h1V11H11v-1H7.5v-.5z" clip-rule="evenodd"/>
+                            </svg>
+                        </icon>
                     </div>
                     <div class="COM" id="abilityBtn">
-                        <h2 class="abHeader">COMMUNI</h2>
+                        <icon>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" viewBox="0 0 48 48">
+                                <title xmlns="">communication</title>
+                                <path fill="#1c3166" fill-rule="evenodd" d="M18.5 6C10.492 6 4 12.492 4 20.5C4 38.5 28 42 28 42v-7h1.5C37.508 35 44 28.508 44 20.5S37.508 6 29.5 6zM24 23.5a2.5 2.5 0 1 0 0-5a2.5 2.5 0 0 0 0 5M34.5 21a2.5 2.5 0 1 1-5 0a2.5 2.5 0 0 1 5 0M16 23.5a2.5 2.5 0 1 0 0-5a2.5 2.5 0 0 0 0 5" clip-rule="evenodd"/>
+                            </svg>
+                        </icon>
                     </div>
                     <div class="DEC" id="abilityBtn">
-                        <h2 class="abHeader">TEAM</h2>
+                        <icon>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" viewBox="0 0 32 32">
+                                <title xmlns="">people-team-32-filled</title>
+                                <path fill="#1c3166" d="M16 11a4 4 0 1 0 0-8a4 4 0 0 0 0 8m-6-3.5a3.5 3.5 0 1 1-7 0a3.5 3.5 0 0 1 7 0m19 0a3.5 3.5 0 1 1-7 0a3.5 3.5 0 0 1 7 0M9.377 13a3.98 3.98 0 0 0-.877 2.5V23c0 1.235.298 2.4.827 3.427A5 5 0 0 1 2 22v-6.5A2.5 2.5 0 0 1 4.5 13zm13.296 13.427A7.5 7.5 0 0 0 23.5 23v-7.5c0-.946-.328-1.815-.877-2.5H27.5a2.5 2.5 0 0 1 2.5 2.5V22a5 5 0 0 1-7.327 4.427M12.5 13a2.5 2.5 0 0 0-2.5 2.5V23a6 6 0 0 0 12 0v-7.5a2.5 2.5 0 0 0-2.5-2.5z"/>
+                            </svg>
+                        </icon>
                     </div>
                 </div>
                 <div class="soft-leveling" id="soft-leveling"></div>
             </div>
         </div>
 
-        <div class="credits" id="credits">
+        <div class="credits" id="credits"> Credits
             <h2>Thanks to:</h2>
             <div class="thanks">
                 <p id="plp">People</p>
