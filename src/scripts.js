@@ -34,6 +34,7 @@
 
     /* SCENES */
         let scene               = scenes.mainScene;
+        let pageScene           = scenes.pageScene;
 
     /* CAMERAS */
         let camera              = cameras.orhographic;
@@ -59,7 +60,18 @@
     /* MESHES */
         let building            = buildings[buildingIndex];
         let model               = models[buildingIndex][buildingModelIndex];
+
+    /* PAGE MODEL */
+        let geometry          = new THREE.PlaneGeometry(10, 10);
+        let mat               = new THREE.MeshBasicMaterial({color: "green"});
+        let mesh              = new THREE.Mesh(geometry, mat);
+        mesh.rotateX(-Math.PI/2);
+        pageScene.add(mesh);
         
+    /* PAGE LIGHT */
+        let pageLight           = new THREE.AmbientLight(0xffffff, 1);
+        pageScene.add(pageLight);
+
     /* TEXTURES */
         let texturePaths        = textures[buildingIndex];
 
@@ -122,10 +134,21 @@
             dom.viewport.clientHeight, 
             dom.canvas);
 
+        const pageRenderer = renders(
+            dom.pageViewport.clientWidth,
+            dom.pageViewport.clientHeight,
+            dom.pageCanvas);
+
     /* CONTROL */
         const control = controls(
             camera, 
             renderer.domElement);
+
+    /* ANIMATE ON SCROLL */
+        let scrollY = window.scrollY;
+        window.addEventListener('scroll', 
+            () => {scrollY = window.scrollY;
+                console.log(scrollY)});
 
     /* ACTIONS */
         console.log(dom.abouts)
@@ -165,9 +188,15 @@
             ('click', () => {loaders.loadLevel(`${btn.className}`)} )});
     
     // RENDERING
+        function tick () {
+            requestAnimationFrame(tick);
+            pageRenderer.render(pageScene, camera);
+        }
+
         function animate() {
             requestAnimationFrame(animate);
             control.update();
             renderer.render(scene, camera);
         }
+        tick()
         animate()

@@ -149,6 +149,9 @@ import { domain as dom } from "./domain.js";
         };
 
     function loadingAbility         (){
+        const hardAbilities = document.createElement('div');
+        const hardLeveling  = document.createElement('div');
+        const abilityTabs   = document.createElement('div');
         };
 
     const loadingExperience     = (dom, experiences) => {

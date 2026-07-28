@@ -160,6 +160,36 @@ body {
     /* content */
 }
 
+.pageViewport {
+    /* box */
+    /* size */
+    width: auto;
+    height: 150vh;
+    /* position */
+    /* distance */
+    /* geometry */
+    /* style */
+    border: black 1px solid;
+    /* color */
+    /* display */
+    /* content */
+}
+
+.pageCanvas {
+    /* box */
+    /* size */
+    width: 100%;
+    height: 100%;
+    /* position */
+    /* distance */
+    /* geometry */
+    /* style */
+    border: black 1px solid;
+    /* color */
+    /* display */
+    /* content */
+}
+
 .aboutMe {
     /* box */
     padding: var(--general-padding);

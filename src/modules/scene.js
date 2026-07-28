@@ -6,11 +6,12 @@ import { styles } from "./styles";
 
 /* RENDERER INITIATION */
 const scenes = {
+    pageScene: new THREE.Scene(),
     mainScene: new THREE.Scene()
 }
 /* RENDERER PARAMETERS */
     scenes.mainScene.background = new THREE.Color(styles.color1);
-
+    
 /* EXPORT */
 
 export { scenes }

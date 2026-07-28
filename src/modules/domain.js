@@ -3,6 +3,10 @@ const domain = {
     /* ROOT */
     root    :        document.documentElement,
 
+    /* PAGE */
+    pageViewport:    document.getElementById('pageViewport'),
+    pageCanvas:      document.getElementById('pageCanvas'),
+
     /* PROJECTS */
     canvas  :        document.getElementById('canvas'),
     viewport:        document.getElementById('viewport'),
@@ -10,7 +14,7 @@ const domain = {
     nextBtn :        document.getElementById('nextBtn'),
     prevBtn :        document.getElementById('prevBtn'),
     downBtn :        document.getElementById('downBtn'),
-    abouts  :       document.getElementById('description'),
+    abouts  :        document.getElementById('description'),
     
     /* ABILITIES */
     abilitiesBtn:    document.querySelectorAll('#abilityBtn'),
