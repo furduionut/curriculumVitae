@@ -1,9 +1,15 @@
 
     // IMPORTS
     import "./styles.css";
-    import * as THREE from "three";
-    import { GLTFLoader } from "three/examples/jsm/Addons.js";
-    import { DRACOLoader } from "three/examples/jsm/Addons.js";
+    import * as THREE                   from "three";
+    import { GLTFLoader }               from "three/examples/jsm/Addons.js";
+    import { DRACOLoader }              from "three/examples/jsm/Addons.js";
+    import { ModelAnimationController } from "./modules/modelAnimation.js";   
+    import { EffectComposer }           from "three/addons/postprocessing/EffectComposer.js";
+    import { RenderPass }               from "three/addons/postprocessing/RenderPass.js";
+    import { UnrealBloomPass }          from "three/addons/postprocessing/UnrealBloomPass.js";
+    import { OutputPass }               from "three/addons/postprocessing/OutputPass.js";
+    import { RGBELoader }               from "three/examples/jsm/loaders/RGBELoader.js";
     
     import { PLP, ORG, SOFT } from "./modules/credits.js";
     import { BIM, DWG, TXT, OBJ, IMG, SWG, CGI, ART, THC, MAN, CLB, COM, DEC } from "./modules/abilities.js";
@@ -19,7 +25,7 @@
     import { loaders }      from "./modules/loaders.js"
     import { scenes }       from "./modules/scene.js";
     import { meshes }       from "./modules/objects.js";
-    import { informations }       from "./modules/abouts.js";
+    import { informations } from "./modules/abouts.js";
     import { lights }       from "./modules/lights.js";
     import { cameras }      from "./modules/cameras.js";
     import { renders }      from "./modules/render.js";
@@ -68,6 +74,199 @@
         mesh.rotateX(-Math.PI/2);
         pageScene.add(mesh);
         
+    /* PAGE MODEL */
+
+
+    /* PAGE ANIMTION */
+        const animationController = new ModelAnimationController();
+
+    /* PAGE MODEL TEXTURE */
+
+        const applyLogoMaterials = (model) => {
+            const purple = new THREE.Color(0xb57cff);
+            const glassPurple = new THREE.Color(0xc9b8ff);
+
+            model.traverse((child) => {
+                if (!child.isMesh) return;
+
+                const name = child.name.toLowerCase();
+
+                const isArchSegment =
+                    name.startsWith("archmov");
+
+                const isItizerSegment =
+                    name.startsWith("itizermov");
+
+                if (isArchSegment || isItizerSegment) {
+                    child.material =
+                        new THREE.MeshBasicMaterial({
+                            color: glassPurple.clone(),
+
+                            color: 0x8e93f8,
+                            transparent: true,
+                            opacity: 1,
+                            depthWrite: false,
+                            depthTest: true,
+                            fog: false
+                        });
+                    child.castShadow = false;
+                    child.receiveShadow = false;
+                    child.renderOrder = 3;
+                    child.material.needsUpdate = true;
+
+                    
+                    console.log(
+                        "Prepared independent segment:",
+                        child.name,
+                        child.material.id
+                    );
+
+                    return;
+                }
+
+                if (name === "bec") {
+                    const brightPurple = purple
+                        .clone()
+                        .multiplyScalar(6);
+
+                    child.material =
+                        new THREE.MeshBasicMaterial({
+                            color: brightPurple,
+
+                            transparent: true,
+                            blending:
+                                THREE.AdditiveBlending,
+
+                            depthWrite: false,
+                            depthTest: true,
+
+                            toneMapped: false,
+                            side: THREE.DoubleSide
+                        });
+
+                    child.renderOrder = 6;
+                    child.frustumCulled = false;
+                    child.material.needsUpdate = true;
+
+                    return;
+                }
+
+                if (name === "traseu") {
+                    child.material =
+                        new THREE.MeshPhysicalMaterial({
+                            color: 0xffffff,
+
+                            transparent: true,
+                            opacity: 0.45,
+                            transmission: 0.85,
+
+                            roughness: 0.08,
+                            metalness: 0,
+
+                            thickness: 0.35,
+                            ior: 1.45,
+
+                            attenuationColor:
+                                new THREE.Color(0xffffff),
+
+                            attenuationDistance: 2,
+
+                            clearcoat: 1,
+                            clearcoatRoughness: 0.03,
+
+                            envMapIntensity: 1.5,
+
+                            side: THREE.DoubleSide,
+                            depthWrite: false,
+                            depthTest: true
+                        });
+
+                    child.renderOrder = 1;
+                    child.material.needsUpdate = true;
+                }
+            });
+        };
+
+       let currentBuilding
+        const loadingBuildings = () => {
+            gltfLoader.load(buildings[buildingIndex], (gltf) => {    
+                // REMOVE MODEL
+                scene.remove(currentModel); 
+
+                // BUILDING PREVIEW
+                console.log (`building ${buildingIndex} was loaded from ${buildings[buildingIndex]}`);
+
+                // REMOVE BUILDING
+                if (currentBuilding) {scene.remove(currentBuilding);}
+
+                // ADDING NEW BUILDING OR LOCALSTORAGE
+                    // RETRIEVE OR LOAD (localStorage.getItem('name'))
+                    // CONVERT JSON -> GLTF (function)
+                currentBuilding = gltf.scene;
+                scene.add(currentBuilding);
+    
+                currentBuilding.traverse((child) => {
+                    if (child.isMesh) {
+                        console.log("Building mesh:", child.name);
+                    }
+                });
+
+
+
+                // CHECK TEXTURES
+                scene.traverse((currentBuilding)=>{
+                    if(currentBuilding.material?.name == '') 
+                        {
+                        currentBuilding.material = new THREE.MeshStandardMaterial({
+                            map: diffuseTexture,
+                            roughnessMap: roughnessTexture,
+                            normalMap: normalMapTexture,
+                            transparent: true,
+                            alphaMap: alphaMapTexture});
+
+                        currentBuilding.material.doubleSide = true;
+
+                        scene.traverse(child =>{
+                            if (child.isMesh && child.name.includes('section')){child.material = new THREE.MeshBasicMaterial({
+                                color: 0xffffff
+                            })}
+                        })
+                        }
+                        });
+                if (buildingIndex === 0) {
+                    applyLogoMaterials(currentBuilding);
+
+                    console.log("Animation count:", gltf.animations.length);
+
+                    gltf.animations.forEach((clip) => {
+                        console.log("Animation clip:", clip.name);
+
+                        clip.tracks.forEach((track) => {
+                            console.log("Animation track:", track.name);
+                        });
+                    });
+
+                    animationController.play(
+                        currentBuilding,
+                        gltf.animations,
+                        0
+                    );
+                }
+
+
+                // STORE IN LOCALSTORAGE
+                        // CONVERT FILE GLTF -> JSON (const json = JSON.stringfy(mesh.toJSON))
+                        // SAVE TO LOCAL (localStorage.setItem('name', json)) (max 10mb)
+
+                // POSITION BUILDING
+                currentBuilding.position.set(5,-12.5,0);
+                
+                // SET DIRECTIONAL LIGHT
+                directionalLight01.lookAt(currentBuilding);
+                directionalLight02.lookAt(currentBuilding);
+
+        })}
+
     /* PAGE LIGHT */
         let pageLight           = new THREE.AmbientLight(0xffffff, 1);
         pageScene.add(pageLight);
