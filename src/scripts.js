@@ -31,6 +31,9 @@
     import { renders }      from "./modules/render.js";
     import { controls }     from "./modules/controls.js";
 
+    /* PAGE LOADER */
+        const gltfLoader = new GLTFLoader();
+
     /* ELEMENTS */
         let dom                 = domain;
 
@@ -338,10 +341,119 @@
             dom.pageViewport.clientHeight,
             dom.pageCanvas);
 
+        pageRenderer.toneMapping = THREE.ACESFilmicToneMapping;
+        pageRenderer.toneMappingExposure = 1;
+
+    /* COMPOSERS */
+        const composer = new EffectComposer(pageRenderer);
+        const renderPass = new RenderPass(pageScene, camera);
+        composer.addPass(renderPass);
+        
+        const bloomPass = new UnrealBloomPass(
+            new THREE.Vector2(dom.pageViewport.clientWidth, dom.pageViewport.clientHeight),
+            1.3,  // strength
+            0.55,  // radius
+            4   // threshold
+        );
+
+        composer.addPass(bloomPass);
+        const outputPass = new OutputPass();
+        composer.addPass(outputPass);
+
     /* CONTROL */
-        const control = controls(
-            camera, 
-            renderer.domElement);
+    const control = controls(
+        camera, 
+        renderer.domElement);
+
+
+    /* PAGE CAMERA */ 
+    
+        // SAVE INITIAL CAMERA VIEW
+        const initialCameraPosition = camera.position.clone();
+        const initialControlsTarget = control.target.clone();
+        const initialCameraZoom = camera.zoom;
+        let isReturningCamera = false;
+
+        // RETURN TO INITIAL CAMERA POSITION WITH A NUDGE
+        const returnCameraToInitialView = () => {
+
+            if (isReturningCamera) return;
+
+            isReturningCamera = true;
+            control.enabled = false;
+
+            const startPosition = camera.position.clone();
+            const startTarget = control.target.clone();
+            const startZoom = camera.zoom;
+
+            const duration = 1000;
+            const startTime = performance.now();
+
+            // Cute overshoot / nudge easing
+            const easeOutBack = (t) => {
+
+                const overshoot = 1.4;
+                const value = t - 1;
+
+                return (
+                    1 +
+                    (overshoot + 1) * value * value * value +
+                    overshoot * value * value
+                );
+            };
+
+            const animateReturn = (currentTime) => {
+
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const easedProgress = easeOutBack(progress);
+
+                camera.position.lerpVectors(
+                    startPosition,
+                    initialCameraPosition,
+                    easedProgress
+                );
+
+                control.target.lerpVectors(
+                    startTarget,
+                    initialControlsTarget,
+                    easedProgress
+                );
+
+                camera.zoom = THREE.MathUtils.lerp(
+                    startZoom,
+                    initialCameraZoom,
+                    easedProgress
+                );
+
+                camera.updateProjectionMatrix();
+                control.update();
+
+                if (progress < 1) {
+
+                    requestAnimationFrame(animateReturn);
+
+                } else {
+
+                    // Ensure exact final values
+                    camera.position.copy(initialCameraPosition);
+                    control.target.copy(initialControlsTarget);
+                    camera.zoom = initialCameraZoom;
+
+                    camera.updateProjectionMatrix();
+                    control.update();
+
+                    control.enabled = true;
+                    isReturningCamera = false;
+                }
+            };
+
+            requestAnimationFrame(animateReturn);
+        };
+
+        control.addEventListener("end", () => {
+            returnCameraToInitialView();
+        });
 
     /* ANIMATE ON SCROLL */
         let scrollY = window.scrollY;
@@ -350,6 +462,10 @@
                 console.log(scrollY)});
 
     /* ACTIONS */
+
+    // Disable mouse wheel scrolling over the viewport
+            pageRenderer.domElement.addEventListener("wheel",(e) => {e.preventDefault();},{ passive: false });
+
         console.log(dom.abouts)
         dom.nextBtn.addEventListener    
             ('click', ()=>{
@@ -390,6 +506,8 @@
         function tick () {
             requestAnimationFrame(tick);
             pageRenderer.render(pageScene, camera);
+            control.update()
+            composer.render()
         }
 
         function animate() {
