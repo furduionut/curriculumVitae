@@ -8,23 +8,28 @@
     let canvasWidth     = viewport.clientWidth;
     let canvasHeight    = viewport.clientHeight;
     let cameraAspect    = canvasWidth / canvasHeight;
-    let cameraFar       = 6000;
-    let cameraNear      = 0.01;
-    let cameraTop       = 25;
-    let cameraBottom    = -25;
-    let cameraRight     = 25;
-    let cameraLeft      = -25;
+    let cameraDim       = 200;
+    let cameraFar       = 1000;
+    let cameraNear      = 0.1;
+    let cameraTop       = cameraDim;
+    let cameraBottom    = cameraDim;
+    let cameraRight     = cameraDim;
+    let cameraLeft      = cameraDim;
 
 /* CAMERA INITIATION */
     const cameras = {
         orhographic: new THREE.OrthographicCamera(
-                    cameraLeft  *cameraAspect,  
+                    -cameraLeft  *cameraAspect,  
                     cameraRight  *cameraAspect, 
                     cameraTop, 
-                    cameraBottom, 
+                    - cameraBottom, 
                     cameraNear, 
                     cameraFar)}
-
+        
+    cameras.orhographic.position.set(0, 100, 0);
+    cameras.orhographic.zoom = 1.5;
+    cameras.orhographic.updateProjectionMatrix();
+    
 /* CAMERA SETUP */
 
 /* EXPORTS */

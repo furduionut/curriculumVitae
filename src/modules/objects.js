@@ -1,10 +1,13 @@
 import { projects }     from "./projects.js";
 
 
-const meshes = {
+const objects = {
     buildingsList:  Object.values(projects).map(o => o.geometries.arc.main),
     modelsList:     Object.values(Object.values(Object.values(projects).map(o => o.geometries.arc.meshes))),
-    texturesList:   Object.values(projects).map(t => t.geometries.arc.textures)
+    texturesList:   Object.values(projects).map(t => t.geometries.arc.textures),
+    neighbor: {
+        main:   './public/assets/meshes/mainScene/pageLayout.glb',
+        textures: ''}
 }
 
-export { meshes }
+export { objects }

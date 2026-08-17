@@ -83,17 +83,29 @@ import { domain as dom } from "./domain.js";
         informations.appendChild(clasifications);
         };
 
+    function loadingNeighbor        (scene, light, building){ 
+        gltfLoader.load(building, (gltf) => 
+            {currentBuilding = gltf.scene;
+            currentBuilding.name = 'pageLayout';
+            currentBuilding.position.set(0, -.1, 0);
+            console.log(currentBuilding);
+            scene.add(light.ambientLight, light.keyLight);
+            scene.add(currentBuilding);})};
+
     function loadingBuilding        (scene, light, building, material){ 
         gltfLoader.load( building, (gltf) => 
             {
-            if (currentModel || currentBuilding) {
+            if (currentModel || currentBuilding 
+                && currentBuilding.name !== 'pageLayout') {
                 scene.remove(currentModel, currentBuilding)
                 currentBuilding = null;
                 currentModel = null;};
             currentBuilding = gltf.scene;
+            console.log(currentBuilding);
             
             console.log(`Changed building to ${building}`);
-            
+            currentBuilding.position.set(-50 , 0, -100);
+
             currentBuilding.traverse((child) => {
                 if (child.isMesh) {child.material = material;}
             console.log(`Changed material to ${child.material}`)
@@ -114,6 +126,7 @@ import { domain as dom } from "./domain.js";
             currentModel = gltf.scene;
             
             console.log(`Changed model to ${model}`);
+            currentModel.position.set(-50 , 0, -100);
             currentModel.traverse((child) => {  
                 if (child.isMesh) {child.material = material;}
             console.log(`Changed material to ${child.material}`)
@@ -149,6 +162,19 @@ import { domain as dom } from "./domain.js";
         };
 
     function loadingAbility         (){
+        const hardAbility   = document.createElement("div");
+        const hardSkill     = document.createElement("div");
+        const hardLevel     = document.createElement("div");
+
+        hardAbility.setAttribute    ('class', 'hardAbility');
+        hardSkill.setAttribute      ('class', 'hardSkills'); 
+        hardLevel.setAttribute      ('class', 'hardLeveling');
+
+        hardSkill.innerHTML = '<svg/>';
+        hardLevel.innerHTML = ''
+
+        hardSkill.appendChild       (hardLevel);
+        hardAbility.appendChild     (hardSkill);
         };
 
     const loadingExperience     = (dom, experiences) => {
@@ -360,6 +386,7 @@ import { domain as dom } from "./domain.js";
     const loaders = {
         loadPage:           createLoadingPage,
         loadInfo:           loadingInformations,
+        loadNeighboar:      loadingNeighbor,
         loadBuilding:       loadingBuilding,
         loadModel:          loadingModel,
         loadMaterial:       loadingMaterial,

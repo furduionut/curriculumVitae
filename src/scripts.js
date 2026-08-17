@@ -18,13 +18,15 @@
     import { domain }       from "./modules/domain.js";
     import { loaders }      from "./modules/loaders.js"
     import { scenes }       from "./modules/scene.js";
-    import { meshes }       from "./modules/objects.js";
-    import { informations }       from "./modules/abouts.js";
+    import { objects }       from "./modules/objects.js";
+    import { informations } from "./modules/abouts.js";
     import { lights }       from "./modules/lights.js";
     import { cameras }      from "./modules/cameras.js";
     import { renders }      from "./modules/render.js";
     import { controls }     from "./modules/controls.js";
 
+
+    console.log(informations.symbols)
     /* ELEMENTS */
         let dom                 = domain;
 
@@ -39,9 +41,9 @@
         let camera              = cameras.orhographic;
         
     /* EXTRACTS */
-        let buildings           = meshes.buildingsList;
-        let models              = meshes.modelsList;
-        let textures            = meshes.texturesList;
+        let buildings           = objects.buildingsList;
+        let models              = objects.modelsList;
+        let textures            = objects.texturesList;
 
     /* INFORMATIONS */
         let names               = informations.names;
@@ -54,9 +56,12 @@
         let type                = informations.types[buildingIndex];
         let style               = informations.styles[buildingIndex];
 
+        let symbols             = Object.values(abilities)
         console.log(names, abouts, types, styles);
         
     /* MESHES */
+        let neighbor            = objects.neighbor.main;
+
         let building            = buildings[buildingIndex];
         let model               = models[buildingIndex][buildingModelIndex];
         
@@ -114,7 +119,7 @@
         console.log(`Changed indexes ${buildingIndex+1} / ${buildings.length}`);
         updateReferences();
         // loaders.loadPage();
-        loaders.loadBuilding(scene, light, building, material);
+        loaders.loadNeighboar(scene, light, neighbor);
 
     /* RENDERER */
         const renderer = renders(

@@ -355,7 +355,7 @@ body {
     /* box */
     /* size */
     width: 100%;
-    height: 30em;
+    height: 120em;
     /* position */
     /* distance */
     /* geometry */
@@ -377,8 +377,10 @@ body {
     padding-top: 1em;
     /* size */
     width: 100%;
-    height: 12em;
+    height: 35em;
     /* position */
+    position: fixed;
+    top: 10em;
     /* distance */
     gap: var(--general-gap);
     /* geometry */
@@ -426,7 +428,7 @@ body {
     /* box */
     /* size */
     width: 10em;
-    height: 100%;
+    height: auto;
     /* position */
     /* distance */
     /* geometry */

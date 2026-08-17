@@ -1,4 +1,5 @@
 import { projects }     from "./projects.js";
+import { abilities }    from "./abilities.js";
 
 const names     = Object.values(projects).map(o => o.identifier.name);
 const abouts    = Object.values(projects).map(o => o.identifier.about);
@@ -11,6 +12,7 @@ const informations = {
     types:  types,
     styles: styles
 }
+
 
 console.log(informations);
 
