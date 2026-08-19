@@ -14,6 +14,4 @@ const informations = {
 }
 
 
-console.log(informations);
-
 export { informations }

@@ -2,9 +2,7 @@
     // IMPORTS
     import "./styles.css";
     import * as THREE from "three";
-    import { GLTFLoader } from "three/examples/jsm/Addons.js";
-    import { DRACOLoader } from "three/examples/jsm/Addons.js";
-    
+
     import { PLP, ORG, SOFT } from "./modules/credits.js";
     import { BIM, DWG, TXT, OBJ, IMG, SWG, CGI, ART, THC, MAN, CLB, COM, DEC } from "./modules/abilities.js";
     // import { DSS, DSIGN, GRS, POINT, ARCHIZ, REZVINCI } from "./modules/experiences.js";
@@ -18,15 +16,13 @@
     import { domain }       from "./modules/domain.js";
     import { loaders }      from "./modules/loaders.js"
     import { scenes }       from "./modules/scene.js";
-    import { objects }       from "./modules/objects.js";
+    import { objects }      from "./modules/objects.js";
     import { informations } from "./modules/abouts.js";
     import { lights }       from "./modules/lights.js";
     import { cameras }      from "./modules/cameras.js";
     import { renders }      from "./modules/render.js";
     import { controls }     from "./modules/controls.js";
 
-
-    console.log(informations.symbols)
     /* ELEMENTS */
         let dom                 = domain;
 
@@ -57,7 +53,6 @@
         let style               = informations.styles[buildingIndex];
 
         let symbols             = Object.values(abilities)
-        console.log(names, abouts, types, styles);
         
     /* MESHES */
         let neighbor            = objects.neighbor.main;
@@ -69,6 +64,18 @@
         let texturePaths        = textures[buildingIndex];
 
     /* MATERIAL */ 
+        const neighborMaterials = {
+        paperMat            : new THREE.MeshStandardMaterial({color: 'grey', roughness: 0.5, metalness: 0.5}),
+        glassMat            : new THREE.MeshPhysicalMaterial({
+            color: 'lightblue', 
+            roughness: 0.1, 
+            metalness: 0.5, 
+            transparent: true, 
+            opacity: 0.5, 
+            reflectivity: 0.9,
+            ior: 1.45}),
+        woodMat             : new THREE.MeshStandardMaterial({color: 'brown', roughness: 0.5, metalness: 0.5})}
+        
         let material            = loaders.loadMaterial(texturePaths);
 
     /* LIGHTS */
@@ -119,7 +126,7 @@
         console.log(`Changed indexes ${buildingIndex+1} / ${buildings.length}`);
         updateReferences();
         // loaders.loadPage();
-        loaders.loadNeighboar(scene, light, neighbor);
+        loaders.loadNeighboar(scene, light, neighbor, neighborMaterials);
 
     /* RENDERER */
         const renderer = renders(
@@ -133,7 +140,6 @@
             renderer.domElement);
 
     /* ACTIONS */
-        console.log(dom.abouts)
         dom.nextBtn.addEventListener    
             ('click', ()=>{
                 nextBuildingIndex();

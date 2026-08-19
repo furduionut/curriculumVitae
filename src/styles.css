@@ -338,6 +338,7 @@ body {
     width: 100%;
     height: auto;
     /* position */
+    position: sticky;
     /* distance */
     gap: var(--general-gap);
     /* geometry */
@@ -351,11 +352,16 @@ body {
     flex-shrink: 1;
     /* content */
 }
+/* GUI CONTROL */
+.dg {
+    z-index: 999999 !important;
+  }
+  
 .canvas {
     /* box */
     /* size */
     width: 100%;
-    height: 120em;
+    height: 60em;
     /* position */
     /* distance */
     /* geometry */

@@ -2,6 +2,8 @@ import * as THREE       from "three";
 
 import { GLTFLoader }   from "three/examples/jsm/Addons.js";
 import { DRACOLoader }  from "three/examples/jsm/Addons.js";
+
+
 import { BIM, DWG, TXT, OBJ, IMG, SWG, CGI, ART, THC, MAN, CLB, COM, DEC } from "./abilities.js";
 import { styles } from "./styles.js";
 import { domain as dom } from "./domain.js";
@@ -83,12 +85,19 @@ import { domain as dom } from "./domain.js";
         informations.appendChild(clasifications);
         };
 
-    function loadingNeighbor        (scene, light, building){ 
+    function loadingNeighbor        (scene, light, building, material){ 
         gltfLoader.load(building, (gltf) => 
             {currentBuilding = gltf.scene;
             currentBuilding.name = 'pageLayout';
             currentBuilding.position.set(0, -.1, 0);
-            console.log(currentBuilding);
+            
+            currentBuilding.traverse(
+                (child) => {
+                    if (child.name.includes('neighboar')) {child.material = material.glassMat;}
+                    if (child.name.includes('papper')) {child.material = material.paperMat;}
+                    if (child.name.includes('desk')) {child.material = material.woodMat;}
+                });
+            
             scene.add(light.ambientLight, light.keyLight);
             scene.add(currentBuilding);})};
 
@@ -380,8 +389,6 @@ import { domain as dom } from "./domain.js";
         }
         else {console.log('no skill to show')}
         }
-
-
 
     const loaders = {
         loadPage:           createLoadingPage,

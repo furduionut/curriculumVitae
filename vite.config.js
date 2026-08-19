@@ -2,6 +2,10 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
     base: "/curriculumVitae/",
+    server: {
+      port: 9010,
+      strictPort: true
+    },
     plugins: [{
     name: 'reload',
     configureServer(server) {
