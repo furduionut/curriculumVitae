@@ -47,6 +47,7 @@ const scenes = {
     scenes.mainScene.background = new THREE.Color(styles.color1);
     scenes.mainScene.environment = hdrTexture;
     scenes.mainScene.add(skybox);
+    scenes.mainScene.backgroundBlurriness = 0.3
 
 /* EXPORT */
 

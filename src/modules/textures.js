@@ -1,6 +1,7 @@
 /* IMPORTS */
 import * as THREE from "three";
 import { HDRLoader } from "three/examples/jsm/Addons.js";
+import { pmremGenerator } from "./render.js";
 
 /* CUBE PROJECTION */
     const   cubeTextureLoader = new THREE.CubeTextureLoader();
@@ -21,5 +22,9 @@ import { HDRLoader } from "three/examples/jsm/Addons.js";
     const   hdrLoader = new HDRLoader();
     const   hdrTexture = hdrLoader.load('./assets/textures/environment/pavStudio/pav_studio_03_1k.hdr');
             hdrTexture.mapping = THREE.EquirectangularReflectionMapping;
-    
-export {hdrTexture}
+
+    const   envMap = pmremGenerator.fromCubemap(cubeTextures).texture;
+
+    console.log (envMap)
+
+export { hdrTexture, envMap }

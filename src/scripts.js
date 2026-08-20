@@ -1,8 +1,9 @@
 
     // IMPORTS
     import "./styles.css";
-    import * as THREE from "three";
-    import { hdrTexture } from "./modules/textures.js";
+    import * as THREE       from "three";
+    import { hdrTexture }   from "./modules/textures.js";
+    import { envMap }       from "./modules/textures.js";
 
     import { personal }     from "./modules/personal.js";
     import { projects }     from "./modules/projects.js";
@@ -17,7 +18,7 @@
     import { informations } from "./modules/abouts.js";
     import { lights }       from "./modules/lights.js";
     import { cameras }      from "./modules/cameras.js";
-    import { renders }      from "./modules/render.js";
+    import { renderer }     from "./modules/render.js";
     import { controls }     from "./modules/controls.js";
 
     /* ELEMENTS */
@@ -74,6 +75,7 @@
             roughness: 0,
             metalness: 0.1,
             transmission: 1.0,
+            envMap: envMap,
             envMapIntensity: 25,
             thickness: .1,
             ior: 1.5,
@@ -140,14 +142,10 @@
         loaders.loadNeighboar(scene, light, neighbor, neighborMaterials);
 
     /* RENDERER */
-        const renderer = renders(
+        /* const renderer = renders(
             dom.viewport.clientWidth, 
             dom.viewport.clientHeight, 
-            dom.canvas);
-
-    /* PMREM */
-        const pmremGenerator = new THREE.PMREMGenerator(renderer);
-        
+            dom.canvas); */
 
     /* CONTROL */
         const control = controls(

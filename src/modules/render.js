@@ -1,6 +1,9 @@
 /* IMPORTS */
 import * as THREE from "three";
+import { domain } from "./domain.js";
+import { hdrTexture } from "./textures.js";
 
+let dom                 = domain;
 
 const renders = (rendererWidth, rendererHeight, canvas) => {
     const render = new THREE.WebGLRenderer({antialias: true});
@@ -11,6 +14,14 @@ const renders = (rendererWidth, rendererHeight, canvas) => {
     return render
 }
 
+const renderer = renders(
+    dom.viewport.clientWidth, 
+    dom.viewport.clientHeight, 
+    dom.canvas);
+
+const pmremGenerator = new THREE.PMREMGenerator(renderer);
+pmremGenerator.compileCubemapShader();
+
 /* EXPORT */
-    export { renders }
+    export { renders, renderer, pmremGenerator }
 
