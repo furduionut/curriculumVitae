@@ -85,18 +85,24 @@ import { domain as dom } from "./domain.js";
         informations.appendChild(clasifications);
         };
 
+    let scaleX = 1;
+    let scaleY = 1;
+    let scaleZ = 1;
+
     function loadingNeighbor        (scene, light, building, material){ 
         gltfLoader.load(building, (gltf) => 
             {currentBuilding = gltf.scene;
             currentBuilding.name = 'pageLayout';
             currentBuilding.position.set(0, -.1, 0);
-            
+            currentBuilding.scale.set(scaleX, scaleY, scaleZ);
             currentBuilding.traverse(
                 (child) => {
                     if (child.name.includes('neighboar')) {child.material = material.glassMat;}
                     if (child.name.includes('papper')) {child.material = material.paperMat;}
                     if (child.name.includes('desk')) {child.material = material.woodMat;}
                 });
+            light.ambientLight.lookAt(currentBuilding.position);
+            light.keyLight.lookAt(currentBuilding.position);
             
             scene.add(light.ambientLight, light.keyLight);
             scene.add(currentBuilding);})};
@@ -114,7 +120,7 @@ import { domain as dom } from "./domain.js";
             
             console.log(`Changed building to ${building}`);
             currentBuilding.position.set(-50 , 0, -100);
-
+            currentBuilding.scale.set(scaleX, scaleY, scaleZ);
             currentBuilding.traverse((child) => {
                 if (child.isMesh) {child.material = material;}
             console.log(`Changed material to ${child.material}`)
@@ -136,6 +142,7 @@ import { domain as dom } from "./domain.js";
             
             console.log(`Changed model to ${model}`);
             currentModel.position.set(-50 , 0, -100);
+            currentModel.scale.set(scaleX, scaleY, scaleZ);
             currentModel.traverse((child) => {  
                 if (child.isMesh) {child.material = material;}
             console.log(`Changed material to ${child.material}`)

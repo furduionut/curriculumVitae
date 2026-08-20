@@ -2,10 +2,7 @@
     // IMPORTS
     import "./styles.css";
     import * as THREE from "three";
-
-    import { PLP, ORG, SOFT } from "./modules/credits.js";
-    import { BIM, DWG, TXT, OBJ, IMG, SWG, CGI, ART, THC, MAN, CLB, COM, DEC } from "./modules/abilities.js";
-    // import { DSS, DSIGN, GRS, POINT, ARCHIZ, REZVINCI } from "./modules/experiences.js";
+    import { hdrTexture } from "./modules/textures.js";
 
     import { personal }     from "./modules/personal.js";
     import { projects }     from "./modules/projects.js";
@@ -34,7 +31,7 @@
         let scene               = scenes.mainScene;
 
     /* CAMERAS */
-        let camera              = cameras.orhographic;
+        let camera              = cameras.orthographic;
         
     /* EXTRACTS */
         let buildings           = objects.buildingsList;
@@ -65,16 +62,30 @@
 
     /* MATERIAL */ 
         const neighborMaterials = {
-        paperMat            : new THREE.MeshStandardMaterial({color: 'grey', roughness: 0.5, metalness: 0.5}),
+        paperMat            : new THREE.MeshStandardMaterial({
+            color: 'grey', 
+            roughness: 0.5, 
+            metalness: 0.5,
+            envMapIntensity: 1.5
+        }),
+
         glassMat            : new THREE.MeshPhysicalMaterial({
-            color: 'lightblue', 
-            roughness: 0.1, 
-            metalness: 0.5, 
-            transparent: true, 
-            opacity: 0.5, 
-            reflectivity: 0.9,
-            ior: 1.45}),
-        woodMat             : new THREE.MeshStandardMaterial({color: 'brown', roughness: 0.5, metalness: 0.5})}
+            color: 'grey',
+            roughness: 0,
+            metalness: 0.1,
+            transmission: 1.0,
+            envMapIntensity: 25,
+            thickness: .1,
+            ior: 1.5,
+            transparent: true
+        }),
+
+        woodMat             : new THREE.MeshStandardMaterial({
+            color: 'brown', 
+            roughness: 0.5, 
+            metalness: 0.5,
+            envMapIntensity: 1.5
+        })}
         
         let material            = loaders.loadMaterial(texturePaths);
 
@@ -133,6 +144,10 @@
             dom.viewport.clientWidth, 
             dom.viewport.clientHeight, 
             dom.canvas);
+
+    /* PMREM */
+        const pmremGenerator = new THREE.PMREMGenerator(renderer);
+        
 
     /* CONTROL */
         const control = controls(

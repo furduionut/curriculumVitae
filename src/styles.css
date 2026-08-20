@@ -356,7 +356,14 @@ body {
 .dg {
     z-index: 999999 !important;
   }
+
+.dg .cr .property-name {
+    color: #fff !important;
+}
   
+.dg .title {
+    color: rgb(32, 208, 55) !important;
+}
 .canvas {
     /* box */
     /* size */
