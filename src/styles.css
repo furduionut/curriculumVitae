@@ -385,6 +385,7 @@ body {
     background: rgba(173, 182, 211, 0.35);
     mix-blend-mode: multiply;
 }
+ 
 .controls {
     /* box */
     padding-top: 1em;
@@ -393,7 +394,7 @@ body {
     height: 35em;
     /* position */
     position: fixed;
-    top: 10em;
+    top: 50em;
     /* distance */
     gap: var(--general-gap);
     /* geometry */
@@ -404,6 +405,7 @@ body {
     align-items: flex-end;
     /* content */
 }
+
 .stageNav {
     /* box */
     /* size */

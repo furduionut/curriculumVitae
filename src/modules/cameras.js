@@ -2,30 +2,32 @@
     import * as THREE from "three";
     import { GUI } from 'dat.gui';
 
-
 /* DOM ELEMETS */
     const viewport      = document.getElementById('viewport');
 
 /* CAMERA PARAMETERS */
     const orthographicParams = {
-        zoom: 2.5,
+        zoom: 1.25,
         width: viewport.clientWidth,
         height: viewport.clientHeight,
         aspect: viewport.clientWidth / viewport.clientHeight,
-        dimension: 200,
-        far: 1000,
+        dimension: 10,
+        far: 25,
         near: 0.01,
         offsetX: 250,
-        offsetY: -500
+        offsetY: -750
     }
 
     const perpectiveParams = {
-        fov: 75,
+        fov: 30,
         width: viewport.clientWidth,
         height: viewport.clientHeight,
         aspect: viewport.clientWidth / viewport.clientHeight,
-        far: 200,
-        near: 0.1
+        far: 75,
+        near: 0.01,
+        positionX: 10,
+        positionY: 10,
+        positionZ: 10
     }
 
 /* CAMERA INITIATION */
@@ -41,12 +43,14 @@
                 ),
         perspective: new THREE.PerspectiveCamera
                 (
-                    75, 
-                    orthographicParams.aspect, 
-                    orthographicParams.near, 
-                    orthographicParams.far
+                    perpectiveParams.fov, 
+                    perpectiveParams.aspect, 
+                    perpectiveParams.near, 
+                    perpectiveParams.far
                 )
     }
+
+
 
 /* CAMERA SETUP */
     cameras.orthographic.zoom = orthographicParams.zoom;
@@ -59,23 +63,28 @@
         orthographicParams.height);
     cameras.orthographic.updateProjectionMatrix();
 
+    cameras.perspective.position.set(
+        perpectiveParams.positionX,
+        perpectiveParams.positionX,
+        perpectiveParams.positionX);
+
 /* GUI ELEMENT */
     const gui = new GUI();
-    const cameraFolder = gui.addFolder('Orthographic Camera');
+    const orthocameraFolder = gui.addFolder('Orthographic Camera');
 
-    cameraFolder.add(orthographicParams, 'zoom', 1, 10, 0.01).onChange(value=>{
+    orthocameraFolder.add(orthographicParams, 'zoom', 1, 2.5, 0.01).onChange(value=>{
         cameras.orthographic.zoom = value;
         cameras.orthographic.updateProjectionMatrix();});
 
-    cameraFolder.add(orthographicParams, 'near', 0, 300, 0.001).onChange(value=>{
+    orthocameraFolder.add(orthographicParams, 'near', 0, 25, 0.01).onChange(value=>{
         cameras.orthographic.near = value;
         cameras.orthographic.updateProjectionMatrix();});
 
-    cameraFolder.add(orthographicParams, 'far', 0, 250, 0.001).onChange(value=>{
+    orthocameraFolder.add(orthographicParams, 'far', 0, 25, 0.01).onChange(value=>{
         cameras.orthographic.far = value;
         cameras.orthographic.updateProjectionMatrix();});    
         
-    cameraFolder.add(orthographicParams, 'offsetX', -1000, 1500, 0.01).onChange(value=>{
+    orthocameraFolder.add(orthographicParams, 'offsetX', -10, 15, 0.01).onChange(value=>{
         cameras.orthographic.setViewOffset(
             orthographicParams.width,      
             orthographicParams.height,     
@@ -86,7 +95,7 @@
         );
         cameras.orthographic.updateProjectionMatrix();});
 
-    cameraFolder.add(orthographicParams, 'offsetY', -1000, 1500, 0.01).onChange(value=>{
+    orthocameraFolder.add(orthographicParams, 'offsetY', -10, 15, 0.01).onChange(value=>{
         cameras.orthographic.setViewOffset(
             orthographicParams.width,      
             orthographicParams.height,     
@@ -97,14 +106,35 @@
         );
         cameras.orthographic.updateProjectionMatrix();});    
     
-    cameraFolder.open();
+    orthocameraFolder.open();
 
-    /* const perspectiveCameraFolder = gui.addFolder('Perspective Camera');
-        perspectiveCameraFolder.add(perpectiveParams, 'fov', 1, 180, 0.01).onChange(value=>{
-            cameras.perspective.fov = value;
-            cameras.perspective.updateProjectionMatrix();});
+    const perspCameraFolder = gui.addFolder('Perspective Camera');
 
-    perspectiveCameraFolder.open(); */
+    perspCameraFolder.add(perpectiveParams, 'fov', 1, 75, 0.01).onChange(value=>{
+        cameras.perspective.fov = value;
+        cameras.perspective.updateProjectionMatrix();});
+
+    perspCameraFolder.add(perpectiveParams, 'near', 0.01, 50, 0.01).onChange(value=>{    
+        cameras.perspective.near = value;
+        cameras.perspective.updateProjectionMatrix();});
+
+    perspCameraFolder.add(perpectiveParams, 'far', 0.01, 100, 0.01).onChange(value=>{
+        cameras.perspective.far = value;
+        cameras.perspective.updateProjectionMatrix();});
+
+    perspCameraFolder.add(perpectiveParams, 'positionX', 0, 15, 0.01).onChange(value=>{
+        cameras.perspective.position.x = value;
+        cameras.perspective.updateProjectionMatrix();});
+    
+    perspCameraFolder.add(perpectiveParams, 'positionY', 0, 15, 0.01).onChange(value=>{
+        cameras.perspective.position.y = value;
+        cameras.perspective.updateProjectionMatrix();});
+
+    perspCameraFolder.add(perpectiveParams, 'positionZ', 0, 15, 0.01).onChange(value=>{
+        cameras.perspective.position.z = value;
+        cameras.perspective.updateProjectionMatrix();});
+
+    perspCameraFolder.open();
 
 /* EXPORTS */
     export {cameras} 

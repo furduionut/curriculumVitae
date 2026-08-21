@@ -85,15 +85,16 @@ import { domain as dom } from "./domain.js";
         informations.appendChild(clasifications);
         };
 
-    let scaleX = 1;
-    let scaleY = 1;
-    let scaleZ = 1;
+    let scale  = .1;
+    let scaleX = scale;
+    let scaleY = scale;
+    let scaleZ = scale;
 
     function loadingNeighbor        (scene, light, building, material){ 
         gltfLoader.load(building, (gltf) => 
             {currentBuilding = gltf.scene;
             currentBuilding.name = 'pageLayout';
-            currentBuilding.position.set(0, -.1, 0);
+            currentBuilding.position.set(0 *scale, -.1 *scale, 0 *scale);
             currentBuilding.scale.set(scaleX, scaleY, scaleZ);
             currentBuilding.traverse(
                 (child) => {
@@ -101,11 +102,10 @@ import { domain as dom } from "./domain.js";
                     if (child.name.includes('papper')) {child.material = material.paperMat;}
                     if (child.name.includes('desk')) {child.material = material.woodMat;}
                 });
-            light.ambientLight.lookAt(currentBuilding.position);
-            light.keyLight.lookAt(currentBuilding.position);
-            
-            scene.add(light.ambientLight, light.keyLight);
-            scene.add(currentBuilding);})};
+            // currentBuilding.castShadow = true;
+            // currentBuilding.receiveShadow = true;
+            scene.add(currentBuilding);})
+        };
 
     function loadingBuilding        (scene, light, building, material){ 
         gltfLoader.load( building, (gltf) => 
@@ -119,14 +119,12 @@ import { domain as dom } from "./domain.js";
             console.log(currentBuilding);
             
             console.log(`Changed building to ${building}`);
-            currentBuilding.position.set(-50 , 0, -100);
+            currentBuilding.position.set(-50 * scale , 0 * scale, -100 * scale);
             currentBuilding.scale.set(scaleX, scaleY, scaleZ);
             currentBuilding.traverse((child) => {
                 if (child.isMesh) {child.material = material;}
             console.log(`Changed material to ${child.material}`)
             });
-            
-            scene.add(light.ambientLight, light.keyLight);
             scene.add(currentBuilding);
             })
         };
@@ -141,14 +139,12 @@ import { domain as dom } from "./domain.js";
             currentModel = gltf.scene;
             
             console.log(`Changed model to ${model}`);
-            currentModel.position.set(-50 , 0, -100);
+            currentModel.position.set(-50 * scale , 0 * scale, -100 * scale);
             currentModel.scale.set(scaleX, scaleY, scaleZ);
             currentModel.traverse((child) => {  
                 if (child.isMesh) {child.material = material;}
             console.log(`Changed material to ${child.material}`)
             }); 
-            
-            scene.add(light.ambientLight, light.keyLight);
             scene.add(currentModel);
             })
         };
@@ -193,7 +189,7 @@ import { domain as dom } from "./domain.js";
         hardAbility.appendChild     (hardSkill);
         };
 
-    const loadingExperience     = (dom, experiences) => {
+    const   loadingExperience     = (dom, experiences) => {
         const archExpNames  = experiences.map(e => e.identifier.name);
         const archPeriods   = experiences.map(e => e.identifier.period);
         const archAbout     = experiences.map(e => e.identifier.about);
@@ -237,9 +233,9 @@ import { domain as dom } from "./domain.js";
         experience.appendChild(geometryUp, content, geometryDown, treeBind);
         dom.appendChild(experience);
     })
-    }
+        };
 
-    const loadingSkill          = (dom, skills, style) => {
+    const   loadingSkill          = (dom, skills, style) => {
         const   skill = document.createElement('div');
                 skill.setAttribute      ('class', 'skill');
                 skill.style.padding         = style.padding;
@@ -263,9 +259,9 @@ import { domain as dom } from "./domain.js";
         
         skill.appendChild(symbol, bar);
         hardLeveling.appendChild(skill);
-    }
+        };
 
-    const showLevel = (e) => {
+    const   showLevel = (e) => {
         // Choosing object based on className
         switch (e) {
             case 'BIM': e = BIM;
@@ -395,7 +391,7 @@ import { domain as dom } from "./domain.js";
         }
         }
         else {console.log('no skill to show')}
-        }
+        };
 
     const loaders = {
         loadPage:           createLoadingPage,

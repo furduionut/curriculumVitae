@@ -2,6 +2,7 @@
 import * as THREE from "three";
 import { styles } from "./styles";
 import { hdrTexture } from "./textures.js";
+import { cubeTexture } from "./textures.js";
 import { GroundedSkybox } from "three/examples/jsm/Addons.js";
 import { GUI } from "dat.gui";
 
@@ -23,7 +24,7 @@ const scenes = {
         resolution: 1024
     }
 
-    const skybox = new GroundedSkybox(hdrTexture, skyBoxParam.radius, skyBoxParam.resolution);
+    const skybox = new GroundedSkybox('', skyBoxParam.radius, skyBoxParam.resolution);
     skybox.position.set(-50 , 0, -100);
     
     const gui = new GUI();
@@ -45,9 +46,9 @@ const scenes = {
 
 /* SCENE PARAMETERS */
     scenes.mainScene.background = new THREE.Color(styles.color1);
-    scenes.mainScene.environment = hdrTexture;
-    scenes.mainScene.add(skybox);
-    scenes.mainScene.backgroundBlurriness = 0.3
+    // scenes.mainScene.environment = hdrTexture;
+    // scenes.mainScene.add(skybox);
+    // scenes.mainScene.backgroundBlurriness = 0.3
 
 /* EXPORT */
 

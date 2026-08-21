@@ -2,8 +2,8 @@
     // IMPORTS
     import "./styles.css";
     import * as THREE       from "three";
-    import { hdrTexture }   from "./modules/textures.js";
-    import { envMap }       from "./modules/textures.js";
+    import { UltraHDRLoader }       from "three/examples/jsm/Addons.js";
+    import { HDRLoader }            from "three/examples/jsm/Addons.js";
 
     import { personal }     from "./modules/personal.js";
     import { projects }     from "./modules/projects.js";
@@ -17,6 +17,7 @@
     import { objects }      from "./modules/objects.js";
     import { informations } from "./modules/abouts.js";
     import { lights }       from "./modules/lights.js";
+    import { helpers }      from "./modules/lights.js";
     import { cameras }      from "./modules/cameras.js";
     import { renderer }     from "./modules/render.js";
     import { controls }     from "./modules/controls.js";
@@ -32,8 +33,11 @@
         let scene               = scenes.mainScene;
 
     /* CAMERAS */
-        let camera              = cameras.orthographic;
-        
+        let camera              = cameras.perspective;
+     
+    /* CAMERA FOCUS */
+        const focusPoint        = new THREE.Vector3(-5, 0, -10);
+
     /* EXTRACTS */
         let buildings           = objects.buildingsList;
         let models              = objects.modelsList;
@@ -54,7 +58,6 @@
         
     /* MESHES */
         let neighbor            = objects.neighbor.main;
-
         let building            = buildings[buildingIndex];
         let model               = models[buildingIndex][buildingModelIndex];
         
@@ -64,35 +67,36 @@
     /* MATERIAL */ 
         const neighborMaterials = {
         paperMat            : new THREE.MeshStandardMaterial({
-            color: 'grey', 
-            roughness: 0.5, 
-            metalness: 0.5,
-            envMapIntensity: 1.5
+            color: 'red', 
+            roughness: 1, 
+            envMapIntensity: .5
         }),
 
         glassMat            : new THREE.MeshPhysicalMaterial({
-            color: 'grey',
-            roughness: 0,
-            metalness: 0.1,
-            transmission: 1.0,
-            envMap: envMap,
-            envMapIntensity: 25,
-            thickness: .1,
-            ior: 1.5,
+            color: 'white',
+            roughness: 0.1,
+            metalness: 0.5,
+            transmission: 1,
+            thickness: 1.25,
+            ior: 1.45,
+            envMapIntensity: 2.75,
             transparent: true
         }),
 
         woodMat             : new THREE.MeshStandardMaterial({
             color: 'brown', 
-            roughness: 0.5, 
-            metalness: 0.5,
-            envMapIntensity: 1.5
+            roughness: 1, 
+            envMapIntensity: .5
         })}
         
         let material            = loaders.loadMaterial(texturePaths);
 
     /* LIGHTS */
         let light               = lights;
+        Object.values(light).forEach((light) => {scene.add(light)});
+
+        let helpersLight          = helpers;
+        Object.values(helpers).forEach((helper) => {scene.add(helper)});
 
     /* ACTIONS */
         const nextBuildingIndex = () => {
@@ -141,12 +145,6 @@
         // loaders.loadPage();
         loaders.loadNeighboar(scene, light, neighbor, neighborMaterials);
 
-    /* RENDERER */
-        /* const renderer = renders(
-            dom.viewport.clientWidth, 
-            dom.viewport.clientHeight, 
-            dom.canvas); */
-
     /* CONTROL */
         const control = controls(
             camera, 
@@ -188,10 +186,21 @@
         dom.abilitiesBtn.forEach        ((btn) => {btn.addEventListener
             ('click', () => {loaders.loadLevel(`${btn.className}`)} )});
     
+    // ENVIRONMENT
+        const   hdrLoader       = new HDRLoader();
+                hdrLoader.load('./assets/textures/environment/cloisterPassage/cloisterPassage_1k.hdr', 
+                    (texture) => {
+                        texture.mapping = THREE.EquirectangularReflectionMapping;
+                        scene.environment = texture;
+                    },
+                    undefined,
+                    (err) => console.log('HDR load error', err))
+                    
     // RENDERING
         function animate() {
             requestAnimationFrame(animate);
             control.update();
             renderer.render(scene, camera);
         }
+
         animate()

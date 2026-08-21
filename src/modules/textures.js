@@ -1,30 +1,20 @@
 /* IMPORTS */
-import * as THREE from "three";
-import { HDRLoader } from "three/examples/jsm/Addons.js";
-import { pmremGenerator } from "./render.js";
+import * as THREE               from "three";
+import { HDRLoader }            from "three/examples/jsm/Addons.js";
+import { UltraHDRLoader }       from "three/examples/jsm/Addons.js";
+import { pmremGenerator }       from "./render.js";
+
+let hdrTexture, cubeTexture, exrTexture, envMap;
+
+/* ENVIRONMENT MAP */
 
 /* CUBE PROJECTION */
-    const   cubeTextureLoader = new THREE.CubeTextureLoader();
-            cubeTextureLoader.setPath('./assets/textures/environment/pavStudio4k/cubeTextures/');
-
-    const   cubeTextures = cubeTextureLoader.load([
-        'px.png',
-        'nx.png',
-        'py.png',
-        'ny.png',
-        'pz.png',
-        'nz.png'], 
-        ()=>{}, 
-        ()=>{}, 
-        ()=>{});
+        const   cubeTextureLoader = new THREE.CubeTextureLoader();
 
 /* HDR PROJECTION */
-    const   hdrLoader = new HDRLoader();
-    const   hdrTexture = hdrLoader.load('./assets/textures/environment/pavStudio/pav_studio_03_1k.hdr');
-            hdrTexture.mapping = THREE.EquirectangularReflectionMapping;
+        const   hdrLoader       = new HDRLoader();
+        const   ultraHDRLoader  = new UltraHDRLoader();
 
-    const   envMap = pmremGenerator.fromCubemap(cubeTextures).texture;
+/* EXR PROJECTION */
 
-    console.log (envMap)
-
-export { hdrTexture, envMap }
+export { hdrTexture, cubeTexture, exrTexture, envMap }

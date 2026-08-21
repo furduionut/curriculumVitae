@@ -1,7 +1,6 @@
 /* IMPORTS */
 import * as THREE from "three";
 import { domain } from "./domain.js";
-import { hdrTexture } from "./textures.js";
 
 let dom                 = domain;
 
@@ -19,9 +18,9 @@ const renderer = renders(
     dom.viewport.clientHeight, 
     dom.canvas);
 
-const pmremGenerator = new THREE.PMREMGenerator(renderer);
-pmremGenerator.compileCubemapShader();
+
+const pmremGenerator  = new THREE.PMREMGenerator(renderer);
 
 /* EXPORT */
-    export { renders, renderer, pmremGenerator }
+    export { renders, renderer, pmremGenerator}
 
