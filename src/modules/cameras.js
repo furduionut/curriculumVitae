@@ -50,8 +50,6 @@
                 )
     }
 
-
-
 /* CAMERA SETUP */
     cameras.orthographic.zoom = orthographicParams.zoom;
     cameras.orthographic.setViewOffset(
@@ -67,6 +65,12 @@
         perpectiveParams.positionX,
         perpectiveParams.positionX,
         perpectiveParams.positionX);
+
+    cameras.perspective.rotation.set(
+        10 * Math.PI,
+        10 * Math.PI,
+        10 * Math.PI
+    )
 
 /* GUI ELEMENT */
     const gui = new GUI();

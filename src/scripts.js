@@ -2,8 +2,13 @@
     // IMPORTS
     import "./styles.css";
     import * as THREE       from "three";
-    import { UltraHDRLoader }       from "three/examples/jsm/Addons.js";
-    import { HDRLoader }            from "three/examples/jsm/Addons.js";
+    import { HDRLoader }    from "three/examples/jsm/Addons.js";
+    import { gsap }         from "gsap";
+    import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+    import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+    import { RenderPass }   from "three/examples/jsm/postprocessing/RenderPass.js";
+    import { BokehPass }    from "three/examples/jsm/postprocessing/BokehPass.js";
 
     import { personal }     from "./modules/personal.js";
     import { projects }     from "./modules/projects.js";
@@ -21,6 +26,7 @@
     import { cameras }      from "./modules/cameras.js";
     import { renderer }     from "./modules/render.js";
     import { controls }     from "./modules/controls.js";
+import { PI } from "three/tsl";
 
     /* ELEMENTS */
         let dom                 = domain;
@@ -150,6 +156,26 @@
             camera, 
             renderer.domElement);
 
+    /* ANIMATION */
+        // gsap.to ("target", {anyCSSpropriety/-es, duration}) tween with playhead
+        // let timeline = gspa.timeline()
+        // tl.to(("target", {anyCSSpropriety/-es, duration}, start))
+        // control methods - play(), pause(), resume()...
+        // gsap.registerPlugin(...);
+        // plugins (scroll plugins, text plugins, svg plugins...)
+
+        // scroll down trigger and moving it.... scrollY var
+        // let scrollY = window.scrollY
+        // let currentSection = 0;
+        // window.addEventListener();
+
+        // Create sections to be logged by window.addEvent() like in bruno's video
+
+        gsap.registerPlugin(ScrollTrigger);
+        gsap.fromTo (camera.position, 
+            {x:10, y:25, z:10}, 
+            {x: 0, y: 0, z: 0, duration: 5})
+
     /* ACTIONS */
         dom.nextBtn.addEventListener    
             ('click', ()=>{
@@ -195,7 +221,14 @@
                     },
                     undefined,
                     (err) => console.log('HDR load error', err))
-                    
+    
+    
+    // COMPOSER
+        const composer   = new EffectComposer(renderer);
+
+    // RENDERPASS
+        const renderPass = new RenderPass(scene, camera);
+
     // RENDERING
         function animate() {
             requestAnimationFrame(animate);
