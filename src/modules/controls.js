@@ -13,7 +13,7 @@ const controls = (camera, renderDom) => {
     control.enableZoom = true;
     control.zoomToCursor = true;
     control.enablePan = true;
-    control.zoomSpeed = 3;
+    control.zoomSpeed = 3; 
     // control.minDistance = 10;  // Limit zoom to a certain minimum distance
     // control.maxDistance = 10; // Limit zoom to a certain maximum distance
     // control.maxPolarAngle = Math.PI / 3; // Prevent vertical rotation (limit pitch to 90 degrees)

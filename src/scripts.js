@@ -4,7 +4,10 @@
     import * as THREE       from "three";
     import { HDRLoader }    from "three/examples/jsm/Addons.js";
     import { gsap }         from "gsap";
+    import  Stats         from "stats.js";
+    // import { stats }
     import { ScrollTrigger } from "gsap/ScrollTrigger";
+    
 
     import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
     import { RenderPass }   from "three/examples/jsm/postprocessing/RenderPass.js";
@@ -151,10 +154,15 @@ import { PI } from "three/tsl";
         // loaders.loadPage();
         loaders.loadNeighboar(scene, light, neighbor, neighborMaterials);
 
+
     /* CONTROL */
         const control = controls(
             camera, 
             renderer.domElement);
+    /* PERFORMANCE STATS */
+        var stats = new Stats();
+            stats.showPanel(1);
+        document.body.appendChild(stats.dom);
 
     /* ANIMATION */
         // gsap.to ("target", {anyCSSpropriety/-es, duration}) tween with playhead
@@ -164,17 +172,10 @@ import { PI } from "three/tsl";
         // gsap.registerPlugin(...);
         // plugins (scroll plugins, text plugins, svg plugins...)
 
-        // scroll down trigger and moving it.... scrollY var
-        // let scrollY = window.scrollY
-        // let currentSection = 0;
+        // 
         // window.addEventListener();
 
         // Create sections to be logged by window.addEvent() like in bruno's video
-
-        gsap.registerPlugin(ScrollTrigger);
-        gsap.fromTo (camera.position, 
-            {x:10, y:25, z:10}, 
-            {x: 0, y: 0, z: 0, duration: 5})
 
     /* ACTIONS */
         dom.nextBtn.addEventListener    
@@ -222,18 +223,83 @@ import { PI } from "three/tsl";
                     undefined,
                     (err) => console.log('HDR load error', err))
     
-    
     // COMPOSER
-        const composer   = new EffectComposer(renderer);
+        const effectComposer   = new EffectComposer(renderer);
 
     // RENDERPASS
         const renderPass = new RenderPass(scene, camera);
+        effectComposer.addPass(renderPass);
+
+    // BLURPASS
+        const blurPass = new BokehPass(scene, camera, {
+            focus: 500,
+            aperture: 5,
+            maxblur: 0.001})
+            
+        effectComposer.addPass( blurPass )
+    /* SCROLL ANIMATION */
+    let currentSection = 0;
+    let scrollY = window.scrollY;
+    window.addEventListener(
+        'scroll', 
+        ()=>{
+            scrollY = window.scrollY;
+            currentSection = scrollY / 1000;
+            console.log(Math.floor(currentSection))})
+
+    // ANIMATION
+    gsap.registerPlugin(ScrollTrigger);
+    let sceneTimeline = gsap.timeline(
+            {scrollTrigger: {
+                trigger: '.viewport',
+                start: "35% 100%",
+                markers: true,
+                toggleActions: "restart pause reverse pause"
+            }});
+
+        sceneTimeline.fromTo(
+                blurPass.uniforms.maxblur,
+                { value: 0.05 },
+                { value: 0.001, duration: 3 });
+
+        sceneTimeline.fromTo (
+                camera, 
+                {zoom: 3},
+                {zoom: 1, 
+                duration:4,
+                onUpdate: ()=>{camera.updateProjectionMatrix()}});
+
+        sceneTimeline.to(
+                ".controls", 
+                { top: "25em", duration: 1},
+                "+=.5");
 
     // RENDERING
         function animate() {
             requestAnimationFrame(animate);
             control.update();
-            renderer.render(scene, camera);
+            // renderer.render(scene, camera);
+            // console.clear();
+            // console.log(
+            //     `
+            //     posX: ${camera.position.x.toFixed(2)}
+            //     posY: ${camera.position.y.toFixed(2)}
+            //     posZ: ${camera.position.y.toFixed(2)}
+            //     `)
+            // console.log(
+            //     `
+            //     rotX: ${camera.rotation.x.toFixed(2)}
+            //     rotY: ${camera.rotation.y.toFixed(2)}
+            //     rotZ: ${camera.rotation.y.toFixed(2)}
+            //     `)
+
+            //  console.log(
+            //     `
+            //     zoom: ${camera.zoom.toFixed(2)}
+            //     fov: ${camera.fov.toFixed(2)}
+            //     `)
+            
+            effectComposer.render();
         }
 
         animate()

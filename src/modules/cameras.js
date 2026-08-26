@@ -27,7 +27,10 @@
         near: 0.01,
         positionX: 10,
         positionY: 10,
-        positionZ: 10
+        positionZ: 10,
+        rotationX: 1,
+        rotationY: 1,
+        rotationZ: 1
     }
 
 /* CAMERA INITIATION */
@@ -71,6 +74,11 @@
         10 * Math.PI,
         10 * Math.PI
     )
+
+    cameras.perspective.zoom = 2;
+    cameras.perspective.updateProjectionMatrix();
+    cameras.perspective.lookAt(-5, 0, -10);
+    cameras.perspective.rotation.set(1, 3, 3)
 
 /* GUI ELEMENT */
     const gui = new GUI();
@@ -126,16 +134,20 @@
         cameras.perspective.far = value;
         cameras.perspective.updateProjectionMatrix();});
 
-    perspCameraFolder.add(perpectiveParams, 'positionX', 0, 15, 0.01).onChange(value=>{
+    perspCameraFolder.add(perpectiveParams, 'positionX', -50, 50, 0.01).onChange(value=>{
         cameras.perspective.position.x = value;
         cameras.perspective.updateProjectionMatrix();});
     
-    perspCameraFolder.add(perpectiveParams, 'positionY', 0, 15, 0.01).onChange(value=>{
+    perspCameraFolder.add(perpectiveParams, 'positionY', -50, 50, 0.01).onChange(value=>{
         cameras.perspective.position.y = value;
         cameras.perspective.updateProjectionMatrix();});
 
-    perspCameraFolder.add(perpectiveParams, 'positionZ', 0, 15, 0.01).onChange(value=>{
+    perspCameraFolder.add(perpectiveParams, 'positionZ', -50, 50, 0.01).onChange(value=>{
         cameras.perspective.position.z = value;
+        cameras.perspective.updateProjectionMatrix();});
+
+    perspCameraFolder.add(perpectiveParams, 'rotationX', -50, 50, 0.01).onChange(value=>{
+        cameras.perspective.rotation.x = value;
         cameras.perspective.updateProjectionMatrix();});
 
     perspCameraFolder.open();
