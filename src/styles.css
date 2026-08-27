@@ -39,7 +39,7 @@
     --ends-order: 4;
 
     /* distance */
-    --general-gap: 1em;
+    --general-gap: 2em;
 
     /* geometry */
     --general-border-radius: 1em;
@@ -148,16 +148,19 @@ li {
 
 body {
     /* box */
+    padding: var(--general-padding);
     /* size */
     height: auto;
     /* position */
     /* distance */
+    gap: var(--general-gap);
     /* style */
     /* color */
     background-color: var(--first-background-color);
     /* display */
     display: flex;
-    flex-flow: column wrap;
+    /* justify-content: space-evenly; */
+    flex-flow: column nowrap;
     /* content */
 }
 
@@ -183,12 +186,11 @@ body {
     padding: var(--general-padding);
     /* size */
     width: 100%;
-    height: 10em;
+    height: auto;
     /* position */
     position: fixed;
     z-index: var(--ends-order);
     /* distance */
-    gap: var(--general-gap);
     /* geometry */
     /* style */
     /* box-shadow: var(--shadow-style) var(--shadow-color); */
@@ -196,8 +198,8 @@ body {
     /* background-color:var(--first-background-color); */
     /* display */
     display: flex;
-    flex-flow: row nowrap;
-    justify-content: flex-start;
+    flex-flow: column nowrap;
+    justify-content: space-evenly;
     align-items: flex-start;
     /* content */
 }
@@ -240,6 +242,7 @@ body {
     /* box */
     /* size */
     width: 100%;
+    height: 1em;
     /* position */
     /* distance */
     gap: var(--general-gap);
@@ -264,7 +267,7 @@ body {
     /* color */
     /* display */
     display:flex;
-    flex-flow: column wrap;
+    /* flex-flow: column wrap; */
     justify-content: space-between;
     align-items: flex-start;
     /* content */
@@ -348,7 +351,7 @@ body {
     top: 0;
     left: 0;
     /* distance */
-    gap: -1;
+    gap: var(--general-gap);
     /* geometry */
     /* style */
     /* color */
@@ -356,9 +359,7 @@ body {
     /* display */
     display: flex;
     flex-flow: column wrap;
-    justify-content: space-evenly;
     align-items: center;
-    flex-shrink: 1;
     /* content */
 }
 .viewport {
@@ -501,7 +502,7 @@ body {
 }
 
 /* ----EXPERIENCES-----*/
-.expBanner {
+.banner {
     /* box */
     padding: var(--general-padding);
     /* size */
@@ -519,11 +520,9 @@ body {
     justify-content: space-between;
     /* content */   
 }
-
-.expBanner:active + .experiences {
+.banner:active + .experiences {
     display: flex;
 }
-
 .experiences{
     /* box */
     padding: var(--general-padding);
@@ -822,7 +821,6 @@ div[class^='geometry'] {
 /* ----ABILITIES-----*/
 .abilities{
     /* box */
-    padding-bottom: 5em;
     /* size */
     width: 100%;
     height: auto;
@@ -883,7 +881,6 @@ div[class^='geometry'] {
     /* position */
     z-index: var(--content-order);
     /* distance */
-    gap: var(--general-gap);
     /* geometry */
     /* style */
     /* color */
@@ -901,7 +898,6 @@ div[class^='geometry'] {
     /* position */
     z-index: var(--content-order);
     /* distance */
-    gap: var(--general-gap);
     /* geometry */
     /* style */
     /* color */
@@ -938,6 +934,7 @@ div[class^='geometry'] {
     padding: var(--general-padding);
     /* size */
     width: 100%;
+    height: auto;
     /* position */
     /* distance */
     gap: var(--general-gap);
@@ -1010,30 +1007,21 @@ div[class^='geometry'] {
 }
 
 /* ----CREDITS-----*/
-.credits {
+.credit {
     /* box */
     padding: var(--general-padding);
     /* size */
     width: 100%;
     height: auto;
     /* position */
-    position: fixed;
-    bottom: 0;
+    position: flex;
     z-index: var(--ends-order);
     /* distance */
     /* geometry */
     /* style */
-    /* box-shadow: var(--shadow-style) var(--shadow-color); */
     /* color */
-    /* background-color:var(--first-background-color); */
     /* display */
     /* content */
-}
-.thanks {
-    display: none;
-}
-.credits:active .thanks{
-    display:block;
 }
 
 /* Responsive Behaviour */

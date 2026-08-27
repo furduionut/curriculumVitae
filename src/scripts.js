@@ -273,12 +273,9 @@
     console.log(`Changed indexes ${buildingIndex+1} / ${buildings.length}`);
     updateReferences();
     // loaders.loadPage();
-    // loadAnimation();
+    loadAnimation();
     loaders.loadNeighboar(scene, light, neighbor, neighborMaterials);
 
-    // async function startingPage() {
-    //     await loaders.loadPage(); 
-    //     await loadAnimation();}
 
     // startingPage();
 
