@@ -4,11 +4,10 @@
     import * as THREE       from "three";
     import { HDRLoader }    from "three/examples/jsm/Addons.js";
     import { gsap }         from "gsap";
-    import  Stats         from "stats.js";
+    import  Stats           from "stats.js";
+
     // import { stats }
     import { ScrollTrigger } from "gsap/ScrollTrigger";
-    
-
     import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
     import { RenderPass }   from "three/examples/jsm/postprocessing/RenderPass.js";
     import { BokehPass }    from "three/examples/jsm/postprocessing/BokehPass.js";
@@ -29,7 +28,6 @@
     import { cameras }      from "./modules/cameras.js";
     import { renderer }     from "./modules/render.js";
     import { controls }     from "./modules/controls.js";
-import { PI } from "three/tsl";
 
     /* ELEMENTS */
         let dom                 = domain;
@@ -43,6 +41,7 @@ import { PI } from "three/tsl";
 
     /* CAMERAS */
         let camera              = cameras.perspective;
+        cameras.perspective.lookAt(0, 0, 0);
      
     /* CAMERA FOCUS */
         const focusPoint        = new THREE.Vector3(-5, 0, -10);
@@ -148,22 +147,44 @@ import { PI } from "three/tsl";
                 model ${model} 
                 textures: ${Object.values(texturePaths).join('\n')}`);}
 
-    /* COMMITS */
-        console.log(`Changed indexes ${buildingIndex+1} / ${buildings.length}`);
-        updateReferences();
-        // loaders.loadPage();
-        loaders.loadNeighboar(scene, light, neighbor, neighborMaterials);
-
-
     /* CONTROL */
         const control = controls(
             camera, 
             renderer.domElement);
+
     /* PERFORMANCE STATS */
         var stats = new Stats();
             stats.showPanel(1);
         document.body.appendChild(stats.dom);
 
+    // AUTOMATIC ANIMATION
+    async function loadAnimation () {
+        gsap.registerPlugin(ScrollTrigger);
+        let sceneTimeline = gsap.timeline(
+                {scrollTrigger: {
+                    trigger: '.viewport',
+                    start: "35% 100%",
+                    markers: true,
+                    toggleActions: "restart pause pause pause"
+                }});
+    
+            sceneTimeline.fromTo(
+                    blurPass.uniforms.maxblur,
+                    { value: 0.05 },
+                    { value: 0.001, duration: 3 });
+    
+            sceneTimeline.fromTo (
+                    camera, 
+                    {zoom: 3},
+                    {zoom: 1, 
+                    duration:4,
+                    onUpdate: ()=>{camera.updateProjectionMatrix()}});
+    
+            sceneTimeline.to(
+                    ".controls", 
+                    { top: "25em", duration: 1},
+                    "+=.5");
+                }
     /* ANIMATION */
         // gsap.to ("target", {anyCSSpropriety/-es, duration}) tween with playhead
         // let timeline = gspa.timeline()
@@ -237,7 +258,8 @@ import { PI } from "three/tsl";
             maxblur: 0.001})
             
         effectComposer.addPass( blurPass )
-    /* SCROLL ANIMATION */
+    
+        /* SCROLL ANIMATION */
     let currentSection = 0;
     let scrollY = window.scrollY;
     window.addEventListener(
@@ -247,59 +269,35 @@ import { PI } from "three/tsl";
             currentSection = scrollY / 1000;
             console.log(Math.floor(currentSection))})
 
-    // ANIMATION
-    gsap.registerPlugin(ScrollTrigger);
-    let sceneTimeline = gsap.timeline(
-            {scrollTrigger: {
-                trigger: '.viewport',
-                start: "35% 100%",
-                markers: true,
-                toggleActions: "restart pause reverse pause"
-            }});
+    /* COMMITS */
+    console.log(`Changed indexes ${buildingIndex+1} / ${buildings.length}`);
+    updateReferences();
+    // loaders.loadPage();
+    // loadAnimation();
+    loaders.loadNeighboar(scene, light, neighbor, neighborMaterials);
 
-        sceneTimeline.fromTo(
-                blurPass.uniforms.maxblur,
-                { value: 0.05 },
-                { value: 0.001, duration: 3 });
+    // async function startingPage() {
+    //     await loaders.loadPage(); 
+    //     await loadAnimation();}
 
-        sceneTimeline.fromTo (
-                camera, 
-                {zoom: 3},
-                {zoom: 1, 
-                duration:4,
-                onUpdate: ()=>{camera.updateProjectionMatrix()}});
+    // startingPage();
 
-        sceneTimeline.to(
-                ".controls", 
-                { top: "25em", duration: 1},
-                "+=.5");
+    // WINDOW EVENTS
+        // CANVAS RESIZE;
+            window.addEventListener('resize', ()=>{});
+
+        // WINDOW RELOAD;
+            window.addEventListener('load', ()=>{});
 
     // RENDERING
         function animate() {
             requestAnimationFrame(animate);
-            control.update();
-            // renderer.render(scene, camera);
-            // console.clear();
-            // console.log(
-            //     `
-            //     posX: ${camera.position.x.toFixed(2)}
-            //     posY: ${camera.position.y.toFixed(2)}
-            //     posZ: ${camera.position.y.toFixed(2)}
-            //     `)
-            // console.log(
-            //     `
-            //     rotX: ${camera.rotation.x.toFixed(2)}
-            //     rotY: ${camera.rotation.y.toFixed(2)}
-            //     rotZ: ${camera.rotation.y.toFixed(2)}
-            //     `)
-
-            //  console.log(
-            //     `
-            //     zoom: ${camera.zoom.toFixed(2)}
-            //     fov: ${camera.fov.toFixed(2)}
-            //     `)
+            // control.update();
+            if (currentSection <= 1) {
+                console.log(currentSection);
+                camera.position.y = 15 - scrollY / 100 *2;
+                camera.lookAt(-5, - scrollY / 100 *1, -10)}
             
-            effectComposer.render();
-        }
+            effectComposer.render();}
 
         animate()

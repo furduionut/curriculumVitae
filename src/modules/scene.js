@@ -40,7 +40,7 @@ const scenes = {
         skyboxControl.add(skyBoxParam, 'scale', -5, 5, 0.01).onChange(value=>{
             skybox.scale.set(value, value, value);});
     
-    skyboxControl.open();
+    skyboxControl.close();
 
 /* GUI */
 

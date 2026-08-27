@@ -13,11 +13,10 @@ const renders = (rendererWidth, rendererHeight, canvas) => {
     return render
 }
 
-const renderer = renders(
+let renderer = renders(
     dom.viewport.clientWidth, 
     dom.viewport.clientHeight, 
     dom.canvas);
-
 
 const pmremGenerator  = new THREE.PMREMGenerator(renderer);
 

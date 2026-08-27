@@ -118,7 +118,7 @@
         );
         cameras.orthographic.updateProjectionMatrix();});    
     
-    orthocameraFolder.open();
+    orthocameraFolder.close();
 
     const perspCameraFolder = gui.addFolder('Perspective Camera');
 
@@ -150,7 +150,7 @@
         cameras.perspective.rotation.x = value;
         cameras.perspective.updateProjectionMatrix();});
 
-    perspCameraFolder.open();
+    perspCameraFolder.close();
 
 /* EXPORTS */
     export {cameras} 

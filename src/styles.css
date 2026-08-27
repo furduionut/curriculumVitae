@@ -1,5 +1,6 @@
 /* Imports */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
 /* Parameteres */
 :root
 {  
@@ -18,9 +19,8 @@
 
     /* sizes */
     --bodyHeight: 300vh; 
-
     --personalsVW: 12.5%;
-    --projectsVW: 30%;
+    --projectsVW: 100%;
     --experiencesVW: 30%;
     --abilitiesVW: auto;
     --creditsVW: 3.5%;
@@ -81,6 +81,26 @@
     /* content */
     --profile-image: url("./public/assets/images/profilePicture.jpg");
 }
+
+/* MATERIALS */
+.glass {
+    background: linear-gradient(
+      to bottom right,
+      rgba(173, 182, 211, 0.35),   /* first-background-color with transparency */
+      rgba(242, 244, 239, 0.15)    /* third-background-color with transparency */
+    );
+  
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  
+    border: 1px solid rgba(138, 153, 161, 0.45); /* border-color */
+    border-radius: var(--general-border-radius);
+  
+    box-shadow:
+      0 0 2em rgba(148, 156, 191, 0.35),         /* shadow-color */
+      inset 0 0 1em rgba(255, 255, 255, 0.25);   /* soft inner glow */
+  }
+
 /* General styles */
 * {
 
@@ -91,7 +111,6 @@
 
     /* border: 1px solid red; */
 }
-
 
 a {
     text-decoration: none;
@@ -159,7 +178,6 @@ body {
     /* display */
     /* content */
 }
-
 .aboutMe {
     /* box */
     padding: var(--general-padding);
@@ -173,9 +191,9 @@ body {
     gap: var(--general-gap);
     /* geometry */
     /* style */
-    box-shadow: var(--shadow-style) var(--shadow-color);
+    /* box-shadow: var(--shadow-style) var(--shadow-color); */
     /* color */
-    background-color:var(--first-background-color);
+    /* background-color:var(--first-background-color); */
     /* display */
     display: flex;
     flex-flow: row nowrap;
@@ -293,12 +311,12 @@ body {
     /* position */
     /* distance */
     /* geometry */
-    border-radius: var(--general-border-radius);
-    aspect-ratio: 1/1;
+    /* border-radius: var(--general-border-radius); */
+    /* aspect-ratio: 1/1; */
     /* style */
-    box-shadow: var(--shadow-style) var(--shadow-color);
+    /* box-shadow: var(--shadow-style) var(--shadow-color); */
     /* color */
-    background-color:var(--first-background-color);
+    /* background-color:var(--first-background-color); */
     /* display */
     display: flex;
     justify-content: center;
@@ -308,16 +326,29 @@ body {
     /* content */
 }
 
-/* ----PROJECTS-----*/
+/*-------DEBUG--------*/
+.dg {
+    z-index: 999999 !important;
+  }
+.dg .cr .property-name {
+    color: #fff !important;
+}
+.dg .title {
+    color: rgb(32, 208, 55) !important;
+}
+
+/*-----PROJECTS-----*/
 .projects {
     /* box */
     /* size */
     width: 100%;
-    height: var(--projectsVW);
+    height: 65em;
     /* position */
-    z-index: var(--banner-order);
+    z-index: -1;
+    top: 0;
+    left: 0;
     /* distance */
-    gap: var(--general-gap);
+    gap: -1;
     /* geometry */
     /* style */
     /* color */
@@ -332,60 +363,49 @@ body {
 }
 .viewport {
     /* box */
-    padding: var(--general-padding);
-    padding-top: 14em;
+    /* padding: var(--general-padding); */
     /* size */
-    width: 100%;
-    height: auto;
+    width: 100vw;
+    height: 100vh;
     /* position */
-    position: sticky;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
     /* distance */
     gap: var(--general-gap);
     /* geometry */
     /* style */
     /* color */
     /* display */
-    display: flex;
-    flex-flow: column wrap;
+    display: block;
+    /* flex-flow: column wrap;
     justify-content: space-evenly;
     align-items: center;
-    flex-shrink: 1;
+    flex-shrink: 1; */
     /* content */
-}
-/* GUI CONTROL */
-.dg {
-    z-index: 999999 !important;
-  }
-
-.dg .cr .property-name {
-    color: #fff !important;
-}
-  
-.dg .title {
-    color: rgb(32, 208, 55) !important;
 }
 .canvas {
     /* box */
     /* size */
-    width: 100%;
-    height: 60em;
+    width: auto;
+    height: auto;
     /* position */
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
     /* distance */
     /* geometry */
-    border-radius: var(--general-border-radius);
     /* style */
     /* color */
     /* display */
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: block;
     /* content */
-    overflow: hidden;
     /* filter */
     background: rgba(173, 182, 211, 0.35);
     mix-blend-mode: multiply;
 }
- 
 .controls {
     /* box */
     padding-top: 1em;
@@ -394,6 +414,7 @@ body {
     height: 35em;
     /* position */
     position: fixed;
+    z-index: 1;
     top: 50em;
     /* distance */
     gap: var(--general-gap);
@@ -405,7 +426,6 @@ body {
     align-items: flex-end;
     /* content */
 }
-
 .stageNav {
     /* box */
     /* size */
@@ -469,9 +489,9 @@ body {
     gap: var(--general-gap);
     /* geometry */
     /* style */
-    box-shadow: var(--shadow-style) var(--shadow-color);
+    /* box-shadow: var(--shadow-style) var(--shadow-color); */
     /* color */
-    background-color: var(--first-background-color);
+    /* background-color: var(--first-background-color); */
     /* display */
     display: flex;
     flex-flow: column wrap;
@@ -481,6 +501,29 @@ body {
 }
 
 /* ----EXPERIENCES-----*/
+.expBanner {
+    /* box */
+    padding: var(--general-padding);
+    /* size */
+    width: 100%;
+    height: 5em;
+    /* position */
+    z-index: var(--content-order);
+    /* distance */
+    gap: var(--general-gap);
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    display: flex;
+    justify-content: space-between;
+    /* content */   
+}
+
+.expBanner:active + .experiences {
+    display: flex;
+}
+
 .experiences{
     /* box */
     padding: var(--general-padding);
@@ -495,7 +538,7 @@ body {
     /* style */
     /* color */
     /* display */
-    display: flex;
+    display: none;
     flex-flow: column wrap;
     /* content */
     overflow: hidden;
@@ -789,7 +832,7 @@ div[class^='geometry'] {
     /* geometry */
     /* style */
     /* color */
-    background-color: var(--first-background-color);
+    /* background-color: var(--first-background-color); */
     /* display */
     display: flex;
     flex-flow: column wrap;
@@ -797,19 +840,16 @@ div[class^='geometry'] {
     align-items: center;
     /* content */
 }
-
 .navBtn {
     display: flex;
     justify-content: center;
     align-items: center;
 }
-
 .stageBtn {
     display: flex;
     justify-content: center;
     align-items: center;
 }
-
 .digitalAb {
     /* box */
     padding: var(--general-padding);
@@ -821,9 +861,9 @@ div[class^='geometry'] {
     gap: var(--general-gap);
     /* geometry */
     /* style */
-    box-shadow: var(--shadow-style) var(--shadow-color);
+    /* box-shadow: var(--shadow-style) var(--shadow-color); */
     /* color */
-    background-color: var(--first-background-color);
+    /* background-color: var(--first-background-color); */
     /* display */
     display: flex;
     flex-direction: row-reverse;
@@ -983,9 +1023,9 @@ div[class^='geometry'] {
     /* distance */
     /* geometry */
     /* style */
-    box-shadow: var(--shadow-style) var(--shadow-color);
+    /* box-shadow: var(--shadow-style) var(--shadow-color); */
     /* color */
-    background-color:var(--first-background-color);
+    /* background-color:var(--first-background-color); */
     /* display */
     /* content */
 }

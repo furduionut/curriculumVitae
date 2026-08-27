@@ -19,7 +19,7 @@ import { domain as dom } from "./domain.js";
     let currentBuilding
     let currentModel
  
-    function createLoadingPage() {
+    async function createLoadingPage() {
         const loading = document.createElement('div');
         loading.id = 'loading-page';
         loading.style.cssText = `
@@ -346,7 +346,7 @@ import { domain as dom } from "./domain.js";
             symbol.style.justifyContent = 'center';
             symbol.style.alignItems = 'center'
 
-            bar.style.background = `linear-gradient(to right, ${styles.color3} ${value.completed}%, transparent ${value.completed+10}%)`;
+            bar.style.background = `linear-gradient(to right, ${styles.color3} ${value.completed}%, ${styles.color1} ${value.completed+10}%)`;
             bar.innerHTML = key;
             symbol.innerHTML = value.symbol;
 
@@ -381,7 +381,7 @@ import { domain as dom } from "./domain.js";
                 symbol.style.justifyContent = 'center';
                 symbol.style.alignItems = 'center'
 
-                bar.style.background = `linear-gradient(to right, ${styles.color3} ${value.completed}%, transparent ${value.completed+10}%)`;
+                bar.style.background = `linear-gradient(to right, ${styles.color3} ${value.completed}%, ${styles.color1} ${value.completed+10}%)`;
                 bar.innerHTML = key;
                 symbol.innerHTML = value.symbol;
     
