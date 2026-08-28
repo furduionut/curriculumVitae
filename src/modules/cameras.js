@@ -152,5 +152,8 @@
 
     perspCameraFolder.close();
 
+/* CAMERA ANIMATION */
+
+
 /* EXPORTS */
     export {cameras} 

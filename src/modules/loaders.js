@@ -99,9 +99,9 @@ import { domain as dom } from "./domain.js";
             currentBuilding.scale.set(scaleX, scaleY, scaleZ);
             currentBuilding.traverse(
                 (child) => {
-                    if (child.name.includes('neighboar')) {child.material = material.glassMat;}
-                    if (child.name.includes('papper')) {child.material = material.paperMat;}
-                    if (child.name.includes('desk')) {child.material = material.woodMat;}
+                    if (child.name.includes('neighboar')) {child.material = material.model;}
+                    if (child.name.includes('papper')) {child.material = material.support;}
+                    if (child.name.includes('desk')) {child.material = material.desk;}
                 });
             // currentBuilding.castShadow = true;
             // currentBuilding.receiveShadow = true;

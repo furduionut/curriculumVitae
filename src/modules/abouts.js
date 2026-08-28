@@ -6,7 +6,7 @@ const abouts    = Object.values(projects).map(o => o.identifier.about);
 const types     = Object.values(projects).map(o => o.identifier.type);
 const styles    = Object.values(projects).map(o => o.identifier.style);
 
-const informations = {
+const info = {
     names:  names,
     abouts: abouts,
     types:  types,
@@ -14,4 +14,4 @@ const informations = {
 }
 
 
-export { informations }
+export { info }

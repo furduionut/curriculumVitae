@@ -18,16 +18,17 @@
     import { abilities }    from "./modules/abilities.js";
     import { credits }      from "./modules/credits.js";
 
+    import { info }         from "./modules/abouts.js";
     import { domain }       from "./modules/domain.js";
     import { loaders }      from "./modules/loaders.js"
     import { scenes }       from "./modules/scene.js";
     import { objects }      from "./modules/objects.js";
-    import { informations } from "./modules/abouts.js";
     import { lights }       from "./modules/lights.js";
     import { helpers }      from "./modules/lights.js";
     import { cameras }      from "./modules/cameras.js";
     import { renderer }     from "./modules/render.js";
     import { controls }     from "./modules/controls.js";
+    import { materials }    from "./modules/materials.js";
 
     /* ELEMENTS */
         let dom                 = domain;
@@ -41,8 +42,77 @@
 
     /* CAMERAS */
         let camera              = cameras.perspective;
-        cameras.perspective.lookAt(0, 0, 0);
-     
+        function updateCamera() {
+            const camPosA   = new THREE.Vector3(10, 12.5, 10);
+            const camPosB   = new THREE.Vector3(10, 12.5, 10);
+            const camPosC   = new THREE.Vector3(5, 10, -10);
+            const camPosD   = new THREE.Vector3(5, -2.5, -10);
+            
+            const lookA     = new THREE.Vector3(-7.5, 18, -10);
+            const lookB     = new THREE.Vector3(-7.5, 7.5, -10);
+            const lookC     = new THREE.Vector3(-5, 0, -10);
+            const lookD     = new THREE.Vector3(-5, -2.5, -10);
+    
+            let scroll = window.scrollY / 1000;
+        
+            // Which section are we in?
+            let section = Math.floor(scroll); // 0,1,2,3
+            let t = scroll % 1;               // 0 → 1 inside each section
+        
+            let posStart, posEnd, lookStart, lookEnd, zoomStart, zoomEnd;
+        
+            console.log(section);
+            switch (section) {
+                case 0:
+                    posStart = camPosA; 
+                    posEnd = camPosB;
+                    lookStart = lookA; 
+                    lookEnd = lookB;
+                    zoomStart = 1.5; 
+                    zoomEnd = 1.5;
+                    break;
+        
+                case 1:
+                    posStart = camPosB; 
+                    posEnd = camPosC;
+                    lookStart = lookB; 
+                    lookEnd = lookC;
+                    zoomStart = 1.5; 
+                    zoomEnd = 1.0;
+                    break;
+        
+                case 2:
+                    posStart = camPosC; 
+                    posEnd = camPosD;
+                    lookStart = lookC; 
+                    lookEnd = lookD;
+                    zoomStart = 1.0; 
+                    zoomEnd = 0.5;
+                    break;
+        
+                default:
+                    posStart = camPosD; 
+                    posEnd = camPosD;
+                    lookStart = lookD; 
+                    lookEnd = lookD;
+                    zoomStart = 0.5; 
+                    zoomEnd = 0.5;
+                    break;
+            }
+        
+            // Smooth position
+            const pos = posStart.clone().lerp(posEnd, t);
+            camera.position.copy(pos);
+        
+            // Smooth lookAt
+            const look = lookStart.clone().lerp(lookEnd, t);
+            camera.lookAt(look);
+        
+            // Smooth zoom
+            camera.zoom = THREE.MathUtils.lerp(zoomStart, zoomEnd, t);
+            camera.updateProjectionMatrix();
+        }
+    
     /* CAMERA FOCUS */
         const focusPoint        = new THREE.Vector3(-5, 0, -10);
 
@@ -52,15 +122,15 @@
         let textures            = objects.texturesList;
 
     /* INFORMATIONS */
-        let names               = informations.names;
-        let abouts              = informations.abouts;
-        let types               = informations.types;
-        let styles              = informations.styles;
+        let names               = info.names;
+        let abouts              = info.abouts;
+        let types               = info.types;
+        let styles              = info.styles;
 
-        let name                = informations.names[buildingIndex];
-        let about               = informations.abouts[buildingIndex];
-        let type                = informations.types[buildingIndex];
-        let style               = informations.styles[buildingIndex];
+        let name                = info.names[buildingIndex];
+        let about               = info.abouts[buildingIndex];
+        let type                = info.types[buildingIndex];
+        let style               = info.styles[buildingIndex];
 
         let symbols             = Object.values(abilities)
         
@@ -73,30 +143,6 @@
         let texturePaths        = textures[buildingIndex];
 
     /* MATERIAL */ 
-        const neighborMaterials = {
-        paperMat            : new THREE.MeshStandardMaterial({
-            color: 'red', 
-            roughness: 1, 
-            envMapIntensity: .5
-        }),
-
-        glassMat            : new THREE.MeshPhysicalMaterial({
-            color: 'white',
-            roughness: 0.1,
-            metalness: 0.5,
-            transmission: 1,
-            thickness: 1.25,
-            ior: 1.45,
-            envMapIntensity: 2.75,
-            transparent: true
-        }),
-
-        woodMat             : new THREE.MeshStandardMaterial({
-            color: 'brown', 
-            roughness: 1, 
-            envMapIntensity: .5
-        })}
-        
         let material            = loaders.loadMaterial(texturePaths);
 
     /* LIGHTS */
@@ -129,23 +175,25 @@
             console.log(`Changed indexes are: 
                 model ${buildingModelIndex} / ${models.length} of building ${buildingIndex+1}`);};
 
-        function updateReferences() {
+        function updateRefs() {
                 building            = buildings[buildingIndex];
                 model               = models[buildingIndex][buildingModelIndex];
                 texturePaths        = textures[buildingIndex];
                 material            = loaders.loadMaterial(texturePaths);
                 building            = buildings[buildingIndex];
                 model               = models[buildingIndex][buildingModelIndex];
-                name                = informations.names[buildingIndex];
-                about               = informations.abouts[buildingIndex];
-                type                = informations.types[buildingIndex];
-                style               = informations.styles[buildingIndex];
+                name                = info.names[buildingIndex];
+                about               = info.abouts[buildingIndex];
+                type                = info.types[buildingIndex];
+                style               = info.styles[buildingIndex];
+
+                // console.log (
+                // `Updated references to:
+                // building ${building}
+                // model ${model} 
+                // textures: ${Object.values(texturePaths).join('\n')}`);
+            }
                 
-                console.log (
-                `Updated references to:
-                building ${building}
-                model ${model} 
-                textures: ${Object.values(texturePaths).join('\n')}`);}
 
     /* CONTROL */
         const control = controls(
@@ -185,24 +233,12 @@
                     { top: "25em", duration: 1},
                     "+=.5");
                 }
-    /* ANIMATION */
-        // gsap.to ("target", {anyCSSpropriety/-es, duration}) tween with playhead
-        // let timeline = gspa.timeline()
-        // tl.to(("target", {anyCSSpropriety/-es, duration}, start))
-        // control methods - play(), pause(), resume()...
-        // gsap.registerPlugin(...);
-        // plugins (scroll plugins, text plugins, svg plugins...)
-
-        // 
-        // window.addEventListener();
-
-        // Create sections to be logged by window.addEvent() like in bruno's video
 
     /* ACTIONS */
         dom.nextBtn.addEventListener    
             ('click', ()=>{
                 nextBuildingIndex();
-                updateReferences();
+                updateRefs();
                 loaders.loadBuilding(scene, light, building, material);
                 loaders.loadInfo(name, about, type, style);
             });
@@ -210,7 +246,7 @@
         dom.prevBtn.addEventListener    
             ('click', ()=>{
                 prevBuildingIndex();
-                updateReferences();
+                updateRefs();
                 loaders.loadBuilding(scene, light, building, material);
                 loaders.loadInfo(name, about, type, style);
             });
@@ -218,7 +254,7 @@
         dom.upBtn.addEventListener      
             ('click', ()=>{
                 nextModelIndex();
-                updateReferences();
+                updateRefs();
                 loaders.loadModel(scene, light, model, material);
                 loaders.loadInfo(name, about, type, style);
             });
@@ -226,7 +262,7 @@
         dom.downBtn.addEventListener    
             ('click', ()=>{
                 prevModelIndex();
-                updateReferences();
+                updateRefs();
                 loaders.loadModel(scene, light, model, material);
                 loaders.loadInfo(name, about, type, style);
             });
@@ -259,24 +295,12 @@
             
         effectComposer.addPass( blurPass )
     
-        /* SCROLL ANIMATION */
-    let currentSection = 0;
-    let scrollY = window.scrollY;
-    window.addEventListener(
-        'scroll', 
-        ()=>{
-            scrollY = window.scrollY;
-            currentSection = scrollY / 1000;
-            console.log(Math.floor(currentSection))})
 
     /* COMMITS */
-    console.log(`Changed indexes ${buildingIndex+1} / ${buildings.length}`);
-    updateReferences();
+    updateRefs();
     // loaders.loadPage();
-    loadAnimation();
-    loaders.loadNeighboar(scene, light, neighbor, neighborMaterials);
-
-
+    // loadAnimation();
+    loaders.loadNeighboar(scene, light, neighbor, materials);
     // startingPage();
 
     // WINDOW EVENTS
@@ -286,15 +310,14 @@
         // WINDOW RELOAD;
             window.addEventListener('load', ()=>{});
 
+    // CAMERA TIMELINE 
+
     // RENDERING
         function animate() {
             requestAnimationFrame(animate);
             // control.update();
-            if (currentSection <= 1) {
-                console.log(currentSection);
-                camera.position.y = 15 - scrollY / 100 *2;
-                camera.lookAt(-5, - scrollY / 100 *1, -10)}
-            
+            updateRefs();
+            updateCamera();
             effectComposer.render();}
 
         animate()
