@@ -2,15 +2,15 @@
     // IMPORTS
     import "./styles.css";
     import * as THREE       from "three";
-    import { HDRLoader }    from "three/examples/jsm/Addons.js";
+    import { HDRLoader, UnrealBloomPass }    from "three/examples/jsm/Addons.js";
     import { gsap }         from "gsap";
     import  Stats           from "stats.js";
 
-    // import { stats }
     import { ScrollTrigger } from "gsap/ScrollTrigger";
     import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
     import { RenderPass }   from "three/examples/jsm/postprocessing/RenderPass.js";
     import { BokehPass }    from "three/examples/jsm/postprocessing/BokehPass.js";
+    import { ModelAnimationController } from "./modules/modelAnimation.js"; 
 
     import { personal }     from "./modules/personal.js";
     import { projects }     from "./modules/projects.js";
@@ -42,16 +42,16 @@
 
     /* CAMERAS */
         let camera              = cameras.perspective;
-        function updateCamera() {
+        function updateCam() {
             const camPosA   = new THREE.Vector3(10, 12.5, 10);
             const camPosB   = new THREE.Vector3(10, 12.5, 10);
             const camPosC   = new THREE.Vector3(5, 10, -10);
-            const camPosD   = new THREE.Vector3(5, -2.5, -10);
+            const camPosD   = new THREE.Vector3(5, -5.5, -10);
             
             const lookA     = new THREE.Vector3(-7.5, 18, -10);
             const lookB     = new THREE.Vector3(-7.5, 7.5, -10);
             const lookC     = new THREE.Vector3(-5, 0, -10);
-            const lookD     = new THREE.Vector3(-5, -2.5, -10);
+            const lookD     = new THREE.Vector3(-5, -5.5, -10);
     
             let scroll = window.scrollY / 1000;
         
@@ -138,6 +138,7 @@
         let neighbor            = objects.neighbor.main;
         let building            = buildings[buildingIndex];
         let model               = models[buildingIndex][buildingModelIndex];
+        let logo3D              = objects.logo3D.main;
         
     /* TEXTURES */
         let texturePaths        = textures[buildingIndex];
@@ -205,35 +206,6 @@
             stats.showPanel(1);
         document.body.appendChild(stats.dom);
 
-    // AUTOMATIC ANIMATION
-    async function loadAnimation () {
-        gsap.registerPlugin(ScrollTrigger);
-        let sceneTimeline = gsap.timeline(
-                {scrollTrigger: {
-                    trigger: '.viewport',
-                    start: "35% 100%",
-                    markers: true,
-                    toggleActions: "restart pause pause pause"
-                }});
-    
-            sceneTimeline.fromTo(
-                    blurPass.uniforms.maxblur,
-                    { value: 0.05 },
-                    { value: 0.001, duration: 3 });
-    
-            sceneTimeline.fromTo (
-                    camera, 
-                    {zoom: 3},
-                    {zoom: 1, 
-                    duration:4,
-                    onUpdate: ()=>{camera.updateProjectionMatrix()}});
-    
-            sceneTimeline.to(
-                    ".controls", 
-                    { top: "25em", duration: 1},
-                    "+=.5");
-                }
-
     /* ACTIONS */
         dom.nextBtn.addEventListener    
             ('click', ()=>{
@@ -281,11 +253,11 @@
                     (err) => console.log('HDR load error', err))
     
     // COMPOSER
-        const effectComposer   = new EffectComposer(renderer);
+        const composer   = new EffectComposer(renderer);
 
     // RENDERPASS
         const renderPass = new RenderPass(scene, camera);
-        effectComposer.addPass(renderPass);
+        composer.addPass(renderPass);
 
     // BLURPASS
         const blurPass = new BokehPass(scene, camera, {
@@ -293,14 +265,50 @@
             aperture: 5,
             maxblur: 0.001})
             
-        effectComposer.addPass( blurPass )
+        composer.addPass( blurPass )
+
+    // BlOMPASS
+        const bloomPass = new UnrealBloomPass(
+            new THREE.Vector2(dom.viewport.clientWidth, dom.viewport.clientHeight),
+            1.3, 0.55, 4);
+
+        composer.addPass(bloomPass)
+
+    // ANIMATIONS
+    let animationModel = new ModelAnimationController();
+
+
+    // AUTOMATIC ANIMATION
+    function loadAnimation () {
+        gsap.registerPlugin(ScrollTrigger);
+        let sceneTimeline = gsap.timeline(
+                {scrollTrigger: {
+                    trigger: '.viewport',
+                    start: "10% 100%",
+                    end: "100% 65%",
+                    markers: true,
+                    toggleActions: "restart pause pause pause"
+                }});
     
+            sceneTimeline.fromTo(
+                    blurPass.uniforms.maxblur,
+                    { value: 0.05 },
+                    { value: 0.001, duration: 3 });
+    
+            sceneTimeline.fromTo (
+                    camera, 
+                    {zoom: 3},
+                    {zoom: 1, 
+                    duration:4,
+                    onUpdate: ()=>{camera.updateProjectionMatrix()}});}
+
 
     /* COMMITS */
     updateRefs();
     // loaders.loadPage();
-    // loadAnimation();
     loaders.loadNeighboar(scene, light, neighbor, materials);
+    loaders.loadLogo(scene, light, logo3D, materials, animationModel);
+    loadAnimation();
     // startingPage();
 
     // WINDOW EVENTS
@@ -317,7 +325,8 @@
             requestAnimationFrame(animate);
             // control.update();
             updateRefs();
-            updateCamera();
-            effectComposer.render();}
+            updateCam();
+            animationModel.update();
+            composer.render();}
 
         animate()

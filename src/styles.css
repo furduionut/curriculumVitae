@@ -181,28 +181,6 @@ body {
     /* display */
     /* content */
 }
-.aboutMe {
-    /* box */
-    padding: var(--general-padding);
-    /* size */
-    width: 100%;
-    height: auto;
-    /* position */
-    position: fixed;
-    z-index: var(--ends-order);
-    /* distance */
-    /* geometry */
-    /* style */
-    /* box-shadow: var(--shadow-style) var(--shadow-color); */
-    /* color */
-    /* background-color:var(--first-background-color); */
-    /* display */
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: space-evenly;
-    align-items: flex-start;
-    /* content */
-}
 .photo{
     /* box */
     /* size */

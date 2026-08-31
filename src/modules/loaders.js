@@ -1,13 +1,13 @@
 import * as THREE       from "three";
-
-
 import { GLTFLoader }   from "three/examples/jsm/Addons.js";
 import { DRACOLoader }  from "three/examples/jsm/Addons.js";
-
 
 import { BIM, DWG, TXT, OBJ, IMG, SWG, CGI, ART, THC, MAN, CLB, COM, DEC } from "./abilities.js";
 import { styles } from "./styles.js";
 import { domain as dom } from "./domain.js";
+import { materials } from "./materials.js";
+import { gsap }         from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
     const gltfLoader = new GLTFLoader();
     const dracoLoader = new DRACOLoader();
@@ -18,7 +18,151 @@ import { domain as dom } from "./domain.js";
 
     let currentBuilding
     let currentModel
- 
+    let currentLogo
+// restart reset pause reverse complete play resume none
+
+    function animateModel(model) {
+        gsap.registerPlugin(ScrollTrigger);
+        let sceneTimeline = gsap.timeline(
+            {scrollTrigger: {
+                trigger: '.viewport',
+                start: "15% 5%",
+                end: "85% 35%",
+                markers: true,
+                toggleActions: "play none reverse pause"
+            }});
+
+        sceneTimeline.fromTo(
+            model.position,
+            {x: model.position.x},
+            {x: 2, duration: 1, ease: "power4.out"
+            });
+
+        sceneTimeline.fromTo(
+            model.scale,
+            {x: model.scale.x},
+            {x: .01, duration: .1, ease: "power4.out"
+            });
+
+        sceneTimeline.fromTo(
+            model.scale,
+            {y: model.scale.y},
+            {y: .01, duration: .1, ease: "power4.out"
+            });
+
+        sceneTimeline.fromTo(
+            model.scale,
+            {z: model.scale.z},
+            {z: .01, duration: .1, ease: "power4.out"
+            });
+    }
+    
+
+    const applyLogoMaterials = (model) => {
+        const purple = materials.lightBulbDiffuse;
+        const glassPurple = materials.lightBulbGlass;
+
+        model.traverse((child) => {
+            if (!child.isMesh) return;
+
+            const name = child.name.toLowerCase();
+
+            const isArchSegment =
+                name.startsWith("archmov");
+
+            const isItizerSegment =
+                name.startsWith("itizermov");
+
+            if (isArchSegment || isItizerSegment) {
+                child.material =
+                    new THREE.MeshBasicMaterial({
+                        color: glassPurple.clone(),
+
+                        color: 0x8e93f8,
+                        transparent: true,
+                        opacity: 1,
+                        depthWrite: false,
+                        depthTest: true,
+                        fog: false
+                    });
+                child.castShadow = false;
+                child.receiveShadow = false;
+                child.renderOrder = 3;
+                child.material.needsUpdate = true;
+
+                
+                console.log(
+                    "Prepared independent segment:",
+                    child.name,
+                    child.material.id
+                );
+
+                return;
+            }
+
+            if (name === "bec") {
+                const brightPurple = purple
+                    .clone()
+                    .multiplyScalar(6);
+
+                child.material =
+                    new THREE.MeshBasicMaterial({
+                        color: brightPurple,
+
+                        transparent: true,
+                        blending:
+                            THREE.AdditiveBlending,
+
+                        depthWrite: false,
+                        depthTest: true,
+
+                        toneMapped: false,
+                        side: THREE.DoubleSide
+                    });
+
+                child.renderOrder = 6;
+                child.frustumCulled = false;
+                child.material.needsUpdate = true;
+
+                return;
+            }
+
+            if (name === "traseu") {
+                child.material =
+                    new THREE.MeshPhysicalMaterial({
+                        color: 0xffffff,
+
+                        transparent: true,
+                        opacity: 0.45,
+                        transmission: 0.85,
+
+                        roughness: 0.08,
+                        metalness: 0,
+
+                        thickness: 0.35,
+                        ior: 1.45,
+
+                        attenuationColor:
+                            new THREE.Color(0xffffff),
+
+                        attenuationDistance: 2,
+
+                        clearcoat: 1,
+                        clearcoatRoughness: 0.03,
+
+                        envMapIntensity: 1.5,
+
+                        side: THREE.DoubleSide,
+                        depthWrite: false,
+                        depthTest: true
+                    });
+
+                child.renderOrder = 1;
+                child.material.needsUpdate = true;
+            }
+        });
+    };
+
     async function createLoadingPage() {
         const loading = document.createElement('div');
         loading.id = 'loading-page';
@@ -99,6 +243,7 @@ import { domain as dom } from "./domain.js";
             currentBuilding.scale.set(scaleX, scaleY, scaleZ);
             currentBuilding.traverse(
                 (child) => {
+                    if (child.name.includes('cloud')) {child.material = material.cloudDiffuse;}
                     if (child.name.includes('neighboar')) {child.material = material.model;}
                     if (child.name.includes('papper')) {child.material = material.support;}
                     if (child.name.includes('desk')) {child.material = material.desk;}
@@ -150,6 +295,20 @@ import { domain as dom } from "./domain.js";
             })
         };
 
+    function loadingLogo3D          (scene, light, model, material, animationModel){
+            gltfLoader.load(model, (gltf) => {
+            currentLogo = gltf.scene;
+            currentLogo.position.set(-5, 15.5, -7.5);
+            currentLogo.scale.set(scaleX*2, scaleY*2, scaleZ*2);
+            currentLogo.rotation.set(0, -.5, .5);
+            applyLogoMaterials(currentLogo);
+            gltf.animations.forEach((clip) => {
+                console.log("Animation clip:", clip.name);
+                clip.tracks.forEach((track) => {console.log("Animation track:", track.name);});})
+            scene.add(currentLogo);
+            animationModel.play(currentLogo, gltf.animations);
+            animateModel(currentLogo)})}
+    
     function loadingMaterial        (texturePaths){
             const diffuseMap      = textureLoader.load(texturePaths.diffuse);
             const roughnessMap    = textureLoader.load(texturePaths.roughness);
@@ -395,6 +554,7 @@ import { domain as dom } from "./domain.js";
         };
 
     const loaders = {
+        loadLogo:           loadingLogo3D,
         loadPage:           createLoadingPage,
         loadInfo:           loadingInformations,
         loadNeighboar:      loadingNeighbor,

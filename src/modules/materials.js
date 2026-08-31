@@ -1,4 +1,5 @@
 import * as THREE               from "three";
+import { styles }               from "./styles.js";
 
     const papper = new THREE.MeshStandardMaterial({
         color: 'red', 
@@ -20,8 +21,18 @@ import * as THREE               from "three";
         roughness: 1, 
         envMapIntensity: .5});
 
+    const whiteColor = new THREE.MeshBasicMaterial({
+        color: styles.color3
+      });
+
+    const lavenderColor = new THREE.Color(0xb57cff);
+    const lightBlueColor = new THREE.Color(0xc9b8ff);
+    const brightPurple = new THREE.Color(0x9b00ff);
 
 const materials = {
+    cloudDiffuse: whiteColor,
+    lightBulbDiffuse: lavenderColor,
+    lightBulbGlass: lightBlueColor,
     support: papper, 
     model: glass, 
     desk: wood};
