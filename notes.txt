@@ -1,0 +1,82 @@
+
+Senior developers improvements: 
+easy to understand, easier to change and harder to break
+
+    1. keep the path easy to follow:
+        STOP! doing this: action 3 level deep
+            if(user){
+                if(user.active){
+                    if (user.hasPermision) {
+                        updateProfile(user)
+                        }
+                }
+            }
+
+        START doing this:
+            if(!user) {return};
+            if(!user.active) {return};
+            if(!user.hasPermision) {return};
+            updateProfile(user);
+
+    2. name thing by meaning, keep the obvious:
+        STOP! doing this:
+            const data = getData(id);
+            if(data.status==='PENDING'){process(data)};
+
+        START doing this:
+            const pendingOrder = getOrder(orderId);
+            if(pendingOrder.status==='PENDING'){processOrder(pendingOrder)};
+
+    3. keep external complexity system behind a boundary (you dont control external code, so don't depend of their field names)
+        STOP! doing this:
+            const response = await paymentService.getUser(id);
+            if (response.customer_status==='active'){enableFeature(response.customer_name)}
+
+        START doing this:
+            const response = await paymentService.getUser(id);
+            if(customer.isActive){enableFeature(customer_name)};
+
+    4. make invalid states harder to represent, less to guess, harder to get wrong
+        STOP! doing this: from make it optional
+            type Order = {
+                id?: string;
+                status?: string;
+                paymentId?: string;
+            };
+
+        START doing this: to more accurately, are expected to exist
+            type PaidOrder = {
+                id: string;
+                status: 'paid';
+                paymentId: string;
+            };
+
+    5. separate decision from actions
+        STOP! doing this: harder to test
+            if(user.age >= 18 && user.isVerified){
+                database.enableFeature(user.id);
+                sendEmail(user.email);
+            }
+
+        START doing this: useful and reusable
+            const callUseFeature = user.age >= 18 && user.isVerified;
+            if(callUserFeature){enableFeature(user)};
+
+    6. make error useful
+        STOP! doing this: very little info to work with
+            {
+            'message': 'Somthing went wrong'
+            }
+
+        START doing this: a predicable code error using human language
+            {
+            'code': 'EMAIL_ALREADY_EXISTS' // for systems
+            'message': 'Somthing went wrong' // for humans
+            }
+        
+    7. keep your changes focused
+        STOP! doing this:
+            Pull request with many changes: hard to validate
+
+        START doing this:
+            Pull request, each change with a clear purpouse
