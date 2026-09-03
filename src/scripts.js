@@ -10,7 +10,7 @@
     import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
     import { RenderPass }   from "three/examples/jsm/postprocessing/RenderPass.js";
     import { BokehPass }    from "three/examples/jsm/postprocessing/BokehPass.js";
-    import { ModelAnimationController } from "./modules/modelAnimation.js"; 
+    import { LogoAnimation } from "./modules/animations.js"; 
 
     import { personal }     from "./modules/personal.js";
     import { projects }     from "./modules/projects.js";
@@ -26,12 +26,15 @@
     import { lights }       from "./modules/lights.js";
     import { helpers }      from "./modules/lights.js";
     import { cameras }      from "./modules/cameras.js";
-    import { renderer }     from "./modules/render.js";
+    import { renders }      from "./modules/render.js";
     import { controls }     from "./modules/controls.js";
     import { materials }    from "./modules/materials.js";
 
     /* ELEMENTS */
         let dom                 = domain;
+        let rendererWidth       = dom.viewport.clientWidth;
+        let rendererHeight      = dom.viewport.clientHeight;
+        let rendererCanvas      = dom.canvas;
 
     /* INDEXES */
         let buildingIndex       = 0;
@@ -61,7 +64,7 @@
         
             let posStart, posEnd, lookStart, lookEnd, zoomStart, zoomEnd;
         
-            console.log(section);
+            console.log(`Window at zone ${section}`);
             switch (section) {
                 case 0:
                     posStart = camPosA; 
@@ -153,7 +156,7 @@
         let helpersLight          = helpers;
         Object.values(helpers).forEach((helper) => {scene.add(helper)});
 
-    /* ACTIONS */
+    /* LOADERS */
         const nextBuildingIndex = () => {
             if      (buildingIndex < buildings.length - 1) {buildingIndex++;} 
             else    {buildingIndex = 0;}
@@ -176,6 +179,7 @@
             console.log(`Changed indexes are: 
                 model ${buildingModelIndex} / ${models.length} of building ${buildingIndex+1}`);};
 
+    /* UPDATERS */
         function updateRefs() {
                 building            = buildings[buildingIndex];
                 model               = models[buildingIndex][buildingModelIndex];
@@ -187,32 +191,44 @@
                 about               = info.abouts[buildingIndex];
                 type                = info.types[buildingIndex];
                 style               = info.styles[buildingIndex];
-
-                // console.log (
-                // `Updated references to:
-                // building ${building}
-                // model ${model} 
-                // textures: ${Object.values(texturePaths).join('\n')}`);
             }
-                
 
-    /* CONTROL */
-        const control = controls(
-            camera, 
-            renderer.domElement);
-
-    /* PERFORMANCE STATS */
+        function updateCanvas(){
+                rendererWidth       = dom.viewport.clientWidth;
+                rendererHeight      = dom.viewport.clientHeight;
+                renderer.setSize(rendererWidth, rendererHeight);
+                camera.aspect       = rendererWidth / rendererHeight;
+            }
+            
+    /* STATS */
         var stats = new Stats();
             stats.showPanel(1);
         document.body.appendChild(stats.dom);
 
+    /* ENVIRONMENT */
+        const   hdrLoader       = new HDRLoader();
+                hdrLoader.load('./assets/textures/environment/cloisterPassage/cloisterPassage_1k.hdr', 
+                    (texture) => {
+                        texture.mapping = THREE.EquirectangularReflectionMapping;
+                        scene.environment = texture;
+                    },
+                    undefined,
+                    (err) => console.log('HDR load error', err))
+    
+    /* RENDERER */
+        let renderer = renders(
+            rendererWidth, 
+            rendererHeight, 
+            rendererCanvas);
+
     /* ACTIONS */
         dom.nextBtn.addEventListener    
-            ('click', ()=>{
-                nextBuildingIndex();
-                updateRefs();
-                loaders.loadBuilding(scene, light, building, material);
-                loaders.loadInfo(name, about, type, style);
+        ('click', ()=>{
+            nextBuildingIndex();
+            updateRefs();
+            loaders.loadBuilding(scene, light, building, material);
+            loaders.loadInfo(name, about, type, style);
+            console.log("nextBtn was pressed");
             });
 
         dom.prevBtn.addEventListener    
@@ -238,20 +254,25 @@
                 loaders.loadModel(scene, light, model, material);
                 loaders.loadInfo(name, about, type, style);
             });
-            
-        dom.abilitiesBtn.forEach        ((btn) => {btn.addEventListener
-            ('click', () => {loaders.loadLevel(`${btn.className}`)} )});
     
-    // ENVIRONMENT
-        const   hdrLoader       = new HDRLoader();
-                hdrLoader.load('./assets/textures/environment/cloisterPassage/cloisterPassage_1k.hdr', 
-                    (texture) => {
-                        texture.mapping = THREE.EquirectangularReflectionMapping;
-                        scene.environment = texture;
-                    },
-                    undefined,
-                    (err) => console.log('HDR load error', err))
-    
+        dom.abilitiesBtn.forEach        
+            ((btn) => {btn.addEventListener
+            ('click', () => {loaders.loadLevel(`${btn.className}`)} )
+            });
+
+        window.addEventListener
+            ('resize', () => {updateCanvas()
+
+            });
+              
+    /* CONTROL */
+    const control = controls(
+        camera, 
+        renderer.domElement);
+
+    // PMR
+    const pmremGenerator  = new THREE.PMREMGenerator(renderer);
+
     // COMPOSER
         const composer   = new EffectComposer(renderer);
 
@@ -275,40 +296,39 @@
         composer.addPass(bloomPass)
 
     // ANIMATIONS
-    let animationModel = new ModelAnimationController();
-
+    let logoAnimation = new LogoAnimation();
+    let domElAnimation = () => {
+        gsap.registerPlugin(ScrollTrigger);
+    
+        let sceneTimeline = gsap.timeline({
+            scrollTrigger: {
+                trigger: '.controls',
+                start: "-150% 90%",
+                end: "200% 95%",
+                markers: true,
+                toggleActions: "play none reverse reverse"
+            }
+        });
+        sceneTimeline.fromTo('.description',
+            { right: '150%' },
+            { right: '0%', duration: 1, ease: "power2.out", delay: 0.25 }
+        );
+        sceneTimeline.fromTo('.controls',
+            { left: '150%' },
+            { left: '0%',  duration: 1, ease: "power2.out", delay: 0.25 }
+        );
+    }
+    
 
     // AUTOMATIC ANIMATION
-    function loadAnimation () {
-        gsap.registerPlugin(ScrollTrigger);
-        let sceneTimeline = gsap.timeline(
-                {scrollTrigger: {
-                    trigger: '.viewport',
-                    start: "10% 100%",
-                    end: "100% 65%",
-                    markers: true,
-                    toggleActions: "restart pause pause pause"
-                }});
-    
-            sceneTimeline.fromTo(
-                    blurPass.uniforms.maxblur,
-                    { value: 0.05 },
-                    { value: 0.001, duration: 3 });
-    
-            sceneTimeline.fromTo (
-                    camera, 
-                    {zoom: 3},
-                    {zoom: 1, 
-                    duration:4,
-                    onUpdate: ()=>{camera.updateProjectionMatrix()}});}
-
 
     /* COMMITS */
     updateRefs();
+    domElAnimation();
+
     // loaders.loadPage();
     loaders.loadNeighboar(scene, light, neighbor, materials);
-    loaders.loadLogo(scene, light, logo3D, materials, animationModel);
-    loadAnimation();
+    loaders.loadLogo(scene, light, logo3D, materials, logoAnimation);
     // startingPage();
 
     // WINDOW EVENTS
@@ -319,14 +339,13 @@
             window.addEventListener('load', ()=>{});
 
     // CAMERA TIMELINE 
+    
 
     // RENDERING
         function animate() {
             requestAnimationFrame(animate);
             // control.update();
-            updateRefs();
             updateCam();
-            animationModel.update();
+            logoAnimation.update();
             composer.render();}
-
         animate()

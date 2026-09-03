@@ -22,42 +22,41 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 // restart reset pause reverse complete play resume none
 
     function animateModel(model) {
-        gsap.registerPlugin(ScrollTrigger);
-        let sceneTimeline = gsap.timeline(
-            {scrollTrigger: {
-                trigger: '.viewport',
-                start: "15% 5%",
-                end: "85% 35%",
-                markers: true,
-                toggleActions: "play none reverse pause"
-            }});
+    //     gsap.registerPlugin(ScrollTrigger);
+    //     let sceneTimeline = gsap.timeline(
+    //         {scrollTrigger: {
+    //             trigger: '.viewport',
+    //             start: "15% 5%",
+    //             end: "85% 35%",
+    //             markers: true,
+    //             toggleActions: "play none reverse pause"
+    //         }});
 
-        sceneTimeline.fromTo(
-            model.position,
-            {x: model.position.x},
-            {x: 2, duration: 1, ease: "power4.out"
-            });
+    //     sceneTimeline.fromTo(
+    //         model.position,
+    //         {x: model.position.x},
+    //         {x: 2, duration: 1, ease: "power4.out"
+    //         });
 
-        sceneTimeline.fromTo(
-            model.scale,
-            {x: model.scale.x},
-            {x: .01, duration: .1, ease: "power4.out"
-            });
+    //     sceneTimeline.fromTo(
+    //         model.scale,
+    //         {x: model.scale.x},
+    //         {x: .01, duration: .1, ease: "power4.out"
+    //         });
 
-        sceneTimeline.fromTo(
-            model.scale,
-            {y: model.scale.y},
-            {y: .01, duration: .1, ease: "power4.out"
-            });
+    //     sceneTimeline.fromTo(
+    //         model.scale,
+    //         {y: model.scale.y},
+    //         {y: .01, duration: .1, ease: "power4.out"
+    //         });
 
-        sceneTimeline.fromTo(
-            model.scale,
-            {z: model.scale.z},
-            {z: .01, duration: .1, ease: "power4.out"
-            });
+    //     sceneTimeline.fromTo(
+    //         model.scale,
+    //         {z: model.scale.z},
+    //         {z: .01, duration: .1, ease: "power4.out"
+    //         });
     }
     
-
     const applyLogoMaterials = (model) => {
         const purple = materials.lightBulbDiffuse;
         const glassPurple = materials.lightBulbGlass;
@@ -91,11 +90,11 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
                 child.material.needsUpdate = true;
 
                 
-                console.log(
-                    "Prepared independent segment:",
-                    child.name,
-                    child.material.id
-                );
+                // console.log(
+                //     "Prepared independent segment:",
+                //     child.name,
+                //     child.material.id
+                // );
 
                 return;
             }
@@ -303,11 +302,14 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
             currentLogo.rotation.set(0, -.5, .5);
             applyLogoMaterials(currentLogo);
             gltf.animations.forEach((clip) => {
-                console.log("Animation clip:", clip.name);
-                clip.tracks.forEach((track) => {console.log("Animation track:", track.name);});})
+                // console.log("Animation clip:", clip.name);
+                clip.tracks.forEach((track) => {
+                    // console.log("Animation track:", track.name)
+                    ;});})
             scene.add(currentLogo);
             animationModel.play(currentLogo, gltf.animations);
-            animateModel(currentLogo)})}
+            animateModel(currentLogo)
+        })}
     
     function loadingMaterial        (texturePaths){
             const diffuseMap      = textureLoader.load(texturePaths.diffuse);

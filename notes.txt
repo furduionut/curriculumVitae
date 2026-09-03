@@ -18,7 +18,7 @@ easy to understand, easier to change and harder to break
             if(!user.hasPermision) {return};
             updateProfile(user);
 
-    2. name thing by meaning, keep the obvious:
+    2. name thing by meaning, keep it obvious:
         STOP! doing this:
             const data = getData(id);
             if(data.status==='PENDING'){process(data)};
@@ -80,3 +80,24 @@ easy to understand, easier to change and harder to break
 
         START doing this:
             Pull request, each change with a clear purpouse
+
+    8. use class SOLID principle for a clean code
+        8.1. Single resposibility; not a single job.
+        8.2. Open closed; open to extension but close to modification.
+        8.3. Liskov subtitution; what the parent can do the same is the child; ex: human class for man class and woman class
+        8.4. Interface segregation; separate actions;
+        8.5. Depedency inversion; all should depend on abstration not high level or low level component;
+
+    9. avoid unnecesay nesting/ long code
+
+    10. use name conventions like you expect a answer
+        doThing()       => functions that returns result based on a computation ;
+        isThisTrue()    => function that return a bolean response;
+
+    11. use comments just where is complicated. write self documenting script;
+
+    12. be consistent with indentation, brakets or/and spacing;
+
+    13. reduce the function repetition;
+
+    14. fail hard and early;

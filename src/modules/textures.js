@@ -2,7 +2,6 @@
 import * as THREE               from "three";
 import { HDRLoader }            from "three/examples/jsm/Addons.js";
 import { UltraHDRLoader }       from "three/examples/jsm/Addons.js";
-import { pmremGenerator }       from "./render.js";
 
 let hdrTexture, cubeTexture, exrTexture, envMap;
 

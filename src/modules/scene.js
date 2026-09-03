@@ -1,8 +1,6 @@
 /* IMPORTS */
 import * as THREE from "three";
 import { styles } from "./styles";
-import { hdrTexture } from "./textures.js";
-import { cubeTexture } from "./textures.js";
 import { GroundedSkybox } from "three/examples/jsm/Addons.js";
 import { GUI } from "dat.gui";
 
