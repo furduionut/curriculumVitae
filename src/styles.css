@@ -16,6 +16,7 @@
 
     /* box */
     --general-padding: 1em;
+    --offset-padding: 12.5em;
 
     /* sizes */
     --bodyHeight: 300vh; 
@@ -267,15 +268,33 @@ body {
     /* content */
 }
 .aboutMe {
-    font-family: --var(--subtitle-font-family);
-}
-
-.navBar {
     /* box */
     /* size */
     width: 100%;
+    /* position */
+    position: fixed;
+    /* distance */
+    /* geometry */
+    /* style */
+    font-family: --var(--subtitle-font-family);
+    /* color */
+    /* display */
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    /* content */
+    
+}
+.navBar {
+    /* box */
+    padding: var(--general-padding);
+    /* size */
+    width: auto;
     height: auto;
     /* position */
+    position: fixed;
+    top: 25%;
+    left: -2em;
     /* distance */
     gap: var(--general-gap);
     /* geometry */
@@ -284,17 +303,36 @@ body {
     /* color */
     /* display */
     display: flex;
-    flex-flow: row nowrap;
-    flex-grow: 1;
-    flex-shrink: 1;
-    align-self: flex-end;
+    align-items: space-evenly;
+    flex-flow: column wrap;
     /* content */
 }
+.infoBar {
+    /* box */
+    padding: var(--general-padding);
+    /* size */
+    width: 15em;
+    height: 17.5em;
+    /* position */
+    position: fixed;
+    top: 25%;
+    right: -2em;
+    /* distance */
+    gap: var(--general-gap);
+    /* geometry */
+    /* style */
+    font-family: var(--subject-font-family);
+    /* color */
+    /* display */
+    /* content */
+}
+
 .navItem {
     /* box */
+    padding: var(--general-padding);
     /* size */
-    height: 5em;
-    width: 5em;
+    height: auto;
+    width: 15em;
     max-width: auto;
     /* position */
     /* distance */
@@ -309,8 +347,22 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-grow: 1;
-    flex-shrink: 1;
+    /* content */
+}
+.greetings {
+    /* box */
+    /* size */
+    height: auto;
+    width: 25em;
+    /* position */
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    display: flex;
+    justify-content: center;
+    align-items: center;
     /* content */
 }
 
@@ -393,11 +445,12 @@ body {
 .controls {
     /* box */
     /* size */
-    width: 100%;
-    height: 10em;
+    width: 30em;
+    height: 15em;
     font-size: var(--description-fontSize);
     /* position */
     position: relative;
+    bottom: 2.5em;
     z-index: 1;
     /* distance */
     gap: var(--general-gap);
@@ -444,7 +497,7 @@ body {
 .navBtn {
     /* box */
     /* size */
-    width: 7em;
+    width: auto;
     height: 100%;
     /* position */
     /* distance */
@@ -459,11 +512,12 @@ body {
 .description {
     /* box */
     /* size */
-    width: 100%;
-    height: 10em;
+    width: 35em;
+    height: 25em;
     font-size: var(--description-fontSize);
     /* position */
     position: relative;
+    bottom: 100em;
     z-index: 1;
     /* distance */
     /* geometry */
@@ -474,8 +528,7 @@ body {
     /* display */
     display: flex;
     flex-flow: column wrap;
-    justify-content: space-around;
-    align-items: center;
+    align-self: flex-end;
     /* content */
 }
 
@@ -498,12 +551,13 @@ body {
     justify-content: space-between;
     /* content */   
 }
-.banner:active + .experiences {
+/* .banner:active + .experiences {
     display: flex;
-}
-
-.experience {
+} */
+.experiences {
     /* box */
+    padding-left: var(--offset-padding);
+    padding-right: var(--offset-padding);
     /* size */
     /* position */
     /* distance */
@@ -517,7 +571,7 @@ body {
     /* content */
 
 }
-.experiences{
+.experience{
     /* box */
     padding: var(--general-padding);
     /* size */
@@ -531,13 +585,12 @@ body {
     /* style */
     /* color */
     /* display */
-    display: none;
+    display: flex;
     flex-flow: column wrap;
     /* content */
     overflow: hidden;
 }
-
-.experiences > div:nth-child(even):not(:last-child){
+.experience > div:nth-child(even):not(:last-child){
     /* box */
     /* size */
     height: auto;
@@ -551,7 +604,7 @@ body {
     align-self: flex-start;
     /* content */
 }
-.experiences > div:nth-child(odd):not(:last-child){
+.experience > div:nth-child(odd):not(:last-child){
     /* box */
     /* size */
     height: auto;
@@ -565,7 +618,6 @@ body {
     align-self: flex-end;
     /* content */
 }
-
 .expBtn {
     /* box */
     padding: 1em;
@@ -586,7 +638,6 @@ body {
     align-items: center;
     /* content */
 }
-
 .expDescription {
     /* box */
     padding: var(--general-padding);
@@ -602,7 +653,7 @@ body {
     display: none;
     /* content */
 }
-.experiences > div > div:not(:last-child) {
+.experience > div > div:not(:last-child) {
     display: flex;
     flex-wrap: wrap;
     background-color: var(--third-background-color);
@@ -788,7 +839,7 @@ div[class^='geometry'] {
     width: auto;
     /* position */
     position: absolute;
-    left: 48.25vw;
+    left: 50%;
     z-index: 6;
     /* distance */
     /* geometry */
@@ -838,6 +889,8 @@ div[class^='geometry'] {
 /* ----ABILITIES-----*/
 .abilities{
     /* box */
+    padding-left: var(--offset-padding);
+    padding-right: var(--offset-padding);
     /* size */
     width: 100%;
     height: auto;
@@ -1026,15 +1079,33 @@ div[class^='geometry'] {
 }
 
 /* ----CREDITS-----*/
-.credit {
+.credits {
     /* box */
+    padding: var(--general-padding);
+    padding-left: var(--offset-padding);
+    padding-right: var(--offset-padding);
+    /* size */
+    width: 100%;
+    height: 5em;
+    /* position */
+    z-index: var(--content-order);
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    display: flex;
+    flex-grow: column wrap;
+    /* content */
+}
+
+.thanks {
     padding: var(--general-padding);
     /* size */
     width: 100%;
-    height: auto;
+    height: 5em;
     /* position */
-    position: flex;
-    z-index: var(--ends-order);
+    z-index: var(--content-order);
     /* distance */
     /* geometry */
     /* style */

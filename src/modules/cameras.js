@@ -23,7 +23,7 @@
         width: viewport.clientWidth,
         height: viewport.clientHeight,
         aspect: viewport.clientWidth / viewport.clientHeight,
-        far: 75,
+        far: 150,
         near: 0.01,
         positionX: 10,
         positionY: 10,

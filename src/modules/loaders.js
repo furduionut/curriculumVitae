@@ -1,13 +1,10 @@
 import * as THREE       from "three";
 import { GLTFLoader }   from "three/examples/jsm/Addons.js";
 import { DRACOLoader }  from "three/examples/jsm/Addons.js";
-
 import { BIM, DWG, TXT, OBJ, IMG, SWG, CGI, ART, THC, MAN, CLB, COM, DEC } from "./abilities.js";
 import { styles } from "./styles.js";
 import { domain as dom } from "./domain.js";
 import { materials } from "./materials.js";
-import { gsap }         from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 
     const gltfLoader = new GLTFLoader();
     const dracoLoader = new DRACOLoader();
@@ -19,9 +16,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
     let currentBuilding
     let currentModel
     let currentLogo
-// restart reset pause reverse complete play resume none
 
-    function animateModel(model) {
+
+    function animateModel           (model) {
     //     gsap.registerPlugin(ScrollTrigger);
     //     let sceneTimeline = gsap.timeline(
     //         {scrollTrigger: {
@@ -55,9 +52,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
     //         {z: model.scale.z},
     //         {z: .01, duration: .1, ease: "power4.out"
     //         });
-    }
+        };
     
-    const applyLogoMaterials = (model) => {
+    function applyLogoMaterials     (model) {
         const purple = materials.lightBulbDiffuse;
         const glassPurple = materials.lightBulbGlass;
 
@@ -160,9 +157,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
                 child.material.needsUpdate = true;
             }
         });
-    };
+        };
 
-    async function createLoadingPage() {
+    function createLoadingPage      () {
         const loading = document.createElement('div');
         loading.id = 'loading-page';
         loading.style.cssText = `
@@ -194,14 +191,14 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
     
         // Auto-hide after 2 seconds
         setTimeout(() => hideLoadingPage(), 6000);
-    }
+        };
 
-    function hideLoadingPage() {
+    function hideLoadingPage        () {
         const loading = document.getElementById('loading-page');
         if (!loading) return;
         loading.style.opacity = '0';
         setTimeout(() => loading.remove(), 600);
-    }
+        };
 
     function loadingInformations    (name, about, type, style){
         const informations       = dom.abouts;
@@ -229,12 +226,12 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
         informations.appendChild(clasifications);
         };
 
-    let scale  = .1;
-    let scaleX = scale;
-    let scaleY = scale;
-    let scaleZ = scale;
-
     function loadingNeighbor        (scene, light, building, material){ 
+        let scale  = .1;
+        let scaleX = scale;
+        let scaleY = scale;
+        let scaleZ = scale;
+        
         gltfLoader.load(building, (gltf) => 
             {currentBuilding = gltf.scene;
             currentBuilding.name = 'pageLayout';
@@ -253,6 +250,11 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
         };
 
     function loadingBuilding        (scene, light, building, material){ 
+        let scale  = .1;
+        let scaleX = scale;
+        let scaleY = scale;
+        let scaleZ = scale;
+        
         gltfLoader.load( building, (gltf) => 
             {
             if (currentModel || currentBuilding 
@@ -295,7 +297,11 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
         };
 
     function loadingLogo3D          (scene, light, model, material, animationModel){
-            gltfLoader.load(model, (gltf) => {
+        let scale  = .1;
+        let scaleX = scale;
+        let scaleY = scale;
+        let scaleZ = scale;    
+        gltfLoader.load(model, (gltf) => {
             currentLogo = gltf.scene;
             currentLogo.position.set(-5, 15.5, -7.5);
             currentLogo.scale.set(scaleX*2, scaleY*2, scaleZ*2);
@@ -309,7 +315,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
             scene.add(currentLogo);
             animationModel.play(currentLogo, gltf.animations);
             animateModel(currentLogo)
-        })}
+        })
+        };
     
     function loadingMaterial        (texturePaths){
             const diffuseMap      = textureLoader.load(texturePaths.diffuse);
@@ -334,24 +341,11 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
             mat.needsUpdate = true;
             return mat;
         };
-
-    function loadingAbility         (){
-        const hardAbility   = document.createElement("div");
-        const hardSkill     = document.createElement("div");
-        const hardLevel     = document.createElement("div");
-
-        hardAbility.setAttribute    ('class', 'hardAbility');
-        hardSkill.setAttribute      ('class', 'hardSkills'); 
-        hardLevel.setAttribute      ('class', 'hardLeveling');
-
-        hardSkill.innerHTML = '<svg/>';
-        hardLevel.innerHTML = ''
-
-        hardSkill.appendChild       (hardLevel);
-        hardAbility.appendChild     (hardSkill);
+        
+    function loadingDescriptions    (dom, descriptions, style){
         };
 
-    const   loadingExperience     = (dom, experiences) => {
+    function loadingExperience      (dom, experiences, style){
         const archExpNames  = experiences.map(e => e.identifier.name);
         const archPeriods   = experiences.map(e => e.identifier.period);
         const archAbout     = experiences.map(e => e.identifier.about);
@@ -394,36 +388,117 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
         treeBind.appendChild(branch, base);
         experience.appendChild(geometryUp, content, geometryDown, treeBind);
         dom.appendChild(experience);
-    })
+        })
         };
-
-    const   loadingSkill          = (dom, skills, style) => {
-        const   skill = document.createElement('div');
-                skill.setAttribute      ('class', 'skill');
-                skill.style.padding         = style.padding;
-                skill.style.display         = style.display;
-                skill.style.justifyContent  = style.justify;
-                skill.style.alignItems      = style.alignItems;
-
-        const   symbol = document.createElement('div');
-                symbol.setAttribute        ('class', 'skill');
-                symbol.style.padding           = style.padding;
-                symbol.style.display           = style.display;
-                symbol.style.justifyContent    = style.justify;
-                symbol.style.alignItems        = style.alignItems;
-
-        const   bar = document.createElement('div');
-                bar.setAttribute        ('class', 'skill');
-                bar.style.padding           = style.padding;
-                bar.style.display           = style.display;
-                bar.style.justifyContent    = style.justify;
-                bar.style.alignItems        = style.alignItems;
+    
+    function loadingAbilities       (dom, abilities, style){
+        // Create ability
+        const createAbility = (a) => {
+            let abilities;
+            abilities = document.createElement('div');
+            a.forEach(e => {
+                const icon = document.createElement('icon');
+                const svg  = document.createElement('svg');
+                const use  = document.createElement('use');
         
-        skill.appendChild(symbol, bar);
-        hardLeveling.appendChild(skill);
+                icon.className = e.name;
+                icon.id        = e.name;
+        
+                svg.className  = e.name;
+                svg.id         = e.name;
+        
+                use.className  = e.name;
+                use.id         = e.name;
+        
+                use.setAttribute('href', e.source);
+        
+                svg.appendChild(use);
+                icon.appendChild(svg);
+
+                abilities.appendChild(icon);
+            });
+            return abilities;
+        }
+
+        // Define elements
+            let allAbilities;
+            let hardAbilities;
+            let softAbilities;
+            
+        // Assign dom
+            hardAbilities   = createAbility(abilities.hardAbilities);
+            softAbilities   = createAbility(abilities.softAbilities);
+            allAbilities    = document.createElement("div");
+
+        // Set attributes
+            allAbilities.setAttribute     ('id',    'abilities');
+            allAbilities.setAttribute     ('class', 'abilities');
+
+        // Set styles
+            /* box */
+            /* size */
+            /* position */
+            /* distance */
+            /* geometry */
+            /* style */
+            /* color */
+            /* display */
+            /* content */
+
+        // Append element
+            allAbilities.appendChild        (softAbilities);
+            allAbilities.appendChild        (hardAbilities);
+        };
+    
+    function loadingSkills          (dom, skills, style){
+        // Define elements
+            let skill;
+            let symbol;
+            let bar;
+
+        // Assign dom
+            skill = document.createElement('div');
+            symbol = document.createElement('div');
+            bar = document.createElement('div');
+
+        // Set attributes
+            skill.setAttribute          ('class', 'skill');
+            symbol.setAttribute         ('class', 'skill');
+            bar.setAttribute            ('class', 'skill');
+
+        // Set styles
+            /* box */
+            skill.style.padding         = style.padding;
+            symbol.style.padding        = style.padding;
+            bar.style.padding           = style.padding;
+
+            /* size */
+            /* position */
+            /* distance */
+            /* geometry */
+            /* style */
+            /* color */
+            /* display */
+            skill.style.display         = style.display;
+            skill.style.justifyContent  = style.justify;
+            skill.style.alignItems      = style.alignItems;
+
+            symbol.style.display        = style.display;
+            symbol.style.justifyContent = style.justify;
+            symbol.style.alignItems     = style.alignItems;
+            
+            bar.style.display           = style.display;
+            bar.style.justifyContent    = style.justify;
+            bar.style.alignItems        = style.alignItems;
+
+            /* content */
+
+        // Append element
+            skill.appendChild(symbol, bar);
+            hardLeveling.appendChild(skill);
         };
 
-    const   showLevel = (e) => {
+    function showLevel              (e){
         // Choosing object based on className
         switch (e) {
             case 'BIM': e = BIM;
@@ -555,6 +630,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
         else {console.log('no skill to show')}
         };
 
+    function showCredit             (){
+        };        
+
     const loaders = {
         loadLogo:           loadingLogo3D,
         loadPage:           createLoadingPage,
@@ -563,8 +641,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
         loadBuilding:       loadingBuilding,
         loadModel:          loadingModel,
         loadMaterial:       loadingMaterial,
-        loadExperience:     loadingExperience,
-        loadSkill:          loadingSkill,
+        loadSkill:          loadingSkills,
         loadLevel:          showLevel
     };
 

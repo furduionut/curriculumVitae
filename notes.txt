@@ -101,3 +101,15 @@ easy to understand, easier to change and harder to break
     13. reduce the function repetition;
 
     14. fail hard and early;
+
+    15. use DRY (Don't repeat yourself);
+
+    16. use KISS (Keep it stupid simple);
+
+    17. use YAGNI (You aren't gonna need it);
+
+    18. use SOC (Separation of concerns);
+
+    19. use LOD (Law of demeter);
+
+    20. use COI (Composition over inheritance);

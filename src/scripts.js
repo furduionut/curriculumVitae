@@ -46,15 +46,17 @@
     /* CAMERAS */
         let camera              = cameras.perspective;
         function updateCam() {
-            const camPosA   = new THREE.Vector3(10, 12.5, 10);
-            const camPosB   = new THREE.Vector3(10, 12.5, 10);
-            const camPosC   = new THREE.Vector3(5, 10, -10);
-            const camPosD   = new THREE.Vector3(5, -5.5, -10);
+            const camPosA   = new THREE.Vector3(15, 15, 10);
+            const camPosB   = new THREE.Vector3(15, 15, 10);
+            const camPosC   = new THREE.Vector3(20, 45, 15);
+            const camPosD   = new THREE.Vector3(15, 15, -10);
+            const camPosE   = new THREE.Vector3(15, -5.5, -10);
             
-            const lookA     = new THREE.Vector3(-7.5, 18, -10);
-            const lookB     = new THREE.Vector3(-7.5, 7.5, -10);
-            const lookC     = new THREE.Vector3(-5, 0, -10);
-            const lookD     = new THREE.Vector3(-5, -5.5, -10);
+            const lookA     = new THREE.Vector3(-5.5, 18, -10);
+            const lookB     = new THREE.Vector3(-5.5, 2.5, -10);
+            const lookC     = new THREE.Vector3(-5.5, 2.5, -10);
+            const lookD     = new THREE.Vector3(-5.5, -5, -10);
+            const lookE     = new THREE.Vector3(-5.5, -5, -10);
     
             let scroll = window.scrollY / 1000;
         
@@ -71,8 +73,8 @@
                     posEnd = camPosB;
                     lookStart = lookA; 
                     lookEnd = lookB;
-                    zoomStart = 1.5; 
-                    zoomEnd = 1.5;
+                    zoomStart = 1; 
+                    zoomEnd = 2;
                     break;
         
                 case 1:
@@ -80,8 +82,8 @@
                     posEnd = camPosC;
                     lookStart = lookB; 
                     lookEnd = lookC;
-                    zoomStart = 1.5; 
-                    zoomEnd = 1.0;
+                    zoomStart = 2; 
+                    zoomEnd = 3;
                     break;
         
                 case 2:
@@ -89,8 +91,17 @@
                     posEnd = camPosD;
                     lookStart = lookC; 
                     lookEnd = lookD;
-                    zoomStart = 1.0; 
-                    zoomEnd = 0.5;
+                    zoomStart = 3; 
+                    zoomEnd = 3;
+                    break;
+
+                case 3:
+                    posStart = camPosD; 
+                    posEnd = camPosE;
+                    lookStart = lookD; 
+                    lookEnd = lookE;
+                    zoomStart = 3; 
+                    zoomEnd = 1;
                     break;
         
                 default:
@@ -98,8 +109,8 @@
                     posEnd = camPosD;
                     lookStart = lookD; 
                     lookEnd = lookD;
-                    zoomStart = 0.5; 
-                    zoomEnd = 0.5;
+                    zoomStart = 1; 
+                    zoomEnd = 1;
                     break;
             }
         
@@ -293,7 +304,7 @@
             new THREE.Vector2(dom.viewport.clientWidth, dom.viewport.clientHeight),
             1.3, 0.55, 4);
 
-        composer.addPass(bloomPass)
+        // composer.addPass(bloomPass)
 
     // ANIMATIONS
     let logoAnimation = new LogoAnimation();
@@ -309,13 +320,13 @@
                 toggleActions: "play none reverse reverse"
             }
         });
+        sceneTimeline.fromTo('.controls',
+            { left: '150%' },
+            { left: '0%',  duration: 1, ease: "power2.out", delay: 0.5 }
+        );
         sceneTimeline.fromTo('.description',
             { right: '150%' },
             { right: '0%', duration: 1, ease: "power2.out", delay: 0.25 }
-        );
-        sceneTimeline.fromTo('.controls',
-            { left: '150%' },
-            { left: '0%',  duration: 1, ease: "power2.out", delay: 0.25 }
         );
     }
     
@@ -324,11 +335,11 @@
 
     /* COMMITS */
     updateRefs();
-    domElAnimation();
+    // domElAnimation();
 
     // loaders.loadPage();
     loaders.loadNeighboar(scene, light, neighbor, materials);
-    loaders.loadLogo(scene, light, logo3D, materials, logoAnimation);
+    // loaders.loadLogo(scene, light, logo3D, materials, logoAnimation);
     // startingPage();
 
     // WINDOW EVENTS
@@ -346,6 +357,6 @@
             requestAnimationFrame(animate);
             // control.update();
             updateCam();
-            logoAnimation.update();
+            // logoAnimation.update();
             composer.render();}
         animate()
