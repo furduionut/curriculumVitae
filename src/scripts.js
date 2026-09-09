@@ -16,6 +16,10 @@
     import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
     import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
 
+    import {
+        initPerspectiveCanvas,
+        setPerspectiveModel
+    } from "./perspectiveCanvas.js";
 
     // DOM
     const abilitiesBtn = document.querySelectorAll('#abilityBtn');
@@ -235,6 +239,8 @@
             const canvas        = document.getElementById('canvas');
             const viewport      = document.getElementById('viewport');
 
+            initPerspectiveCanvas(canvas);
+
             let canvasWidth     = viewport.clientWidth;
             let canvasHeight    = viewport.clientHeight;
 
@@ -266,7 +272,8 @@
         const root = document.documentElement;
         const style = getComputedStyle(root);
         const mainColor = style.getPropertyValue('--first-background-color');
-        scene.background = new THREE.Color(mainColor);
+        scene.background = null;
+        // scene.background = new THREE.Color(mainColor);
     
     // LIGHTS
         // CREATE
@@ -649,13 +656,23 @@ const animationController = new ModelAnimationController();
     
     // RENDERER
         // CREATE
-        const renderer = new THREE.WebGLRenderer({antialias: true});
+        // const renderer = new THREE.WebGLRenderer({antialias: true});
+
+        const renderer = new THREE.WebGLRenderer({
+            antialias: true,
+            alpha: true
+        });
+        // transparent background
+        renderer.setClearColor(0x000000, 0);
+
 
         // SETUP
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(rendererWidth, rendererHeight);
         canvas.appendChild(renderer.domElement);
-
+        
+        renderer.domElement.style.position = "relative";
+        renderer.domElement.style.zIndex = "1";
         
         const hdriUrl =
             `${import.meta.env.BASE_URL}assets/images/hdri.hdr`;
@@ -687,7 +704,12 @@ const animationController = new ModelAnimationController();
         renderer.toneMappingExposure = 1;
         const composer = new EffectComposer(renderer);
         const renderPass = new RenderPass(scene, camera);
+
+        renderPass.clear = true;
+        renderPass.clearAlpha = 0;
+
         composer.addPass(renderPass);
+             
         
         const bloomPass = new UnrealBloomPass(
             new THREE.Vector2(rendererWidth, rendererHeight),
@@ -730,6 +752,34 @@ const animationController = new ModelAnimationController();
         controls.maxDistance = 30; // Limit zoom to a certain maximum distance - here fix clipping plane
         controls.maxPolarAngle = Math.PI / 3; // Prevent vertical rotation (limit pitch to 90 degrees)
         controls.minPolarAngle = Math.PI / 3; // Lock vertical axis at 90 degrees (horizontal only)
+
+        /*
+        * Allow mouse wheel to scroll the PAGE
+        * even while cursor is over the isometric canvas.
+        *
+        * Click + drag OrbitControls remain intact.
+        */
+        renderer.domElement.addEventListener(
+            "wheel",
+            (event) => {
+
+                event.preventDefault();
+
+                window.scrollBy({
+                    top: event.deltaY,
+                    left: 0,
+                    behavior: "auto"
+                });
+
+            },
+            {
+                passive: false
+            }
+        );
+
+
+
+
 
         // SAVE INITIAL CAMERA VIEW
         const initialCameraPosition = camera.position.clone();
@@ -829,7 +879,9 @@ const animationController = new ModelAnimationController();
                 animationController.update();
 
                 controls.update();
-                composer.render();
+                renderer.setClearAlpha(0);
+                // composer.render();
+                renderer.render(scene, camera);
             }
         
             rendering();
