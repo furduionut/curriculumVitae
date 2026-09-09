@@ -326,7 +326,6 @@ body {
     /* display */
     /* content */
 }
-
 .navItem {
     /* box */
     padding: var(--general-padding);
@@ -395,7 +394,7 @@ body {
     /* display */
     display: flex;
     flex-flow: column wrap;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
     /* content */
 }
@@ -418,6 +417,8 @@ body {
     font-family: var(--description-font-family);
     /* color */
     /* display */
+    display: flex;
+    justify-content: center;
     /* flex-flow: column wrap;
     /* content */
 }
@@ -442,6 +443,45 @@ body {
     background: rgba(173, 182, 211, 0.35);
     mix-blend-mode: multiply;
 }
+.viewport2 {
+    /* box */
+    /* padding: var(--general-padding); */
+    /* size */
+    width: 50em;
+    height: 50em;
+    font-size: var(--description-fontSize);
+    /* position */
+    z-index: 3;
+    /* distance */
+    gap: var(--general-gap);
+    /* geometry */
+    /* style */
+    font-family: var(--description-font-family);
+    /* color */
+    background: transparent;
+    border: 2px solid red;
+    /* display */ 
+    display:flex;
+    justify-content: center;
+    flex-flow: column wrap;
+    /* content */
+}
+.canvaso {
+    /* box */
+    /* size */
+    width: 50em;
+    height: 50em;
+    /* position */
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    /* content */
+    /* filter */
+    background: transparent;
+}
+
 .controls {
     /* box */
     /* size */

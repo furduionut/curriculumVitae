@@ -4,13 +4,14 @@
 
 /* DOM ELEMETS */
     const viewport      = document.getElementById('viewport');
+    const viewport2     = document.getElementById('viewport2');
 
 /* CAMERA PARAMETERS */
     const orthographicParams = {
-        zoom: 1.25,
-        width: viewport.clientWidth,
-        height: viewport.clientHeight,
-        aspect: viewport.clientWidth / viewport.clientHeight,
+        zoom: 1,
+        width: viewport2.clientWidth,
+        height: viewport2.clientHeight,
+        aspect: viewport2.clientWidth / viewport2.clientHeight,
         dimension: 10,
         far: 25,
         near: 0.01,
@@ -151,6 +152,8 @@
         cameras.perspective.updateProjectionMatrix();});
 
     perspCameraFolder.close();
+
+/* CAMERA INITIATION */
 
 /* CAMERA ANIMATION */
 

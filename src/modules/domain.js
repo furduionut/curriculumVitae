@@ -5,12 +5,14 @@ const domain = {
 
     /* PROJECTS */
     canvas  :        document.getElementById('canvas'),
+    canvaso :        document.getElementById('canvaso'),
     viewport:        document.getElementById('viewport'),
+    viewport2:       document.getElementById('viewport2'),
     upBtn   :        document.getElementById('upBtn'),
     nextBtn :        document.getElementById('nextBtn'),
     prevBtn :        document.getElementById('prevBtn'),
     downBtn :        document.getElementById('downBtn'),
-    abouts  :       document.getElementById('description'),
+    abouts  :        document.getElementById('description'),
     
     /* ABILITIES */
     abilitiesBtn:    document.querySelectorAll('#abilityBtn'),

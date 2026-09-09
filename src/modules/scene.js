@@ -8,7 +8,8 @@ import { GUI } from "dat.gui";
 
 /* SCENE INITIATION */
 const scenes = {
-    mainScene: new THREE.Scene()}
+    mainScene: new THREE.Scene(),
+    secondScene: new THREE.Scene()}
 
 /* SCENE BACKGROUND */
     /* HDR PROJECTION */
@@ -47,7 +48,7 @@ const scenes = {
     // scenes.mainScene.environment = hdrTexture;
     // scenes.mainScene.add(skybox);
     // scenes.mainScene.backgroundBlurriness = 0.3
-
+    scenes.secondScene.background = null;
 /* EXPORT */
 
 export { scenes }

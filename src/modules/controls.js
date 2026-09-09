@@ -1,19 +1,17 @@
 /* IMPORTS */
 import * as THREE from "three";
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 /* DOM ELEMENT */
 const controls = (camera, renderDom) => {
     const control = new OrbitControls(camera, renderDom);
     control.enableRotate = true;
-    control.enablePan = false;
-    control.enableZoom = false;
+    control.enablePan = true;
+    control.enableZoom = true;
     control.enableDamping = true;
     control.dampingFactor = 0.05;
-    return control
+    return control;
 };
-
 
 /* EXPORTS */
 

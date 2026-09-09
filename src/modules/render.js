@@ -1,9 +1,5 @@
 /* IMPORTS */
 import * as THREE from "three";
-import { domain } from "./domain.js";
-
-let dom                 = domain;
-
 
 const renders = (rendererWidth, rendererHeight, canvas) => {
     const render = new THREE.WebGLRenderer({antialias: true});
@@ -13,7 +9,15 @@ const renders = (rendererWidth, rendererHeight, canvas) => {
     return render
 }
 
+const rendero = (rendererWidth, rendererHeight, canvaso) => {
+    const rendero = new THREE.WebGLRenderer({antialias: true, alpha: true});
+    rendero.setPixelRatio(window.devicePixelRatio);
+    rendero.setSize(rendererWidth, rendererHeight);
+    rendero.setClearColor(0x000000, 0);
+    canvaso.appendChild(rendero.domElement);
+    return rendero
+}
 
 /* EXPORT */
-    export { renders }
+    export { renders, rendero }
 

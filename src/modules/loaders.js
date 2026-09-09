@@ -303,9 +303,9 @@ import { materials } from "./materials.js";
         let scaleZ = scale;    
         gltfLoader.load(model, (gltf) => {
             currentLogo = gltf.scene;
-            currentLogo.position.set(-5, 15.5, -7.5);
-            currentLogo.scale.set(scaleX*2, scaleY*2, scaleZ*2);
-            currentLogo.rotation.set(0, -.5, .5);
+            currentLogo.position.set(5.0, 12.5, -5.0);
+            currentLogo.scale.set(.25, .25, .25);
+            currentLogo.rotation.set(Math.PI/2, Math.PI/4, Math.PI);
             applyLogoMaterials(currentLogo);
             gltf.animations.forEach((clip) => {
                 // console.log("Animation clip:", clip.name);

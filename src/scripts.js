@@ -27,6 +27,7 @@
     import { helpers }      from "./modules/lights.js";
     import { cameras }      from "./modules/cameras.js";
     import { renders }      from "./modules/render.js";
+    import { rendero }      from "./modules/render.js";
     import { controls }     from "./modules/controls.js";
     import { materials }    from "./modules/materials.js";
 
@@ -36,15 +37,26 @@
         let rendererHeight      = dom.viewport.clientHeight;
         let rendererCanvas      = dom.canvas;
 
+        let renderoWidth       = dom.viewport2.clientWidth;
+        let renderoHeight      = dom.viewport2.clientHeight;
+        let renderoCanvas      = dom.canvaso;
+
     /* INDEXES */
         let buildingIndex       = 0;
         let buildingModelIndex  = 0;
 
     /* SCENES */
         let scene               = scenes.mainScene;
+        let secondScene         = scenes.secondScene;
+
+        const axes = new THREE.AxesHelper(5);
+        secondScene.add(axes);
 
     /* CAMERAS */
-        let camera              = cameras.perspective;
+        let perspCamera         = cameras.perspective;
+        let orthoCamera         = cameras.orthographic;
+
+    /* CAMERA ANIMATION */
         function updateCam() {
             const camPosA   = new THREE.Vector3(15, 15, 10);
             const camPosB   = new THREE.Vector3(15, 15, 10);
@@ -116,15 +128,15 @@
         
             // Smooth position
             const pos = posStart.clone().lerp(posEnd, t);
-            camera.position.copy(pos);
+            perspCamera.position.copy(pos);
         
             // Smooth lookAt
             const look = lookStart.clone().lerp(lookEnd, t);
-            camera.lookAt(look);
+            perspCamera.lookAt(look);
         
             // Smooth zoom
-            camera.zoom = THREE.MathUtils.lerp(zoomStart, zoomEnd, t);
-            camera.updateProjectionMatrix();
+            perspCamera.zoom = THREE.MathUtils.lerp(zoomStart, zoomEnd, t);
+            perspCamera.updateProjectionMatrix();
         }
     
     /* CAMERA FOCUS */
@@ -203,12 +215,17 @@
                 type                = info.types[buildingIndex];
                 style               = info.styles[buildingIndex];
             }
-
         function updateCanvas(){
                 rendererWidth       = dom.viewport.clientWidth;
                 rendererHeight      = dom.viewport.clientHeight;
-                renderer.setSize(rendererWidth, rendererHeight);
-                camera.aspect       = rendererWidth / rendererHeight;
+                renderer.setSize    (rendererWidth, rendererHeight);
+                perspCamera.aspect  = rendererWidth / rendererHeight;
+            }
+        function updateCanvaso(){
+            renderoWidth        = dom.viewport2.clientWidth;
+            renderoHeight       = dom.viewport2.clientHeight;
+            renderero.setSize   (renderoWidth, renderoHeight);
+            orthoCamera.aspect  = renderoWidth / renderoHeight;
             }
             
     /* STATS */
@@ -231,6 +248,11 @@
             rendererWidth, 
             rendererHeight, 
             rendererCanvas);
+
+        let renderero = rendero(
+            renderoWidth,
+            renderoHeight,
+            renderoCanvas);
 
     /* ACTIONS */
         dom.nextBtn.addEventListener    
@@ -272,14 +294,14 @@
             });
 
         window.addEventListener
-            ('resize', () => {updateCanvas()
-
+            ('resize', () => {
+                updateCanvas();
+                updateCanvaso();
             });
               
     /* CONTROL */
-    const control = controls(
-        camera, 
-        renderer.domElement);
+    const control = controls(orthoCamera, renderero.domElement);
+    control.target.set(0, 0, 0);
 
     // PMR
     const pmremGenerator  = new THREE.PMREMGenerator(renderer);
@@ -288,11 +310,11 @@
         const composer   = new EffectComposer(renderer);
 
     // RENDERPASS
-        const renderPass = new RenderPass(scene, camera);
+        const renderPass = new RenderPass(scene, perspCamera);
         composer.addPass(renderPass);
 
     // BLURPASS
-        const blurPass = new BokehPass(scene, camera, {
+        const blurPass = new BokehPass(scene, perspCamera, {
             focus: 500,
             aperture: 5,
             maxblur: 0.001})
@@ -338,8 +360,8 @@
     // domElAnimation();
 
     // loaders.loadPage();
-    loaders.loadNeighboar(scene, light, neighbor, materials);
-    // loaders.loadLogo(scene, light, logo3D, materials, logoAnimation);
+    loaders.loadNeighboar   (scene, light, neighbor, materials);
+    loaders.loadLogo        (secondScene, light, logo3D, materials, logoAnimation);
     // startingPage();
 
     // WINDOW EVENTS
@@ -354,9 +376,11 @@
 
     // RENDERING
         function animate() {
-            requestAnimationFrame(animate);
-            // control.update();
-            updateCam();
-            // logoAnimation.update();
-            composer.render();}
+            requestAnimationFrame   (animate);
+            renderero.render        (secondScene, orthoCamera);
+            control.update          ();
+            updateCam               ();
+            logoAnimation.update    ();
+            composer.render         ();
+        }
         animate()
