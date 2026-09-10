@@ -154,6 +154,7 @@ body {
     padding: var(--general-padding);
     /* size */
     height: auto;
+    min-width: 85em;
     /* position */
     /* distance */
     gap: var(--general-gap);
@@ -269,10 +270,15 @@ body {
 }
 .aboutMe {
     /* box */
+    padding-top: var(--general-padding);
+    padding-bottom: var(--general-padding);
     /* size */
+    height: auto;
     width: 100%;
     /* position */
     position: fixed;
+    left: 0;
+    top: 25%;
     /* distance */
     /* geometry */
     /* style */
@@ -280,6 +286,7 @@ body {
     /* color */
     /* display */
     display: flex;
+    flex-shrink: 1;
     flex-flow: row wrap;
     justify-content: space-between;
     /* content */
@@ -287,14 +294,12 @@ body {
 }
 .navBar {
     /* box */
-    padding: var(--general-padding);
     /* size */
     width: auto;
     height: auto;
     /* position */
-    position: fixed;
-    top: 25%;
-    left: -2em;
+    position: relative;
+    left: -1em;
     /* distance */
     gap: var(--general-gap);
     /* geometry */
@@ -303,20 +308,18 @@ body {
     /* color */
     /* display */
     display: flex;
-    align-items: space-evenly;
+    align-items: space-between;
     flex-flow: column wrap;
     /* content */
 }
 .infoBar {
     /* box */
-    padding: var(--general-padding);
     /* size */
-    width: 15em;
-    height: 17.5em;
+    width: var(--offset-padding);
+    height: auto;
     /* position */
-    position: fixed;
-    top: 25%;
-    right: -2em;
+    position: relative;
+    right: -1em;
     /* distance */
     gap: var(--general-gap);
     /* geometry */
@@ -331,8 +334,7 @@ body {
     padding: var(--general-padding);
     /* size */
     height: auto;
-    width: 15em;
-    max-width: auto;
+    width: var(--offset-padding);
     /* position */
     /* distance */
     /* geometry */
@@ -383,8 +385,6 @@ body {
     width: 100%;
     height: 200em;
     /* position */
-    top: 0;
-    left: 0;
     /* distance */
     gap: var(--general-gap);
     /* geometry */
@@ -394,7 +394,7 @@ body {
     /* display */
     display: flex;
     flex-flow: column wrap;
-    justify-content: space-between;
+    justify-content: space-evenly;
     align-items: center;
     /* content */
 }
@@ -429,8 +429,6 @@ body {
     height: auto;
     /* position */
     position: absolute;
-    top: 0;
-    left: 0;
     z-index: -1;
     /* distance */
     /* geometry */
@@ -445,32 +443,30 @@ body {
 }
 .viewport2 {
     /* box */
-    /* padding: var(--general-padding); */
     /* size */
-    width: 50em;
+    width: 60em;
     height: 50em;
+    scale: 1;
     font-size: var(--description-fontSize);
     /* position */
-    z-index: 3;
+    position: fixed;
+    top: 12.5em;
+    z-index: 10;
     /* distance */
     gap: var(--general-gap);
     /* geometry */
     /* style */
     font-family: var(--description-font-family);
     /* color */
-    background: transparent;
-    border: 2px solid red;
+
     /* display */ 
-    display:flex;
-    justify-content: center;
-    flex-flow: column wrap;
     /* content */
 }
 .canvaso {
     /* box */
     /* size */
-    width: 50em;
-    height: 50em;
+    width: auto;
+    height: auto;
     /* position */
     /* distance */
     /* geometry */
@@ -481,7 +477,6 @@ body {
     /* filter */
     background: transparent;
 }
-
 .controls {
     /* box */
     /* size */
@@ -490,8 +485,7 @@ body {
     font-size: var(--description-fontSize);
     /* position */
     position: relative;
-    bottom: 2.5em;
-    z-index: 1;
+    top: 115em;
     /* distance */
     gap: var(--general-gap);
     /* geometry */
@@ -500,7 +494,7 @@ body {
     /* color */
     /* display */
     display: flex;
-    align-items: flex-end;
+    align-content: center;
     /* content */
 }
 .stageNav {
@@ -591,9 +585,6 @@ body {
     justify-content: space-between;
     /* content */   
 }
-/* .banner:active + .experiences {
-    display: flex;
-} */
 .experiences {
     /* box */
     padding-left: var(--offset-padding);
@@ -611,12 +602,12 @@ body {
     /* content */
 
 }
-.experience{
+.experience {
     /* box */
     padding: var(--general-padding);
     /* size */
     width: 100%;
-    height: 100em;
+    height: auto;
     /* position */
     z-index: 2;
     /* distance */
@@ -632,9 +623,10 @@ body {
 }
 .experience > div:nth-child(even):not(:last-child){
     /* box */
+    padding: var(--general-padding);
     /* size */
     height: auto;
-    width: 20em;
+    width: auto;
     /* position */
     /* distance */
     /* geometry */
@@ -646,9 +638,10 @@ body {
 }
 .experience > div:nth-child(odd):not(:last-child){
     /* box */
+    padding: var(--general-padding);
     /* size */
     height: auto;
-    width: 20em;
+    width: auto;
     /* position */
     /* distance */
     /* geometry */
@@ -702,7 +695,7 @@ body {
     /* box */
     padding: var(--general-padding);    
     /* size */
-    width: 100%;
+    width: 25em;
     height: auto;
     /* position */
     position: relative;
@@ -746,10 +739,12 @@ div[class^='geometry'] {
 }
 .geometry-up {
     /* box */
+    padding: var(--general-padding);
     /* size */
+    width: auto;
+    /* position */
     position: relative;
     left: 10%;
-    /* position */
     /* distance */
     /* geometry */
     border-top-left-radius: var(--general-border-radius);
@@ -758,11 +753,17 @@ div[class^='geometry'] {
     /* color */
     background-color: var(--third-background-color);
     /* display */
+    display: flex;
+    justify-content: center;
+    align-items: center;
     /* content */
 }
 .geometry-down {
     /* box */
+    padding: var(--general-padding);
     /* size */
+    height: auto;
+    width: auto;
     /* position */
     position: relative;
     left: 35%;
@@ -774,8 +775,27 @@ div[class^='geometry'] {
     /* color */
     background-color: var(--third-background-color);
     /* display */
+    display: flex;
+    justify-content: center;
+    align-items: center;
     /* content */
 }
+
+.experience > div:nth-child(odd) .geometry-down {
+    min-width: auto;
+    left: 15%
+}
+
+.experience > div:nth-child(odd) .geometry-up {
+    min-width: auto;
+    left: 35%
+}
+
+.experience > div:nth-child(even) .geometry-down {
+    min-width: 15em;
+    left: 25%;
+}
+
 .treeBind-left {
     /* box */
     /* size */
@@ -787,8 +807,9 @@ div[class^='geometry'] {
     /* style */
     /* color */
     /* display */
+    transform: scaleX(1);
     /* content */
-    
+
 }
 .branch-left {
     /* box */
@@ -804,6 +825,7 @@ div[class^='geometry'] {
     /* color */
     background-color: var(--third-background-color);
     /* display */
+    transform: scaleX(1);
     /* content */
 }
 .base-left {
@@ -820,6 +842,7 @@ div[class^='geometry'] {
     /* color */
     background-color: var(--third-background-color);
     /* display */
+    transform: scaleX(1);
     /* content */
 }
 .treeBind-right {
@@ -872,6 +895,88 @@ div[class^='geometry'] {
     transform: scaleX(-1);
     /* content */
 }
+
+.pointCloud {
+    /* box */
+    /* size */
+    width: 25em;
+    height: auto;
+    /* position */
+    position: relative;
+    top: 1em;
+    right: 45%;
+    /* distance */
+    /* geometry */
+    gap: var(--general-gap);
+    transform: scaleX(-1);
+    /* style */
+    /* color */
+    /* display */
+    display: flex;
+    align-items: center;
+    flex-grow: row wrap;
+    /* content */
+}
+.biggerCloud {
+    /* box */
+    /* size */
+    width: 7.5em;
+    height: 2.5em;
+    /* position */
+    position: relative;
+    /* distance */
+    /* geometry */
+    border-radius: var(--general-border-radius);
+    /* style */
+    /* color */
+    background-color: var(--third-background-color);
+    /* display */
+    /* content */
+}
+.bigCloud {
+    /* box */
+    /* size */
+    width: 2.5em;
+    height: 2.5em;
+    /* position */
+    position: relative;
+    /* distance */
+    /* geometry */
+    border-radius: var(--general-border-radius);
+    /* style */
+    /* color */
+    background-color: var(--third-background-color);
+    /* display */
+    /* content */
+}
+.smallCloud {
+    /* box */
+    /* size */
+    width: 1em;
+    height: 1em;
+    /* position */
+    position: relative;
+    /* distance */
+    /* geometry */
+    border-radius: var(--general-border-radius);
+    /* style */
+    /* color */
+    background-color: var(--third-background-color);
+    /* display */
+    /* content */
+}
+
+.experience > div:nth-child(even) .pointCloud {
+    transform: scaleX(1);
+    position: relative;
+    right: -50%;
+}
+
+.experience > div:nth-child(odd) .pointCloud {
+    position: relative;
+    left: -50%;
+}
+
 .timeline {
     /* box */
     /* size */
@@ -895,13 +1000,11 @@ div[class^='geometry'] {
     width: auto;
     height: 135em;
     /* position */
-    position: relative;
     /* distance */
     gap: var(--general-gap);
     /* geometry */
     /* style */
     /* color */
-    background-color: var(--first-background-color);
     /* display */
     display: flex;
     align-items: center;
@@ -915,6 +1018,8 @@ div[class^='geometry'] {
     width: 2em;
     height: 15em;
     /* position */
+    position: relative;
+    left: -50%;
     /* distance */
     /* geometry */
     border-radius: var(--general-border-radius);
@@ -922,7 +1027,6 @@ div[class^='geometry'] {
     /* color */
     background-color: var(--third-background-color);
     /* display */
-
     /* content */
 }
 
@@ -1043,7 +1147,7 @@ div[class^='geometry'] {
     /* box */
     padding: var(--general-padding);
     /* size */
-    width: 100%;
+    width: auto;
     height: auto;
     /* position */
     /* distance */
@@ -1059,7 +1163,8 @@ div[class^='geometry'] {
     /* box */
     padding: var(--general-padding);
     /* size */
-    width: 100%;
+    width: auto;
+    height: auto;
     /* position */
     /* distance */
     gap: var(--general-gap);
@@ -1118,6 +1223,33 @@ div[class^='geometry'] {
     /* content */
 }
 
+.icon {
+    /* box */
+    /* size */
+    width: auto;
+    height: auto;
+    /* position */
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    /* content */
+}
+
+svg {
+    /* box */
+    /* size */
+    width: auto;
+    height: auto;
+    /* position */
+    /* distance */
+    /* geometry */
+    /* style */
+    /* color */
+    /* display */
+    /* content */
+}
 /* ----CREDITS-----*/
 .credits {
     /* box */

@@ -8,7 +8,7 @@ const objects = {
         main:   './public/assets/meshes/mainScene/pageLayout-05.glb',
         textures: ''},
     logo3D: {
-        main:   './public/assets/meshes/mainScene/logo.glb'
+        main:   './public/assets/meshes/mainScene/logo3D.glb'
     }
 }
 

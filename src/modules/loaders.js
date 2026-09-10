@@ -66,6 +66,12 @@ import { materials } from "./materials.js";
             const isArchSegment =
                 name.startsWith("archmov");
 
+            const isArchSegment2 =
+                name.startsWith('archMesh');
+
+            const isItizerSegment2 =
+                name.startsWith('itizerMesh')
+
             const isItizerSegment =
                 name.startsWith("itizermov");
 
@@ -96,7 +102,34 @@ import { materials } from "./materials.js";
                 return;
             }
 
-            if (name === "bec") {
+            if (isArchSegment2 || isItizerSegment2) {
+                child.material =
+                    new THREE.MeshBasicMaterial({
+                        color: glassPurple.clone(),
+
+                        color: 0x8e93f8,
+                        transparent: true,
+                        opacity: 1,
+                        depthWrite: false,
+                        depthTest: true,
+                        fog: false
+                    });
+                child.castShadow = false;
+                child.receiveShadow = false;
+                child.renderOrder = 3;
+                child.material.needsUpdate = true;
+
+                
+                // console.log(
+                //     "Prepared independent segment:",
+                //     child.name,
+                //     child.material.id
+                // );
+
+                return;
+            }
+
+            if (name === "bec" || name === 'lightBulbMesh.001') {
                 const brightPurple = purple
                     .clone()
                     .multiplyScalar(6);
@@ -123,7 +156,7 @@ import { materials } from "./materials.js";
                 return;
             }
 
-            if (name === "traseu") {
+            if (name === "traseu" || name === 'bodyMesh.001') {
                 child.material =
                     new THREE.MeshPhysicalMaterial({
                         color: 0xffffff,
@@ -303,8 +336,6 @@ import { materials } from "./materials.js";
         let scaleZ = scale;    
         gltfLoader.load(model, (gltf) => {
             currentLogo = gltf.scene;
-            currentLogo.position.set(5.0, 12.5, -5.0);
-            currentLogo.scale.set(.25, .25, .25);
             currentLogo.rotation.set(Math.PI/2, Math.PI/4, Math.PI);
             applyLogoMaterials(currentLogo);
             gltf.animations.forEach((clip) => {

@@ -13,10 +13,13 @@
         height: viewport2.clientHeight,
         aspect: viewport2.clientWidth / viewport2.clientHeight,
         dimension: 10,
-        far: 25,
+        far: 50,
         near: 0.01,
-        offsetX: 250,
-        offsetY: -750
+        offsetX: 0,
+        offsetY: 0,
+        positionX: 0,
+        positionY: 0,
+        positionZ: 5
     }
 
     const perpectiveParams = {
@@ -55,15 +58,10 @@
     }
 
 /* CAMERA SETUP */
-    cameras.orthographic.zoom = orthographicParams.zoom;
-    cameras.orthographic.setViewOffset(
-        orthographicParams.width,      
-        orthographicParams.height,     
-        orthographicParams.offsetX, 
-        orthographicParams.offsetY,                
-        orthographicParams.width,  
-        orthographicParams.height);
-    cameras.orthographic.updateProjectionMatrix();
+    cameras.orthographic.position.set(
+        orthographicParams.positionX,
+        orthographicParams.positionY,
+        orthographicParams.positionZ);
 
     cameras.perspective.position.set(
         perpectiveParams.positionX,
@@ -119,6 +117,18 @@
         );
         cameras.orthographic.updateProjectionMatrix();});    
     
+    orthocameraFolder.add(orthographicParams, 'positionX', 0, 1, 0.01).onChange(value=>{
+        cameras.orthographic.position.x = value;
+        cameras.orthographic.updateProjectionMatrix();});
+
+    orthocameraFolder.add(orthographicParams, 'positionY', 0, 1, 0.01).onChange(value=>{
+        cameras.orthographic.position.y = value;
+        cameras.orthographic.updateProjectionMatrix();});
+
+    orthocameraFolder.add(orthographicParams, 'positionZ', 0, orthographicParams.positionZ, 0.01).onChange(value=>{
+        cameras.orthographic.position.z = value;
+        cameras.orthographic.updateProjectionMatrix();});
+        
     orthocameraFolder.close();
 
     const perspCameraFolder = gui.addFolder('Perspective Camera');

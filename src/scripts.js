@@ -1,35 +1,35 @@
 
     // IMPORTS
-    import "./styles.css";
-    import * as THREE       from "three";
-    import { HDRLoader, UnrealBloomPass }    from "three/examples/jsm/Addons.js";
-    import { gsap }         from "gsap";
-    import  Stats           from "stats.js";
+        import "./styles.css";
+        import * as THREE       from "three";
+        import { HDRLoader, UnrealBloomPass }    from "three/examples/jsm/Addons.js";
+        import { gsap }         from "gsap";
+        import  Stats           from "stats.js";
 
-    import { ScrollTrigger } from "gsap/ScrollTrigger";
-    import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
-    import { RenderPass }   from "three/examples/jsm/postprocessing/RenderPass.js";
-    import { BokehPass }    from "three/examples/jsm/postprocessing/BokehPass.js";
-    import { LogoAnimation } from "./modules/animations.js"; 
+        import { ScrollTrigger } from "gsap/ScrollTrigger";
+        import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+        import { RenderPass }   from "three/examples/jsm/postprocessing/RenderPass.js";
+        import { BokehPass }    from "three/examples/jsm/postprocessing/BokehPass.js";
+        import { LogoAnimation } from "./modules/animations.js"; 
 
-    import { personal }     from "./modules/personal.js";
-    import { projects }     from "./modules/projects.js";
-    import { experiences }  from "./modules/experiences.js";
-    import { abilities }    from "./modules/abilities.js";
-    import { credits }      from "./modules/credits.js";
+        import { personal }     from "./modules/personal.js";
+        import { projects }     from "./modules/projects.js";
+        import { experiences }  from "./modules/experiences.js";
+        import { abilities }    from "./modules/abilities.js";
+        import { credits }      from "./modules/credits.js";
 
-    import { info }         from "./modules/abouts.js";
-    import { domain }       from "./modules/domain.js";
-    import { loaders }      from "./modules/loaders.js"
-    import { scenes }       from "./modules/scene.js";
-    import { objects }      from "./modules/objects.js";
-    import { lights }       from "./modules/lights.js";
-    import { helpers }      from "./modules/lights.js";
-    import { cameras }      from "./modules/cameras.js";
-    import { renders }      from "./modules/render.js";
-    import { rendero }      from "./modules/render.js";
-    import { controls }     from "./modules/controls.js";
-    import { materials }    from "./modules/materials.js";
+        import { info }         from "./modules/abouts.js";
+        import { domain }       from "./modules/domain.js";
+        import { loaders }      from "./modules/loaders.js"
+        import { scenes }       from "./modules/scene.js";
+        import { objects }      from "./modules/objects.js";
+        import { lights }       from "./modules/lights.js";
+        import { helpers }      from "./modules/lights.js";
+        import { cameras }      from "./modules/cameras.js";
+        import { renders }      from "./modules/render.js";
+        import { rendero }      from "./modules/render.js";
+        import { controls }     from "./modules/controls.js";
+        import { materials }    from "./modules/materials.js";
 
     /* ELEMENTS */
         let dom                 = domain;
@@ -62,7 +62,7 @@
             const camPosB   = new THREE.Vector3(15, 15, 10);
             const camPosC   = new THREE.Vector3(20, 45, 15);
             const camPosD   = new THREE.Vector3(15, 15, -10);
-            const camPosE   = new THREE.Vector3(15, -5.5, -10);
+            const camPosE   = new THREE.Vector3(15, -15, -10);
             
             const lookA     = new THREE.Vector3(-5.5, 18, -10);
             const lookB     = new THREE.Vector3(-5.5, 2.5, -10);
@@ -113,16 +113,16 @@
                     lookStart = lookD; 
                     lookEnd = lookE;
                     zoomStart = 3; 
-                    zoomEnd = 1;
+                    zoomEnd = 3;
                     break;
         
                 default:
-                    posStart = camPosD; 
-                    posEnd = camPosD;
-                    lookStart = lookD; 
-                    lookEnd = lookD;
-                    zoomStart = 1; 
-                    zoomEnd = 1;
+                    posStart = camPosE; 
+                    posEnd = camPosE;
+                    lookStart = lookE; 
+                    lookEnd = lookE;
+                    zoomStart = 3; 
+                    zoomEnd = 3;
                     break;
             }
         
@@ -138,7 +138,7 @@
             perspCamera.zoom = THREE.MathUtils.lerp(zoomStart, zoomEnd, t);
             perspCamera.updateProjectionMatrix();
         }
-    
+
     /* CAMERA FOCUS */
         const focusPoint        = new THREE.Vector3(-5, 0, -10);
 
@@ -335,20 +335,24 @@
     
         let sceneTimeline = gsap.timeline({
             scrollTrigger: {
-                trigger: '.controls',
-                start: "-150% 90%",
-                end: "200% 95%",
+                trigger: '.viewport2',
+                start: "50% 5%",
+                end: "100% 20%",
                 markers: true,
+                scrub: true,
+                scrub: 1,
                 toggleActions: "play none reverse reverse"
             }
         });
-        sceneTimeline.fromTo('.controls',
-            { left: '150%' },
-            { left: '0%',  duration: 1, ease: "power2.out", delay: 0.5 }
+        sceneTimeline.fromTo('.viewport2',
+            { scale: '1' },
+            { scale: '.100', 
+            duration: 1, ease: "power2.out", delay: 0 }
         );
-        sceneTimeline.fromTo('.description',
-            { right: '150%' },
-            { right: '0%', duration: 1, ease: "power2.out", delay: 0.25 }
+        sceneTimeline.fromTo('.viewport2',
+            { y: '0' },
+            { y: '-450', 
+            duration: 1, ease: "power2.out", delay: -1 }
         );
     }
     
@@ -357,7 +361,7 @@
 
     /* COMMITS */
     updateRefs();
-    // domElAnimation();
+    domElAnimation();
 
     // loaders.loadPage();
     loaders.loadNeighboar   (scene, light, neighbor, materials);
