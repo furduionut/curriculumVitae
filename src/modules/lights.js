@@ -6,7 +6,7 @@ import * as THREE from "three";
 /* LIGHTS PARAMETERS */
 
 const LightColor = 0xffffff;
-const LightIntensity = 7.5;
+const LightIntensity = 1.5;
 const LightIntensity02 = 5;
 
 /* LIGHT TARGET */

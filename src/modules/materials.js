@@ -1,10 +1,15 @@
 import * as THREE               from "three";
 import { styles }               from "./styles.js";
 
+    const lavenderColor = new THREE.Color(0x6a76a6);
+    const lightBlueColor = new THREE.Color(0xc9b8ff);
+    const brightPurple = new THREE.Color(0x9b00ff);
+
     const papper = new THREE.MeshStandardMaterial({
         color: 'red', 
         roughness: 1, 
-        envMapIntensity: .5});
+        envMapIntensity: .5
+    });
 
     const glass = new THREE.MeshPhysicalMaterial({
         color: 'white',
@@ -14,20 +19,38 @@ import { styles }               from "./styles.js";
         thickness: 1.25,
         ior: 1.45,
         envMapIntensity: 2.75,
-        transparent: true});
+        transparent: true
+    });
     
     const wood = new THREE.MeshStandardMaterial({
-        color: 'brown', 
-        roughness: 1, 
-        envMapIntensity: .5});
-
+        color: lavenderColor,
+        roughness: 1,
+        envMapIntensity: 0.01
+    });
+        
     const whiteColor = new THREE.MeshBasicMaterial({
-        color: styles.color3
-      });
+        color: 'white',
+    });
 
-    const lavenderColor = new THREE.Color(0xb57cff);
-    const lightBlueColor = new THREE.Color(0xc9b8ff);
-    const brightPurple = new THREE.Color(0x9b00ff);
+    const clearGlass = new THREE.MeshPhysicalMaterial({
+        color: 0xffffff,
+        transparent: true,
+        opacity: 0.05,
+        transmission: 0.85,
+        roughness: 0.08,
+        metalness: 0,
+        thickness: 0.35,
+        ior: 1.45,
+        attenuationColor:
+            new THREE.Color(0xffffff),
+        attenuationDistance: 2,
+        clearcoat: 1,
+        clearcoatRoughness: 0.03,
+        envMapIntensity: 1.5,
+        side: THREE.DoubleSide,
+        depthWrite: false,
+        depthTest: true
+    });
 
 const materials = {
     cloudDiffuse: whiteColor,
@@ -35,6 +58,7 @@ const materials = {
     lightBulbGlass: lightBlueColor,
     support: papper, 
     model: glass, 
-    desk: wood};
+    desk: wood,
+    tube: clearGlass};
 
 export { materials }

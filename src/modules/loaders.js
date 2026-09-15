@@ -1,15 +1,20 @@
-import * as THREE       from "three";
-import { GLTFLoader }   from "three/examples/jsm/Addons.js";
-import { DRACOLoader }  from "three/examples/jsm/Addons.js";
-import { BIM, DWG, TXT, OBJ, IMG, SWG, CGI, ART, THC, MAN, CLB, COM, DEC } from "./abilities.js";
-import { styles } from "./styles.js";
-import { domain as dom } from "./domain.js";
-import { materials } from "./materials.js";
+    import * as THREE       from "three";
+    import { GLTFLoader }   from "three/examples/jsm/Addons.js";
+    import { DRACOLoader }  from "three/examples/jsm/Addons.js";
+    import { FontLoader }   from "three/examples/jsm/Addons.js";
+    import { TextGeometry } from "three/examples/jsm/Addons.js";
+    import { gsap }         from "gsap";
+    
+    import { BIM, DWG, TXT, OBJ, IMG, SWG, CGI, ART, THC, MAN, CLB, COM, DEC } from "./abilities.js";
+    import { styles } from "./styles.js";
+    import { domain as dom } from "./domain.js";
+    import { materials } from "./materials.js";
 
     const gltfLoader = new GLTFLoader();
     const dracoLoader = new DRACOLoader();
     const textureLoader = new THREE.TextureLoader();
-
+    const fontLoader = new FontLoader();
+    
     dracoLoader.setDecoderPath('./src/utils/draco/');
     gltfLoader.setDRACOLoader(dracoLoader);
 
@@ -17,6 +22,14 @@ import { materials } from "./materials.js";
     let currentModel
     let currentLogo
 
+    function changeLanguage         (language) {
+        };
+
+    function changeDescription      (description) {
+        };
+
+    function changePageTheme        () {
+        };
 
     function animateModel           (model) {
     //     gsap.registerPlugin(ScrollTrigger);
@@ -53,10 +66,13 @@ import { materials } from "./materials.js";
     //         {z: .01, duration: .1, ease: "power4.out"
     //         });
         };
+
+    function textAnimation          () {
+        };
     
     function applyLogoMaterials     (model) {
         const purple = materials.lightBulbDiffuse;
-        const glassPurple = materials.lightBulbGlass;
+        const glassPurple = materials.tube;
 
         model.traverse((child) => {
             if (!child.isMesh) return;
@@ -157,35 +173,7 @@ import { materials } from "./materials.js";
             }
 
             if (name === "traseu" || name === 'bodyMesh.001') {
-                child.material =
-                    new THREE.MeshPhysicalMaterial({
-                        color: 0xffffff,
-
-                        transparent: true,
-                        opacity: 0.45,
-                        transmission: 0.85,
-
-                        roughness: 0.08,
-                        metalness: 0,
-
-                        thickness: 0.35,
-                        ior: 1.45,
-
-                        attenuationColor:
-                            new THREE.Color(0xffffff),
-
-                        attenuationDistance: 2,
-
-                        clearcoat: 1,
-                        clearcoatRoughness: 0.03,
-
-                        envMapIntensity: 1.5,
-
-                        side: THREE.DoubleSide,
-                        depthWrite: false,
-                        depthTest: true
-                    });
-
+                child.material = materials.tube;
                 child.renderOrder = 1;
                 child.material.needsUpdate = true;
             }
@@ -220,10 +208,10 @@ import { materials } from "./materials.js";
         // Rotate every 4 seconds
         setInterval(() => {
             logo.style.transform = `rotate(360deg)`;
-        }, 500);
+        }, 1500);
     
         // Auto-hide after 2 seconds
-        setTimeout(() => hideLoadingPage(), 6000);
+        setTimeout(() => hideLoadingPage(), 2000);
         };
 
     function hideLoadingPage        () {
@@ -235,28 +223,91 @@ import { materials } from "./materials.js";
 
     function loadingInformations    (name, about, type, style){
         const informations       = dom.abouts;
-        informations.innerHTML   = '';
+        informations.innerHTML   = null;
 
         const clasifications     = document.createElement('div');
-
+        
         const title              = document.createElement('h2');
         title.textContent        = name;
-
-        const description        = document.createElement('p');
-        description.textContent  = about;
-
+        
         const category           = document.createElement('p');
-        category.textContent     = type;
+        category.textContent     = `Type: ${type}`;
 
         const archType           = document.createElement('p');
-        archType.textContent     = style;
-    
+        archType.textContent     = `Style: ${style}`;
+
+        const description        = document.createElement('p');
+        description.textContent  = `${about}`;
+
         clasifications.appendChild(category);
         clasifications.appendChild(archType);
 
         informations.appendChild(title);
-        informations.appendChild(description);
         informations.appendChild(clasifications);
+        informations.appendChild(description);    
+        };
+
+    function loadingText            (scene, text) {
+        fontLoader.load('assets/fonts/arialRegular.json', font => {
+    
+            const chars = text.split("");
+            let offsetX = -5;
+            let typingTL = gsap.timeline({
+                scrollTrigger: {
+                    trigger: '.viewport2',
+                    start: "50% 5%",
+                    end: "100% 20%",
+                    markers: false,
+                    toggleActions: "play none reverse reverse"
+                }});
+
+            chars.forEach((char, i) => {
+    
+                const geo = new TextGeometry(char, {
+                    font,
+                    size: 200,
+                    height: 0.05
+                });
+    
+                geo.computeBoundingBox();
+                const width = geo.boundingBox.max.x - geo.boundingBox.min.x;
+    
+                const mat = new THREE.MeshStandardMaterial({
+                    color: 'white',
+                    transparent: true,
+                    opacity: 0
+                });
+    
+                // mat.depthWrite = false;
+                mat.depthWrite = true;
+                mat.depthTest = false;
+
+                const letter = new THREE.Mesh(geo, mat);
+    
+                letter.scale.set(.01, .01, .01);
+                letter.rotation.set(0, Math.PI/4 ,0)
+                letter.position.set(0, 100, 0);
+                letter.translateX(offsetX);
+                
+                offsetX += width * 0.011;
+    
+                scene.add(letter);
+    
+                typingTL.to(letter, { visible: true, duration: 0 }, i * 0.1);
+
+                typingTL.fromTo(letter.material,
+                    { opacity: 0 },
+                    { opacity: 1, duration: 0.3, ease: "power2.out" },
+                    i * 0.1
+                );
+    
+                typingTL.fromTo(letter.position,
+                    { y: -0.5 },
+                    { y: 3, duration: 0.3, ease: "back.out(2)" },
+                    i * 0.1
+                );
+            });
+        });
         };
 
     function loadingNeighbor        (scene, light, building, material){ 
@@ -272,10 +323,14 @@ import { materials } from "./materials.js";
             currentBuilding.scale.set(scaleX, scaleY, scaleZ);
             currentBuilding.traverse(
                 (child) => {
-                    if (child.name.includes('cloud')) {child.material = material.cloudDiffuse;}
-                    if (child.name.includes('neighboar')) {child.material = material.model;}
-                    if (child.name.includes('papper')) {child.material = material.support;}
-                    if (child.name.includes('desk')) {child.material = material.desk;}
+                    if (child.name.includes('cloud')) 
+                        {child.material = material.cloudDiffuse;}
+                    if (child.name.includes('neighboar')) 
+                        {child.material = material.model;}
+                    if (child.name.includes('papper')) 
+                        {child.material = material.support;}
+                    if (child.name.includes('desk')) 
+                        {child.material = material.desk;}
                 });
             // currentBuilding.castShadow = true;
             // currentBuilding.receiveShadow = true;
@@ -336,13 +391,8 @@ import { materials } from "./materials.js";
         let scaleZ = scale;    
         gltfLoader.load(model, (gltf) => {
             currentLogo = gltf.scene;
-            currentLogo.rotation.set(Math.PI/2, Math.PI/4, Math.PI);
+            currentLogo.scale.set(.5, .5, .5);
             applyLogoMaterials(currentLogo);
-            gltf.animations.forEach((clip) => {
-                // console.log("Animation clip:", clip.name);
-                clip.tracks.forEach((track) => {
-                    // console.log("Animation track:", track.name)
-                    ;});})
             scene.add(currentLogo);
             animationModel.play(currentLogo, gltf.animations);
             animateModel(currentLogo)
@@ -668,6 +718,7 @@ import { materials } from "./materials.js";
         loadLogo:           loadingLogo3D,
         loadPage:           createLoadingPage,
         loadInfo:           loadingInformations,
+        loadText:           loadingText,
         loadNeighboar:      loadingNeighbor,
         loadBuilding:       loadingBuilding,
         loadModel:          loadingModel,

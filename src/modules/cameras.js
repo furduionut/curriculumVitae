@@ -14,12 +14,12 @@
         aspect: viewport2.clientWidth / viewport2.clientHeight,
         dimension: 10,
         far: 50,
-        near: 0.01,
+        near: 0.001,
         offsetX: 0,
         offsetY: 0,
-        positionX: 0,
-        positionY: 0,
-        positionZ: 5
+        positionX: 10,
+        positionY: 10,
+        positionZ: 10
     }
 
     const perpectiveParams = {
@@ -117,11 +117,11 @@
         );
         cameras.orthographic.updateProjectionMatrix();});    
     
-    orthocameraFolder.add(orthographicParams, 'positionX', 0, 1, 0.01).onChange(value=>{
+    orthocameraFolder.add(orthographicParams, 'positionX', 0, 10, 0.01).onChange(value=>{
         cameras.orthographic.position.x = value;
         cameras.orthographic.updateProjectionMatrix();});
 
-    orthocameraFolder.add(orthographicParams, 'positionY', 0, 1, 0.01).onChange(value=>{
+    orthocameraFolder.add(orthographicParams, 'positionY', 0, 10, 0.01).onChange(value=>{
         cameras.orthographic.position.y = value;
         cameras.orthographic.updateProjectionMatrix();});
 
@@ -157,16 +157,7 @@
         cameras.perspective.position.z = value;
         cameras.perspective.updateProjectionMatrix();});
 
-    perspCameraFolder.add(perpectiveParams, 'rotationX', -50, 50, 0.01).onChange(value=>{
-        cameras.perspective.rotation.x = value;
-        cameras.perspective.updateProjectionMatrix();});
-
     perspCameraFolder.close();
-
-/* CAMERA INITIATION */
-
-/* CAMERA ANIMATION */
-
 
 /* EXPORTS */
     export {cameras} 

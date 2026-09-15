@@ -75,7 +75,7 @@
             // Which section are we in?
             let section = Math.floor(scroll); // 0,1,2,3
             let t = scroll % 1;               // 0 → 1 inside each section
-        
+            let sectionName;
             let posStart, posEnd, lookStart, lookEnd, zoomStart, zoomEnd;
         
             console.log(`Window at zone ${section}`);
@@ -87,6 +87,7 @@
                     lookEnd = lookB;
                     zoomStart = 1; 
                     zoomEnd = 2;
+                    sectionName = 'aboutMe';
                     break;
         
                 case 1:
@@ -96,6 +97,7 @@
                     lookEnd = lookC;
                     zoomStart = 2; 
                     zoomEnd = 3;
+                    sectionName = 'Projects';
                     break;
         
                 case 2:
@@ -105,6 +107,7 @@
                     lookEnd = lookD;
                     zoomStart = 3; 
                     zoomEnd = 3;
+                    sectionName = 'Abilities';
                     break;
 
                 case 3:
@@ -114,6 +117,7 @@
                     lookEnd = lookE;
                     zoomStart = 3; 
                     zoomEnd = 3;
+                    sectionName = 'Experiences';
                     break;
         
                 default:
@@ -123,6 +127,7 @@
                     lookEnd = lookE;
                     zoomStart = 3; 
                     zoomEnd = 3;
+                    sectionName = 'Credits';
                     break;
             }
         
@@ -137,6 +142,9 @@
             // Smooth zoom
             perspCamera.zoom = THREE.MathUtils.lerp(zoomStart, zoomEnd, t);
             perspCamera.updateProjectionMatrix();
+
+            const sectionEl = document.getElementById('section');
+            sectionEl.innerHTML = `${sectionName}`;
         }
 
     /* CAMERA FOCUS */
@@ -165,7 +173,8 @@
         let building            = buildings[buildingIndex];
         let model               = models[buildingIndex][buildingModelIndex];
         let logo3D              = objects.logo3D.main;
-        
+        let text                = 'Architizer';
+
     /* TEXTURES */
         let texturePaths        = textures[buildingIndex];
 
@@ -174,7 +183,7 @@
 
     /* LIGHTS */
         let light               = lights;
-        Object.values(light).forEach((light) => {scene.add(light)});
+        Object.values(light).forEach((light) => {scene.add(light), secondScene.add(light)});
 
         let helpersLight          = helpers;
         Object.values(helpers).forEach((helper) => {scene.add(helper)});
@@ -303,22 +312,22 @@
     const control = controls(orthoCamera, renderero.domElement);
     control.target.set(0, 0, 0);
 
-    // PMR
-    const pmremGenerator  = new THREE.PMREMGenerator(renderer);
-
     // COMPOSER
         const composer   = new EffectComposer(renderer);
+        const composero  = new EffectComposer(renderero);
 
     // RENDERPASS
         const renderPass = new RenderPass(scene, perspCamera);
+        const renderoPass = new RenderPass(secondScene, orthoCamera);
+
         composer.addPass(renderPass);
+        composero.addPass(renderoPass);
 
     // BLURPASS
         const blurPass = new BokehPass(scene, perspCamera, {
             focus: 500,
             aperture: 5,
-            maxblur: 0.001})
-            
+            maxblur: 0.001}) 
         composer.addPass( blurPass )
 
     // BlOMPASS
@@ -326,54 +335,88 @@
             new THREE.Vector2(dom.viewport.clientWidth, dom.viewport.clientHeight),
             1.3, 0.55, 4);
 
-        // composer.addPass(bloomPass)
+        bloomPass.strength  = .05;
+        bloomPass.radius    = .05;
+        bloomPass.threshold = 1;
+
+        composer.addPass(bloomPass)
 
     // ANIMATIONS
-    let logoAnimation = new LogoAnimation();
-    let domElAnimation = () => {
-        gsap.registerPlugin(ScrollTrigger);
-    
-        let sceneTimeline = gsap.timeline({
-            scrollTrigger: {
-                trigger: '.viewport2',
-                start: "50% 5%",
-                end: "100% 20%",
-                markers: true,
-                scrub: true,
-                scrub: 1,
-                toggleActions: "play none reverse reverse"
-            }
-        });
-        sceneTimeline.fromTo('.viewport2',
-            { scale: '1' },
-            { scale: '.100', 
-            duration: 1, ease: "power2.out", delay: 0 }
-        );
-        sceneTimeline.fromTo('.viewport2',
-            { y: '0' },
-            { y: '-450', 
-            duration: 1, ease: "power2.out", delay: -1 }
-        );
-    }
-    
+        let logoAnimation = new LogoAnimation();
+        let viewportAnimation = () => {
+            gsap.registerPlugin(ScrollTrigger);
+        
+            let sceneTimeline = gsap.timeline({
+                scrollTrigger: {
+                    trigger: '.viewport2',
+                    start: "50% 5%",
+                    end: "100% 20%",
+                    markers: false,
+                    scrub: true,
+                    scrub: 1,
+                    toggleActions: "play none reverse reverse"
+                }
+            });
+            sceneTimeline.fromTo('.viewport2',
+                { scale: '1' },
+                { scale: '.100', 
+                duration: 1, ease: "power2.out", delay: 0 }
+            );
+            sceneTimeline.fromTo('.viewport2',
+                { y: '0' },
+                { y: '-450', 
+                duration: 1, ease: "power2.out", delay: -1 }
+            );
+        }
+        let descriptionAnimation = () => {
+            gsap.registerPlugin(ScrollTrigger);
+            
+            let sceneTimeline = gsap.timeline({
+                scrollTrigger: {
+                    trigger: '.infoBar',
+                    start:"150em 5%",
+                    end: "4000em 25%",
+                    markers: true,
+                    scrub: true,
+                    scrub: 1,
+                    toggleActions: "play none reverse reverse"
+                }
+            })
+            sceneTimeline.fromTo('.infoBar',
+                { x: '17.5em' },
+                { x: '0em', 
+                duration: 1, ease: "power5.out", delay: 0 }
+            );
 
-    // AUTOMATIC ANIMATION
+            sceneTimeline.fromTo('.infoBar',
+                { x: '0em' },
+                { x: '17.5em', 
+                duration: 1, 
+                ease: "power3.in",
+                ease: "power4.out",
+                delay: 0 }
+            );
+        }
+    
+    // EVENTS
+        window.addEventListener('resize', ()=>{
+            updateCanvas();
+            updateCanvaso();
+        });
+
 
     /* COMMITS */
-    updateRefs();
-    domElAnimation();
-
-    // loaders.loadPage();
-    loaders.loadNeighboar   (scene, light, neighbor, materials);
-    loaders.loadLogo        (secondScene, light, logo3D, materials, logoAnimation);
-    // startingPage();
+        updateRefs();
+        viewportAnimation();
+        descriptionAnimation();
+        // loaders.loadPage();
+        loaders.loadText        (secondScene, text);
+        loaders.loadLogo        (secondScene, light, logo3D, materials, logoAnimation);
+        loaders.loadNeighboar   (scene, light, neighbor, materials);
+        loaders.loadInfo        (name, about, type, style);
 
     // WINDOW EVENTS
         // CANVAS RESIZE;
-            window.addEventListener('resize', ()=>{});
-
-        // WINDOW RELOAD;
-            window.addEventListener('load', ()=>{});
 
     // CAMERA TIMELINE 
     
@@ -381,10 +424,10 @@
     // RENDERING
         function animate() {
             requestAnimationFrame   (animate);
-            renderero.render        (secondScene, orthoCamera);
-            control.update          ();
             updateCam               ();
             logoAnimation.update    ();
+            composero.render        ();
             composer.render         ();
+            control.update          ();
         }
         animate()
