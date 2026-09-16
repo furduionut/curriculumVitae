@@ -3,6 +3,7 @@
     import { DRACOLoader }  from "three/examples/jsm/Addons.js";
     import { FontLoader }   from "three/examples/jsm/Addons.js";
     import { TextGeometry } from "three/examples/jsm/Addons.js";
+    import { ScrollTrigger } from "gsap/ScrollTrigger";
     import { gsap }         from "gsap";
     
     import { BIM, DWG, TXT, OBJ, IMG, SWG, CGI, ART, THC, MAN, CLB, COM, DEC } from "./abilities.js";
@@ -247,6 +248,29 @@
         informations.appendChild(description);    
         };
 
+    function loadingIndicators      (dom){
+        const aboutMe               = dom.aboutMe
+        const scrollIndicator       = document.createElement('div');
+        const scrollArrow           = document.createElement('div');
+        const scrollText            = document.createElement('div');
+
+        scrollText.innerHTML        = 'scroll';
+
+        scrollIndicator.className   = 'scroll-indicator';
+        scrollArrow.className       = 'scroll-arrow';
+        scrollText.className        = 'scroll-text, glass';
+
+        scrollText.style.fontSize   = '2em';
+
+        scrollIndicator.id          = 'scroll-indicator';
+        scrollArrow.id              = 'scroll-arrow';
+        scrollText.id               = 'scroll-arrow';
+
+        scrollIndicator.appendChild(scrollText);
+        scrollIndicator.appendChild(scrollArrow);
+        aboutMe.appendChild(scrollIndicator);
+        };
+
     function loadingText            (scene, text) {
         fontLoader.load('assets/fonts/arialRegular.json', font => {
     
@@ -307,6 +331,7 @@
                     i * 0.1
                 );
             });
+    
         });
         };
 
@@ -365,6 +390,10 @@
         };
 
     function loadingModel           (scene, light, model, material){ 
+        let scale  = .1;
+        let scaleX = scale;
+        let scaleY = scale;
+        let scaleZ = scale; 
         gltfLoader.load( model, (gltf) => 
             {
             if (currentModel || currentBuilding) {
@@ -389,14 +418,30 @@
         let scaleX = scale;
         let scaleY = scale;
         let scaleZ = scale;    
+    
         gltfLoader.load(model, (gltf) => {
             currentLogo = gltf.scene;
             currentLogo.scale.set(.5, .5, .5);
             applyLogoMaterials(currentLogo);
             scene.add(currentLogo);
             animationModel.play(currentLogo, gltf.animations);
-            animateModel(currentLogo)
-        })
+    
+            gsap.registerPlugin(ScrollTrigger);
+            let sceneTimeline = gsap.timeline({
+                scrollTrigger: {
+                    trigger: '.viewport2',
+                    start: "50% 5%",
+                    end: "100% 20%",
+                    markers: false,
+                    scrub: true,
+                    toggleActions: "play none reverse reverse"
+                }
+            });
+            sceneTimeline.fromTo(currentLogo.rotation,
+                { z: currentLogo.rotation.z },
+                { z: Math.PI*2, duration: 3, ease: "power1.out" }
+            );
+        });
         };
     
     function loadingMaterial        (texturePaths){
@@ -421,9 +466,6 @@
         
             mat.needsUpdate = true;
             return mat;
-        };
-        
-    function loadingDescriptions    (dom, descriptions, style){
         };
 
     function loadingExperience      (dom, experiences, style){
@@ -718,6 +760,7 @@
         loadLogo:           loadingLogo3D,
         loadPage:           createLoadingPage,
         loadInfo:           loadingInformations,
+        loadIndicator:      loadingIndicators,
         loadText:           loadingText,
         loadNeighboar:      loadingNeighbor,
         loadBuilding:       loadingBuilding,

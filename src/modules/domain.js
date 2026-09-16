@@ -1,9 +1,11 @@
+import { bitNot } from "three/tsl"
 
 const domain = {
     /* ROOT */
     root    :        document.documentElement,
 
     /* PROJECTS */
+    aboutMe :        document.getElementById('aboutMe'),
     canvas  :        document.getElementById('canvas'),
     canvaso :        document.getElementById('canvaso'),
     viewport:        document.getElementById('viewport'),
@@ -13,6 +15,7 @@ const domain = {
     prevBtn :        document.getElementById('prevBtn'),
     downBtn :        document.getElementById('downBtn'),
     abouts  :        document.getElementById('description'),
+    btn     :        document.getElementById('btn'),
     
     /* ABILITIES */
     abilitiesBtn:    document.querySelectorAll('#abilityBtn'),

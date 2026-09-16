@@ -22,6 +22,17 @@
         positionZ: 10
     }
 
+    function resizeOrthoCamera(width, height) {
+        const aspect = width / height;
+    
+        cameras.orthographic.left   = -orthographicParams.dimension * aspect;
+        cameras.orthographic.right  =  orthographicParams.dimension * aspect;
+        cameras.orthographic.top    =  orthographicParams.dimension;
+        cameras.orthographic.bottom = -orthographicParams.dimension;
+    
+        cameras.orthographic.updateProjectionMatrix();
+    }
+
     const perpectiveParams = {
         fov: 30,
         width: viewport.clientWidth,
@@ -74,10 +85,8 @@
         10 * Math.PI
     )
 
-    cameras.perspective.zoom = 2;
     cameras.perspective.updateProjectionMatrix();
-    cameras.perspective.lookAt(-5, 0, -10);
-    cameras.perspective.rotation.set(1, 3, 3)
+    cameras.orthographic.updateProjectionMatrix();
 
 /* GUI ELEMENT */
     const gui = new GUI();
@@ -160,4 +169,4 @@
     perspCameraFolder.close();
 
 /* EXPORTS */
-    export {cameras} 
+    export {cameras, resizeOrthoCamera} 

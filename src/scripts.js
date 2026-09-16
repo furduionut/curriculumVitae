@@ -26,6 +26,7 @@
         import { lights }       from "./modules/lights.js";
         import { helpers }      from "./modules/lights.js";
         import { cameras }      from "./modules/cameras.js";
+        import { resizeOrthoCamera } from "./modules/cameras.js";
         import { renders }      from "./modules/render.js";
         import { rendero }      from "./modules/render.js";
         import { controls }     from "./modules/controls.js";
@@ -58,27 +59,25 @@
 
     /* CAMERA ANIMATION */
         function updateCam() {
-            const camPosA   = new THREE.Vector3(15, 15, 10);
-            const camPosB   = new THREE.Vector3(15, 15, 10);
-            const camPosC   = new THREE.Vector3(20, 45, 15);
-            const camPosD   = new THREE.Vector3(15, 15, -10);
-            const camPosE   = new THREE.Vector3(15, -15, -10);
-            
-            const lookA     = new THREE.Vector3(-5.5, 18, -10);
-            const lookB     = new THREE.Vector3(-5.5, 2.5, -10);
-            const lookC     = new THREE.Vector3(-5.5, 2.5, -10);
-            const lookD     = new THREE.Vector3(-5.5, -5, -10);
-            const lookE     = new THREE.Vector3(-5.5, -5, -10);
-    
-            let scroll = window.scrollY / 1000;
+            const camPosA = new THREE.Vector3(15, 15, 10);
+            const camPosB = new THREE.Vector3(15, 15, 10);
+            const camPosC = new THREE.Vector3(15, 25, 10);
+            const camPosD = new THREE.Vector3(20, 45, 15);
+            const camPosE = new THREE.Vector3(15, 5, -10);
+            const camPosF = new THREE.Vector3(15, -15, -10);
         
-            // Which section are we in?
-            let section = Math.floor(scroll); // 0,1,2,3
-            let t = scroll % 1;               // 0 → 1 inside each section
+            const lookA = new THREE.Vector3(-5.5, 18, -10);
+            const lookB = new THREE.Vector3(-5.5, 7.5, -10);
+            const lookC = new THREE.Vector3(-5.5, 2.5, -10);
+            const lookD = new THREE.Vector3(-5.5, 2.5, -10);
+            const lookE = new THREE.Vector3(-5.5, -5, -10);
+            const lookF = new THREE.Vector3(-5.5, -5, -10);
+        
+            let scroll = window.scrollY / 1000;
+            let section = Math.floor(scroll);
+            let t = scroll % 1;
             let sectionName;
             let posStart, posEnd, lookStart, lookEnd, zoomStart, zoomEnd;
-        
-            console.log(`Window at zone ${section}`);
             switch (section) {
                 case 0:
                     posStart = camPosA; 
@@ -87,7 +86,7 @@
                     lookEnd = lookB;
                     zoomStart = 1; 
                     zoomEnd = 2;
-                    sectionName = 'aboutMe';
+                    sectionName = 'presentation';
                     break;
         
                 case 1:
@@ -97,7 +96,7 @@
                     lookEnd = lookC;
                     zoomStart = 2; 
                     zoomEnd = 3;
-                    sectionName = 'Projects';
+                    sectionName = 'aboutMe';
                     break;
         
                 case 2:
@@ -107,9 +106,9 @@
                     lookEnd = lookD;
                     zoomStart = 3; 
                     zoomEnd = 3;
-                    sectionName = 'Abilities';
+                    sectionName = 'layout';
                     break;
-
+        
                 case 3:
                     posStart = camPosD; 
                     posEnd = camPosE;
@@ -117,35 +116,47 @@
                     lookEnd = lookE;
                     zoomStart = 3; 
                     zoomEnd = 3;
+                    sectionName = 'Abilities';
+                    break;
+
+                case 4:
+                    posStart = camPosE; 
+                    posEnd = camPosF;
+                    lookStart = lookE; 
+                    lookEnd = lookF;
+                    zoomStart = 3; 
+                    zoomEnd = 3;
                     sectionName = 'Experiences';
                     break;
         
                 default:
                     posStart = camPosE; 
-                    posEnd = camPosE;
+                    posEnd = camPosF;
                     lookStart = lookE; 
-                    lookEnd = lookE;
+                    lookEnd = lookF;
                     zoomStart = 3; 
                     zoomEnd = 3;
-                    sectionName = 'Credits';
+                    sectionName = 'Contacts';
                     break;
             }
+            console.log(`Window at zone ${section}. ${sectionName}`);
+            let easedT = t;
+            easedT = Math.pow(easedT, 2.0);
+            easedT = Math.min(easedT, 0.95);
         
-            // Smooth position
-            const pos = posStart.clone().lerp(posEnd, t);
+            const pos = posStart.clone().lerp(posEnd, easedT);
             perspCamera.position.copy(pos);
         
-            // Smooth lookAt
-            const look = lookStart.clone().lerp(lookEnd, t);
+            const look = lookStart.clone().lerp(lookEnd, easedT);
             perspCamera.lookAt(look);
         
-            // Smooth zoom
-            perspCamera.zoom = THREE.MathUtils.lerp(zoomStart, zoomEnd, t);
+            perspCamera.zoom = THREE.MathUtils.lerp(zoomStart, zoomEnd, easedT);
             perspCamera.updateProjectionMatrix();
-
+        
             const sectionEl = document.getElementById('section');
             sectionEl.innerHTML = `${sectionName}`;
         }
+    
 
     /* CAMERA FOCUS */
         const focusPoint        = new THREE.Vector3(-5, 0, -10);
@@ -184,9 +195,6 @@
     /* LIGHTS */
         let light               = lights;
         Object.values(light).forEach((light) => {scene.add(light), secondScene.add(light)});
-
-        let helpersLight          = helpers;
-        Object.values(helpers).forEach((helper) => {scene.add(helper)});
 
     /* LOADERS */
         const nextBuildingIndex = () => {
@@ -229,12 +237,14 @@
                 rendererHeight      = dom.viewport.clientHeight;
                 renderer.setSize    (rendererWidth, rendererHeight);
                 perspCamera.aspect  = rendererWidth / rendererHeight;
+                perspCamera.updateProjectionMatrix();
             }
         function updateCanvaso(){
-            renderoWidth        = dom.viewport2.clientWidth;
-            renderoHeight       = dom.viewport2.clientHeight;
-            renderero.setSize   (renderoWidth, renderoHeight);
-            orthoCamera.aspect  = renderoWidth / renderoHeight;
+            renderoWidth            = dom.viewport2.clientWidth;
+            renderoHeight           = dom.viewport2.clientHeight;
+            renderero.setSize       (renderoWidth, renderoHeight);
+            orthoCamera.aspect      = renderoWidth / renderoHeight;
+            resizeOrthoCamera       (renderoWidth, renderoHeight);
             }
             
     /* STATS */
@@ -297,16 +307,18 @@
                 loaders.loadInfo(name, about, type, style);
             });
     
-        dom.abilitiesBtn.forEach        
-            ((btn) => {btn.addEventListener
-            ('click', () => {loaders.loadLevel(`${btn.className}`)} )
-            });
-
         window.addEventListener
             ('resize', () => {
                 updateCanvas();
                 updateCanvaso();
             });
+
+        // dom.btn.addEventListener('click', () => {
+        //     const el = dom.target;
+        //     if (el.style.display === 'none') 
+        //         {el.style.display = 'flex';} 
+        //     else {el.style.display = 'none';}
+        // });
               
     /* CONTROL */
     const control = controls(orthoCamera, renderero.domElement);
@@ -404,6 +416,19 @@
             updateCanvaso();
         });
 
+        window.addEventListener('scroll', () => {
+            if (window.scrollY >= 1000) {
+                const scrollIndicator = document.getElementById('scroll-indicator');
+                if (scrollIndicator) {
+                    scrollIndicator.innerHTML = '';
+                    scrollIndicator.style.display = 'none';}
+            }
+        });
+
+        window.addEventListener("load", ()=>{
+            window.scrollTo(0, 0);
+        })
+        
 
     /* COMMITS */
         updateRefs();
@@ -411,12 +436,11 @@
         descriptionAnimation();
         // loaders.loadPage();
         loaders.loadText        (secondScene, text);
+        loaders.loadIndicator   (dom);
         loaders.loadLogo        (secondScene, light, logo3D, materials, logoAnimation);
         loaders.loadNeighboar   (scene, light, neighbor, materials);
         loaders.loadInfo        (name, about, type, style);
 
-    // WINDOW EVENTS
-        // CANVAS RESIZE;
 
     // CAMERA TIMELINE 
     
