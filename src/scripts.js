@@ -142,7 +142,7 @@
             console.log(`Window at zone ${section}. ${sectionName}`);
             let easedT = t;
             easedT = Math.pow(easedT, 2.0);
-            easedT = Math.min(easedT, 0.95);
+            easedT = Math.min(easedT, 0.9);
         
             const pos = posStart.clone().lerp(posEnd, easedT);
             perspCamera.position.copy(pos);
@@ -312,17 +312,9 @@
                 updateCanvas();
                 updateCanvaso();
             });
-
-        // dom.btn.addEventListener('click', () => {
-        //     const el = dom.target;
-        //     if (el.style.display === 'none') 
-        //         {el.style.display = 'flex';} 
-        //     else {el.style.display = 'none';}
-        // });
               
     /* CONTROL */
     const control = controls(orthoCamera, renderero.domElement);
-    control.target.set(0, 0, 0);
 
     // COMPOSER
         const composer   = new EffectComposer(renderer);
@@ -355,39 +347,53 @@
 
     // ANIMATIONS
         let logoAnimation = new LogoAnimation();
-        let viewportAnimation = () => {
+
+        let viewportAnimation       = () => {
             gsap.registerPlugin(ScrollTrigger);
-        
             let sceneTimeline = gsap.timeline({
                 scrollTrigger: {
                     trigger: '.viewport2',
-                    start: "50% 5%",
-                    end: "100% 20%",
+                    start: "15% 25%",
+                    end: "35% 35%",
                     markers: false,
-                    scrub: true,
-                    scrub: 1,
+                    duration: 3,
+                    scrub: false,
                     toggleActions: "play none reverse reverse"
                 }
             });
-            sceneTimeline.fromTo('.viewport2',
-                { scale: '1' },
-                { scale: '.100', 
-                duration: 1, ease: "power2.out", delay: 0 }
-            );
-            sceneTimeline.fromTo('.viewport2',
-                { y: '0' },
-                { y: '-450', 
-                duration: 1, ease: "power2.out", delay: -1 }
-            );
-        }
-        let descriptionAnimation = () => {
-            gsap.registerPlugin(ScrollTrigger);
+            sceneTimeline.to(orthoCamera.position, {
+                x: 0,
+                duration: 1,
+                ease: "power4.inOut"
+            });
             
+            sceneTimeline.to(orthoCamera.position, {
+                z: 0,
+                duration: 1,
+                ease: "power4.inOut"
+            });
+            
+            sceneTimeline.to(".viewport2", {
+                scale: 0.2,
+                duration: 1,
+                ease: "power4.inOut"
+            });
+            
+            sceneTimeline.to(".viewport2", {
+                y: -575,
+                duration: 1,
+                ease: "power4.inOut"
+            });
+            
+        }
+
+        let descriptionAnimation    = () => {
+            gsap.registerPlugin(ScrollTrigger);           
             let sceneTimeline = gsap.timeline({
                 scrollTrigger: {
                     trigger: '.infoBar',
-                    start:"150em 5%",
-                    end: "4000em 25%",
+                    start:"1250em 25%",
+                    end: "5000em 35%",
                     markers: true,
                     scrub: true,
                     scrub: 1,
@@ -395,17 +401,15 @@
                 }
             })
             sceneTimeline.fromTo('.infoBar',
-                { x: '17.5em' },
+                { x: '25em' },
                 { x: '0em', 
-                duration: 1, ease: "power5.out", delay: 0 }
+                duration: 1, ease: "power5.in", delay: 0 }
             );
-
             sceneTimeline.fromTo('.infoBar',
                 { x: '0em' },
-                { x: '17.5em', 
+                { x: '25em', 
                 duration: 1, 
-                ease: "power3.in",
-                ease: "power4.out",
+                ease: "expo.out",
                 delay: 0 }
             );
         }
@@ -424,10 +428,27 @@
                     scrollIndicator.style.display = 'none';}
             }
         });
+        
+        window.addEventListener("load", () => {
+            ScrollTrigger.refresh();
+            requestAnimationFrame(() => {
+              window.scrollTo(0, 0);
+              ScrollTrigger.refresh();
+            });
+          });
+        
+        const pressedBtn = document.querySelectorAll(".btn");
+        console.log(pressedBtn);
 
-        window.addEventListener("load", ()=>{
-            window.scrollTo(0, 0);
-        })
+        // pressedBtn.forEach((btn)=>{
+        //     btn.addEventListener('click', ()=>{
+        //         // console.log(btn);
+        //         let btnParent = btn.parentElement
+        //         let btnParentSibling = btnParent.nextElementSibling
+        //         if(btnParentSibling.children.length === 0){loaders.loadDisplay(btnParentSibling);}
+    
+        //     })
+        // })
         
 
     /* COMMITS */
@@ -435,6 +456,9 @@
         viewportAnimation();
         descriptionAnimation();
         // loaders.loadPage();
+        let descriptionIni = document.getElementById("description");
+        descriptionIni.innerHTML = "";
+
         loaders.loadText        (secondScene, text);
         loaders.loadIndicator   (dom);
         loaders.loadLogo        (secondScene, light, logo3D, materials, logoAnimation);
@@ -449,9 +473,9 @@
         function animate() {
             requestAnimationFrame   (animate);
             updateCam               ();
+            control.update          ();
             logoAnimation.update    ();
             composero.render        ();
             composer.render         ();
-            control.update          ();
         }
         animate()

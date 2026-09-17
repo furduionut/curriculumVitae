@@ -271,97 +271,165 @@
         aboutMe.appendChild(scrollIndicator);
         };
 
-    function loadingText            (scene, text) {
-        fontLoader.load('assets/fonts/arialRegular.json', font => {
-    
-            const chars = text.split("");
-            let offsetX = -5;
-            let typingTL = gsap.timeline({
-                scrollTrigger: {
-                    trigger: '.viewport2',
-                    start: "50% 5%",
-                    end: "100% 20%",
-                    markers: false,
-                    toggleActions: "play none reverse reverse"
-                }});
+        gsap.registerPlugin(ScrollTrigger);
 
-            chars.forEach((char, i) => {
-    
-                const geo = new TextGeometry(char, {
-                    font,
-                    size: 200,
-                    height: 0.05
-                });
-    
-                geo.computeBoundingBox();
-                const width = geo.boundingBox.max.x - geo.boundingBox.min.x;
-    
-                const mat = new THREE.MeshStandardMaterial({
-                    color: 'white',
-                    transparent: true,
-                    opacity: 0
-                });
-    
-                // mat.depthWrite = false;
-                mat.depthWrite = true;
-                mat.depthTest = false;
-
-                const letter = new THREE.Mesh(geo, mat);
-    
-                letter.scale.set(.01, .01, .01);
-                letter.rotation.set(0, Math.PI/4 ,0)
-                letter.position.set(0, 100, 0);
-                letter.translateX(offsetX);
-                
-                offsetX += width * 0.011;
-    
-                scene.add(letter);
-    
-                typingTL.to(letter, { visible: true, duration: 0 }, i * 0.1);
-
-                typingTL.fromTo(letter.material,
-                    { opacity: 0 },
-                    { opacity: 1, duration: 0.3, ease: "power2.out" },
-                    i * 0.1
-                );
-    
-                typingTL.fromTo(letter.position,
-                    { y: -0.5 },
-                    { y: 3, duration: 0.3, ease: "back.out(2)" },
-                    i * 0.1
-                );
-            });
-    
-        });
-        };
-
-    function loadingNeighbor        (scene, light, building, material){ 
-        let scale  = .1;
-        let scaleX = scale;
-        let scaleY = scale;
-        let scaleZ = scale;
+        function loadingText(scene, text) {
+            fontLoader.load('assets/fonts/arialRegular.json', font => {
         
-        gltfLoader.load(building, (gltf) => 
-            {currentBuilding = gltf.scene;
-            currentBuilding.name = 'pageLayout';
-            currentBuilding.position.set(0 *scale, -.1 *scale, 0 *scale);
-            currentBuilding.scale.set(scaleX, scaleY, scaleZ);
-            currentBuilding.traverse(
-                (child) => {
-                    if (child.name.includes('cloud')) 
-                        {child.material = material.cloudDiffuse;}
-                    if (child.name.includes('neighboar')) 
-                        {child.material = material.model;}
-                    if (child.name.includes('papper')) 
-                        {child.material = material.support;}
-                    if (child.name.includes('desk')) 
-                        {child.material = material.desk;}
+                const chars = text.split("");
+                let offsetX = 7.5;
+                let typingTL = gsap.timeline({
+                    scrollTrigger: {
+                        trigger: '.viewport2',
+                        start: "50% 5%",
+                        end: "100% 20%",
+                        markers: false,
+                        toggleActions: "play none reverse reverse"
+                    }
                 });
-            // currentBuilding.castShadow = true;
-            // currentBuilding.receiveShadow = true;
-            scene.add(currentBuilding);})
-        };
+        
+                chars.forEach((char, i) => {
+        
+                    const geo = new TextGeometry(char, {
+                        font,
+                        size: 200,
+                        height: 0.05
+                    });
+        
+                    geo.computeBoundingBox();
+                    const width = geo.boundingBox.max.x - geo.boundingBox.min.x;
+        
+                    const mat = new THREE.MeshStandardMaterial({
+                        color: 'white',
+                        transparent: true,
+                        opacity: 0
+                    });
+        
+                    mat.depthWrite = true;
+                    mat.depthTest = false;
+        
+                    const letter = new THREE.Mesh(geo, mat);
+        
+                    letter.scale.set(.01, .01, .01);
+                    letter.position.set(0, 100, 1.25);
+                    letter.rotation.x = -Math.PI/2;
+                    letter.translateX(offsetX);
+                    
+                    offsetX += width * 0.011;
+        
+                    scene.add(letter);
+        
+                    typingTL.to(letter, { visible: true, duration: 0 }, i * 0.1);
+        
+                    typingTL.fromTo(letter.material,
+                        { opacity: 0 },
+                        { opacity: 1, duration: 0.3, ease: "power2.out", delay: 1 },
+                        i * 0.1
+                    );
+        
+                    typingTL.fromTo(letter.position,
+                        { y: -0.5 },
+                        { y: 3, duration: 0.3, ease: "back.out(2)", delay: 1 },
+                        i * 0.1
+                    );
+                });
+            });
+        }
+        
+        function loadingNeighbor(scene, light, building, material){ 
+            let scale = .1;
+        
+            gltfLoader.load(building, (gltf) => {
+        
+                currentBuilding = gltf.scene;
+                currentBuilding.name = 'pageLayout';
+                currentBuilding.position.set(0, -0.1 * scale, 0);
+                currentBuilding.scale.set(scale, scale, scale);
+        
+                let tl = gsap.timeline({
+                    scrollTrigger: {
+                        trigger: '.infoBar',
+                        start: "1250em 25%",
+                        end: "3500em 20%",
+                        scrub: 1,
+                        markers: true
+                    }
+                });
+        
+                currentBuilding.traverse((child) => {
+                    if (!child.isMesh) return;
+        
+                    if (child.name.includes('cloud')) child.material = material.cloudDiffuse;
+                    if (child.name.includes('neighboar')) child.material = material.model;
+                    if (child.name.includes('papper')) child.material = material.support;
+                    if (child.name.includes('desk')) child.material = material.desk;
+        
+                    child.material.transparent = true;
+                    child.material.opacity = 0;
+        
+                    const originalY = child.position.y;
+        
+                    if (child.name.includes('neighboar')) {
+                        const belowY = originalY - (Math.random() * 2 + 1);
+                        child.scale.set(0, 0, 0);
+                        child.position.y = belowY;
+        
+                        tl.to(child.scale, {
+                            x: 1, y: 1, z: 1,
+                            duration: 1,
+                            ease: "back.out(1.7)",
+                            delay: 1
+                        }, 0);
+        
+                        tl.to(child.material, {
+                            opacity: 1,
+                            duration: 0.8,
+                            ease: "power2.out",
+                            delay: 1
+                        }, 0);
+        
+                        tl.to(child.position, {
+                            y: originalY,
+                            duration: 1.2,
+                            ease: "bounce.out"
+                        }, 0);
+        
+                        return;
+                    }
+        
+                    if (child.name.includes('desk')) {
+                        child.rotation.y = 2 * Math.PI;
+        
+                        tl.to(child.material, {
+                            opacity: 1,
+                            duration: 0.4,
+                            ease: "power2.out"
+                        }, 0);
+        
+                        tl.to(child.rotation, {
+                            y: 0,
+                            duration: 3,
+                            ease: "expo.out"
+                        }, 0);
+        
+                        return;
+                    }
+        
+                    tl.to(child.material, {
+                        opacity: 1,
+                        duration: 0.5,
+                        ease: "power1.out"
+                    }, 0);
+                });
+        
+                scene.add(currentBuilding);
+            });
+        }
+        
+        
 
+
+        
     function loadingBuilding        (scene, light, building, material){ 
         let scale  = .1;
         let scaleX = scale;
@@ -422,25 +490,10 @@
         gltfLoader.load(model, (gltf) => {
             currentLogo = gltf.scene;
             currentLogo.scale.set(.5, .5, .5);
+            currentLogo.rotation.y = -Math.PI/4;
             applyLogoMaterials(currentLogo);
             scene.add(currentLogo);
             animationModel.play(currentLogo, gltf.animations);
-    
-            gsap.registerPlugin(ScrollTrigger);
-            let sceneTimeline = gsap.timeline({
-                scrollTrigger: {
-                    trigger: '.viewport2',
-                    start: "50% 5%",
-                    end: "100% 20%",
-                    markers: false,
-                    scrub: true,
-                    toggleActions: "play none reverse reverse"
-                }
-            });
-            sceneTimeline.fromTo(currentLogo.rotation,
-                { z: currentLogo.rotation.z },
-                { z: Math.PI*2, duration: 3, ease: "power1.out" }
-            );
         });
         };
     
@@ -513,7 +566,13 @@
         dom.appendChild(experience);
         })
         };
-    
+
+    function loadingDisplay         (dom){
+        const style = window.getComputedStyle(dom);
+        if (style.display === "none") {dom.style.display = "flex";
+        } else {dom.style.display = "none";}
+        };
+
     function loadingAbilities       (dom, abilities, style){
         // Create ability
         const createAbility = (a) => {
@@ -767,6 +826,7 @@
         loadModel:          loadingModel,
         loadMaterial:       loadingMaterial,
         loadSkill:          loadingSkills,
+        loadDisplay:        loadingDisplay,
         loadLevel:          showLevel
     };
 
