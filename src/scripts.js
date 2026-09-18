@@ -347,49 +347,34 @@
 
     // ANIMATIONS
         let logoAnimation = new LogoAnimation();
+        gsap.registerPlugin(ScrollTrigger);
 
-        let viewportAnimation       = () => {
-            gsap.registerPlugin(ScrollTrigger);
-            let sceneTimeline = gsap.timeline({
-                scrollTrigger: {
-                    trigger: '.viewport2',
-                    start: "15% 25%",
-                    end: "35% 35%",
-                    markers: false,
-                    duration: 3,
-                    scrub: false,
-                    toggleActions: "play none reverse reverse"
-                }
-            });
-            sceneTimeline.to(orthoCamera.position, {
-                x: 0,
-                duration: 1,
-                ease: "power4.inOut"
-            });
-            
-            sceneTimeline.to(orthoCamera.position, {
-                z: 0,
-                duration: 1,
-                ease: "power4.inOut"
-            });
-            
-            sceneTimeline.to(".viewport2", {
-                scale: 0.2,
-                duration: 1,
-                ease: "power4.inOut"
-            });
-            
-            sceneTimeline.to(".viewport2", {
-                y: -575,
-                duration: 1,
-                ease: "power4.inOut"
-            });
-            
-        }
+        function viewportAnimation      () {
+            let viewportTimeline = gsap.timeline({
+                defaults: { duration: 3, ease: "power2.out" }});
+                    
+            viewportTimeline
+                .to(".viewport2", {scale: 0.2})
+                .to(".viewport2", {y: -575}, "-=1")
 
-        let descriptionAnimation    = () => {
-            gsap.registerPlugin(ScrollTrigger);           
-            let sceneTimeline = gsap.timeline({
+            return viewportTimeline;
+            };
+
+        function orthoCameraAnimation   () {
+            let orthoCameraTimeline = gsap.timeline({
+                defaults: { duration: 3, ease: "power2.out" }});
+
+            orthoCameraTimeline
+            .to(orthoCamera.position, {x: 0})
+            .to(orthoCamera.position, {z: 0}, "-=0.5")
+            
+
+            return orthoCameraTimeline
+            };
+
+        function descriptionAnimation   () {      
+            let descriptionTimeline = gsap.timeline({
+                defaults: { duration: 1, ease: "power4.inOut"},
                 scrollTrigger: {
                     trigger: '.infoBar',
                     start:"1250em 25%",
@@ -400,20 +385,26 @@
                     toggleActions: "play none reverse reverse"
                 }
             })
-            sceneTimeline.fromTo('.infoBar',
-                { x: '25em' },
-                { x: '0em', 
-                duration: 1, ease: "power5.in", delay: 0 }
-            );
-            sceneTimeline.fromTo('.infoBar',
-                { x: '0em' },
-                { x: '25em', 
-                duration: 1, 
-                ease: "expo.out",
-                delay: 0 }
-            );
-        }
-    
+            descriptionTimeline.fromTo('.infoBar', { x: '25em' }, { x: '0em'});
+            descriptionTimeline.fromTo('.infoBar', { x: '0em' }, { x: '25em'});
+            };
+
+        const mainTimeline = gsap.timeline({
+            pause: true,
+            scrollTrigger: {
+                trigger: '.viewport2',
+                start: "15% 25%",
+                end: "125% 25%",
+                markers: true,
+                scrub: 1, 
+                toggleActions: "play none reverse reverse"}
+        })
+        
+        mainTimeline
+            .add(orthoCameraAnimation())
+            .add(viewportAnimation(), "-=1")
+            .add(descriptionAnimation())
+
     // EVENTS
         window.addEventListener('resize', ()=>{
             updateCanvas();
@@ -453,8 +444,6 @@
 
     /* COMMITS */
         updateRefs();
-        viewportAnimation();
-        descriptionAnimation();
         // loaders.loadPage();
         let descriptionIni = document.getElementById("description");
         descriptionIni.innerHTML = "";

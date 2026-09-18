@@ -271,9 +271,8 @@
         aboutMe.appendChild(scrollIndicator);
         };
 
-        gsap.registerPlugin(ScrollTrigger);
-
-        function loadingText(scene, text) {
+    function loadingText            (scene, text) {
+            gsap.registerPlugin(ScrollTrigger);
             fontLoader.load('assets/fonts/arialRegular.json', font => {
         
                 const chars = text.split("");
@@ -281,9 +280,9 @@
                 let typingTL = gsap.timeline({
                     scrollTrigger: {
                         trigger: '.viewport2',
-                        start: "50% 5%",
-                        end: "100% 20%",
-                        markers: false,
+                        start: "70% 15%",
+                        end: "100% 15%",
+                        markers: true,
                         toggleActions: "play none reverse reverse"
                     }
                 });
@@ -323,113 +322,171 @@
         
                     typingTL.fromTo(letter.material,
                         { opacity: 0 },
-                        { opacity: 1, duration: 0.3, ease: "power2.out", delay: 1 },
+                        { opacity: 1, duration: 0.3, ease: "power2.out", delay: 1.25 },
                         i * 0.1
                     );
         
                     typingTL.fromTo(letter.position,
                         { y: -0.5 },
-                        { y: 3, duration: 0.3, ease: "back.out(2)", delay: 1 },
+                        { y: 3, duration: 0.3, ease: "back.out(2)", delay: 1.25 },
                         i * 0.1
                     );
                 });
             });
         }
         
-        function loadingNeighbor(scene, light, building, material){ 
-            let scale = .1;
+    function loadingNeighbor        (scene, light, building, material){ 
+        let scale = .1;
+
+        gltfLoader.load(building, (gltf) => {
         
-            gltfLoader.load(building, (gltf) => {
+            currentBuilding = gltf.scene;
+            currentBuilding.name = 'pageLayout';
+            currentBuilding.position.set(0, -0.1 * scale, 0);
+            currentBuilding.scale.set(scale, scale, scale);
         
-                currentBuilding = gltf.scene;
-                currentBuilding.name = 'pageLayout';
-                currentBuilding.position.set(0, -0.1 * scale, 0);
-                currentBuilding.scale.set(scale, scale, scale);
-        
-                let tl = gsap.timeline({
-                    scrollTrigger: {
-                        trigger: '.infoBar',
-                        start: "1250em 25%",
-                        end: "3500em 20%",
-                        scrub: 1,
-                        markers: true
-                    }
-                });
-        
-                currentBuilding.traverse((child) => {
-                    if (!child.isMesh) return;
-        
-                    if (child.name.includes('cloud')) child.material = material.cloudDiffuse;
-                    if (child.name.includes('neighboar')) child.material = material.model;
-                    if (child.name.includes('papper')) child.material = material.support;
-                    if (child.name.includes('desk')) child.material = material.desk;
-        
-                    child.material.transparent = true;
-                    child.material.opacity = 0;
-        
-                    const originalY = child.position.y;
-        
-                    if (child.name.includes('neighboar')) {
-                        const belowY = originalY - (Math.random() * 2 + 1);
-                        child.scale.set(0, 0, 0);
-                        child.position.y = belowY;
-        
-                        tl.to(child.scale, {
-                            x: 1, y: 1, z: 1,
-                            duration: 1,
-                            ease: "back.out(1.7)",
-                            delay: 1
-                        }, 0);
-        
-                        tl.to(child.material, {
-                            opacity: 1,
-                            duration: 0.8,
-                            ease: "power2.out",
-                            delay: 1
-                        }, 0);
-        
-                        tl.to(child.position, {
-                            y: originalY,
-                            duration: 1.2,
-                            ease: "bounce.out"
-                        }, 0);
-        
-                        return;
-                    }
-        
-                    if (child.name.includes('desk')) {
-                        child.rotation.y = 2 * Math.PI;
-        
-                        tl.to(child.material, {
-                            opacity: 1,
-                            duration: 0.4,
-                            ease: "power2.out"
-                        }, 0);
-        
-                        tl.to(child.rotation, {
-                            y: 0,
-                            duration: 3,
-                            ease: "expo.out"
-                        }, 0);
-        
-                        return;
-                    }
-        
-                    tl.to(child.material, {
-                        opacity: 1,
-                        duration: 0.5,
-                        ease: "power1.out"
-                    }, 0);
-                });
-        
-                scene.add(currentBuilding);
+            let neighborTimeline = gsap.timeline({
+                scrollTrigger: {
+                    trigger: '.projects',
+                    start: "2500em 25%",
+                    end: "3500em 20%",
+                    scrub: 1,
+                    markers: true
+                }
             });
+        
+            currentBuilding.traverse((child) => {
+                if (!child.isMesh) return;
+        
+                if (child.name.includes('cloud')) child.material        = material.cloudDiffuse;
+                if (child.name.includes('papper')) child.material       = material.support;
+        
+                child.material.transparent = true;
+                child.material.opacity  = 0;
+        
+                const originalX = child.position.x;
+                const originalY = child.position.y;
+                const originalZ = child.position.z;
+
+                if (child.name.includes('desk')) {
+                    const startPosition = originalZ + 200;
+                    child.material      = material.desk;
+
+                    child.position.z = startPosition;
+                
+                    neighborTimeline
+                        .to(child.position, {z: originalZ, duration: 15, ease: "power2.out"}, "-=10");
+                
+                    return;
+                };
+
+                if (child.name.includes('neighboar')) {
+                    const belowY = originalY - (Math.random() * 2 + 1);
+
+                    child.scale.set(0,0,0);
+                    child.material          = material.model;
+                    child.position.y        = belowY;
+                    
+                    neighborTimeline.to(child.scale,    {x: 1, y: 1, z:1,   duration: 16,    ease: "back.out(1.7)",   }, 0);
+                    neighborTimeline.to(child.material, {opacity: 1,        duration: 8,   ease: "power2.out",      }, 0);
+                    neighborTimeline.to(child.position, {y: originalY,      duration: 4.8,   ease: "bounce.out",      }, 0);
+                        
+                    return;
+                };
+
+
+            });
+        
+            scene.add(currentBuilding);
+        });
+        
         }
-        
-        
+    
+    // function loadingNeighbor        (scene, light, building, material){ 
+    //     let scale = .1;
+    
+    //     gltfLoader.load(building, (gltf) => {
+    
+    //         currentBuilding = gltf.scene;
+    //         currentBuilding.name = 'pageLayout';
+    //         currentBuilding.position.set(0, -0.1 * scale, 0);
+    //         currentBuilding.scale.set(scale, scale, scale);
+    
+    //         let tl = gsap.timeline({
+    //             scrollTrigger: {
+    //                 trigger: '.infoBar',
+    //                 start: "1250em 25%",
+    //                 end: "3500em 20%",
+    //                 scrub: 1,
+    //                 markers: true
+    //             }
+    //         });
+    
+    //         currentBuilding.traverse((child) => {
+    //             if (!child.isMesh) return;
+    
+    //             if (child.name.includes('cloud')) child.material = material.cloudDiffuse;
+    //             if (child.name.includes('neighboar')) child.material = material.model;
+    //             if (child.name.includes('papper')) child.material = material.support;
+    //             if (child.name.includes('desk')) child.material = material.desk;
+    
+    //             child.material.transparent = true;
+    //             child.material.opacity = 0;
+    
+    //             const originalX = child.position.x;
+    //             const originalY = child.position.y;
+    //             const originalZ = child.position.z;
+    
+    //             if (child.name.includes('neighboar')) {
+    //                 const belowY = originalY - (Math.random() * 2 + 1);
+    //                 child.scale.set(0, 0, 0);
+    //                 child.position.y = belowY;
+    
+    //                 tl.to(child.scale, {
+    //                     x: 1, y: 1, z: 1,
+    //                     duration: 1,
+    //                     ease: "back.out(1.7)",
+    //                     delay: 1
+    //                 }, 0);
+    
+    //                 tl.to(child.material, {
+    //                     opacity: 1,
+    //                     duration: 0.8,
+    //                     ease: "power2.out",
+    //                     delay: 1
+    //                 }, 0);
+    
+    //                 tl.to(child.position, {
+    //                     y: originalY,
+    //                     duration: 1.2,
+    //                     ease: "bounce.out"
+    //                 }, 0);
+    
+    //                 return;
+    //             }
+    
+    //             if (child.name.includes('desk')) {
+    //                 const startPosition = originalZ + 350;
+    //                 child.material      = material.desk;
 
+    //                 child.position.z = startPosition;
+                
+    //                 tl.to(child.position, {z: originalZ, duration: 50, ease: "power2.out"});
+                
+    //                 return;
+    //             };
+    
+    //             tl.to(child.material, {
+    //                 opacity: 1,
+    //                 duration: 0.5,
+    //                 ease: "power1.out"
+    //             }, 0);
+    //         });
+    
+    //         scene.add(currentBuilding);
+    //     });
+    // }
 
-        
     function loadingBuilding        (scene, light, building, material){ 
         let scale  = .1;
         let scaleX = scale;

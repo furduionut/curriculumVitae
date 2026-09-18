@@ -14,7 +14,7 @@ const scenes = {
 /* GUI */
 
 /* SCENE PARAMETERS */
-    scenes.mainScene.background = new THREE.Color(0x9aacf2);
+    scenes.mainScene.background = new THREE.Color(0xd2dbf0);
     // scenes.mainScene.environment = hdrTexture;
     // scenes.mainScene.add(skybox);
     // scenes.mainScene.backgroundBlurriness = 0.3
