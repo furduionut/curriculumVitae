@@ -139,7 +139,7 @@
                     sectionName = 'Contacts';
                     break;
             }
-            console.log(`Window at zone ${section}. ${sectionName}`);
+            console.log(`Window at zone ${section} at ${scroll} ${sectionName}`);
             let easedT = t;
             easedT = Math.pow(easedT, 2.0);
             easedT = Math.min(easedT, 0.9);
@@ -154,7 +154,7 @@
             perspCamera.updateProjectionMatrix();
         
             const sectionEl = document.getElementById('section');
-            sectionEl.innerHTML = `${sectionName}`;
+            sectionEl.innerHTML = `$${sectionName}`;
         }
     
 
@@ -355,7 +355,7 @@
                     
             viewportTimeline
                 .to(".viewport2", {scale: 0.2})
-                .to(".viewport2", {y: -575}, "-=1")
+                .to(".viewport2", {y: -600}, "-=1")
 
             return viewportTimeline;
             };
@@ -385,8 +385,8 @@
                     toggleActions: "play none reverse reverse"
                 }
             })
-            descriptionTimeline.fromTo('.infoBar', { x: '25em' }, { x: '0em'});
-            descriptionTimeline.fromTo('.infoBar', { x: '0em' }, { x: '25em'});
+            descriptionTimeline.fromTo('.infoBar', { x: '17.5em' }, { x: '0em'});
+            descriptionTimeline.fromTo('.infoBar', { x: '0em' }, { x: '17.5em'});
             };
 
         const mainTimeline = gsap.timeline({
@@ -428,18 +428,43 @@
             });
           });
         
-        const pressedBtn = document.querySelectorAll(".btn");
-        console.log(pressedBtn);
+        const sectionsNavBar = document.getElementById("navBar");
+        const sectionsBtns = Array.from(sectionsNavBar.children);
+        const projectsBanner = document.getElementById("controls");
+        const abilitiesBanner = document.getElementById("ability banner");
+        const experiencesBanner = document.getElementById("experience banner");
+        const contactsBanner = document.getElementById("contact banner");
 
-        // pressedBtn.forEach((btn)=>{
-        //     btn.addEventListener('click', ()=>{
-        //         // console.log(btn);
-        //         let btnParent = btn.parentElement
-        //         let btnParentSibling = btnParent.nextElementSibling
-        //         if(btnParentSibling.children.length === 0){loaders.loadDisplay(btnParentSibling);}
-    
-        //     })
-        // })
+        sectionsBtns.forEach((e)=>{e.addEventListener("click", 
+            ()=>{
+            switch (e.id) {
+                case 'navAboutMe':
+                    loaders.loadScroll(1000);
+                    loaders.loadPress(projectsBanner);
+                    break;
+                
+                case 'navProjects':
+                    loaders.loadScroll(2000);
+                    loaders.loadPress(projectsBanner);
+                    break;
+
+                case 'navAbilities':
+                    loaders.loadScroll(3000);
+                    loaders.loadPress(abilitiesBanner);
+                    break;
+                
+                case 'navExperiences':
+                    loaders.loadScroll(4000);
+                    loaders.loadPress(experiencesBanner);
+                    break;
+
+                case 'navContacts':
+                    loaders.loadScroll(5000);
+                    loaders.loadPress(contactsBanner);
+                    break;
+                }
+            })});
+            
         
 
     /* COMMITS */

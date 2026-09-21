@@ -9,13 +9,23 @@
     </head>
 
     <body>
-            <div class="aboutMe" id="aboutMe">
-                <div class="navBar">
-                    <div class="navItem glass"><a href="#aboutMe">About Me</a></div>
-                    <div class="navItem glass"><a href="#projects">Projects</a></div>
-                    <div class="navItem glass"><a href="#abilities">Abilities</a></div>
-                    <div class="navItem glass"><a href="#experience">Experiences</a></div>
-                    <div class="navItem glass"><a href="#contacts">Contacts</a></div>
+            <div class="aboutMe     chapter" id="aboutMe">
+                <div class="navBar" id="navBar">
+                    <div class="navItem glass" id="navAboutMe">
+                        <a>About Me</a>
+                    </div>
+                    <div class="navItem glass" id="navProjects">
+                        <a>Projects</a>
+                    </div>
+                    <div class="navItem glass" id="navAbilities">
+                        <a>Abilities</a>
+                    </div>
+                    <div class="navItem glass" id="navExperiences">
+                        <a>Experiences</a>
+                    </div>
+                    <div class="navItem glass" id="navContacts">
+                        <a>Contacts</a>
+                    </div>
                 </div>
                 <div class="infoBar glass" id="infoBar">
                     <div class="section" id="section">Section 1</div>
@@ -23,59 +33,44 @@
                 </div>
             </div> 
 
-            <div class="projects" id="projects">
+            <div class="projects    chapter" id="projects">
+                <div class="background" id="background"></div>
                 <div class='viewport2' id='viewport2'>
-                    <div id='canvaso' class="canvaso"></div>
+                    <div class="canvaso" id='canvaso'></div>
                 </div>
                 <div class='viewport' id='viewport'>
                     <div id='canvas' class="canvas"></div>
                 </div>
                 <div class="controls" id="controls"> 
-                    <div id="prevBtn" class="navBtn glass">
+                    <div  class="nextBtn navBtn glass" id="prevBtn">
                         <icon class="icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="5em" height="5em" viewBox="0 0 24 24">
-                                <title xmlns="">previous-fill</title>
-                                <path fill="#1c3166" d="M3.885 21.06a.76.76 0 0 1-.75-.75V3.69a.75.75 0 0 1 1.5 0v16.6a.75.75 0 0 1-.75.77m16.98-15.713v13.25a2.35 2.35 0 0 1-.32 1.13a2.2 2.2 0 0 1-1.89 1.07h-.1a2.1 2.1 0 0 1-1.11-.36l-9.13-6.12a2.25 2.25 0 0 1-.71-.76a2.3 2.3 0 0 1-.27-1a2.2 2.2 0 0 1 .2-1a2.2 2.2 0 0 1 .64-.81l9.14-7.09a2.2 2.2 0 0 1 1.13-.44a2.2 2.2 0 0 1 2.09 1.02c.204.335.318.718.33 1.11"/>
-                            </svg>
+                            <img src="assets/icons/prevIcon.svg">
+                            <img src="assets/icons/buildingIcon.svg">
                         </icon>
                     </div>
-                    <div id="stageNav" class="stageNav glass">
+                    <div  class="upDownBtn stageNav glass" id="stageNav">
                         <div id="upBtn" class="stageBtn">
                             <icon class="icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" viewBox="0 0 80 80">
-                                    <title xmlns="">layer-plus-bold</title>
-                                    <g fill="#1c3166">
-                                        <path fill-rule="evenodd" d="M60.376 11.256a3 3 0 0 1 3 3v5h5a3 3 0 0 1 0 6h-5v5a3 3 0 0 1-6 0v-5h-5a3 3 0 0 1 0-6h5v-5a3 3 0 0 1 3-3" clip-rule="evenodd"/>
-                                        <path d="M41.25 29.594a2 2 0 0 0-1.576 0L16.75 39.417c-1.617.693-1.617 2.984 0 3.677l22.923 9.824a2 2 0 0 0 1.575 0l22.923-9.824c1.616-.693 1.616-2.984 0-3.677z"/><path d="m16.75 50.418l4.102-1.758l17.443 7.475a5.5 5.5 0 0 0 4.333 0l17.443-7.475l4.101 1.758c1.616.692 1.616 2.983 0 3.676l-22.923 9.824a2 2 0 0 1-1.575 0L16.75 54.094c-1.617-.693-1.617-2.984 0-3.677"/></g>
-                                </svg>
+                                <img src="assets/icons/layerPlusIcon.svg">
                             </icon>
                         </div>
                         <div id="downBtn" class="stageBtn">
                             <icon class="icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" viewBox="0 0 80 80">
-                                    <title xmlns="">layer-minus-bold</title>
-                                        <g fill="#1c3166">
-                                            <path fill-rule="evenodd" d="M49.461 22.256a3 3 0 0 1 3-3h16a3 3 0 1 1 0 6h-16a3 3 0 0 1-3-3" clip-rule="evenodd"/>
-                                            <path d="M39.674 29.594a2 2 0 0 1 1.575 0l22.923 9.823c1.616.693 1.616 2.984 0 3.677l-22.923 9.824a2 2 0 0 1-1.575 0L16.75 43.094c-1.617-.693-1.617-2.984 0-3.677z"/>
-                                            <path d="m20.852 48.66l-4.101 1.758c-1.617.692-1.617 2.983 0 3.676l22.923 9.824a2 2 0 0 0 1.575 0l22.923-9.824c1.616-.693 1.616-2.984 0-3.677l-4.101-1.757l-17.443 7.475a5.5 5.5 0 0 1-4.333 0z"/>
-                                        </g>
-                                    </svg>
+                                <img src="assets/icons/layerMinusIcon.svg">
                             </icon>
                         </div>
                     </div>
-                    <div id="nextBtn" class="navBtn glass">
+                    <div  class="prevBtn navBtn glass" id="nextBtn">
                         <icon class="icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="5em" height="5em" viewBox="0 0 24 24">
-                                <title xmlns="">next-fill</title>
-                                <path fill="#1c3166" d="M20.095 21a.75.75 0 0 1-.75-.75V3.75a.75.75 0 0 1 1.5 0v16.5a.74.74 0 0 1-.75.75m-3.4-9.589a2.25 2.25 0 0 1-.85 1.82l-9.11 7.09c-.326.247-.713.4-1.12.44h-.23a2.14 2.14 0 0 1-1-.22a2.2 2.2 0 0 1-.9-.81a2.17 2.17 0 0 1-.33-1.16V5.421a2.2 2.2 0 0 1 .31-1.12a2.25 2.25 0 0 1 .85-.8a2.18 2.18 0 0 1 2.24.1l9.12 6.08c.29.191.53.448.7.75a2.3 2.3 0 0 1 .32.98"/>
-                            </svg>
+                            <img src="assets/icons/buildingIcon.svg">
+                            <img src="assets/icons/nextIcon.svg">
                         </icon>
                     </div>
                 </div>
 
             </div>
             
-            <div class="abilities chapter" id="abilities">
+            <div class="abilities   chapter" id="abilities">
                 <div class="ability banner glass" id="ability banner">
                     <div class="lumion btn" id="lumion btn">
                         <icon class="icon">
@@ -140,7 +135,7 @@
                         <p>MS Teams</p>
                     </div>
                 </div>
-                <div class="abilityDetails glass" id="abilityDetails">
+                <div class="ability details glass" id="abilityDetails">
                 </div>
             </div>
 
@@ -172,7 +167,7 @@
                             <h3>Obținerea dreptului de semnătură</h3>
                             <ul class="expDescription" id="expDescription"></ul>
                         </div>
-                        <div class='geometry-down'></div>
+                        <div class='geometry-down'>OAR</div>
                         <!-- <div class='treeBind-right'>
                             <div class='branch-right'></div>
                             <div class='base-right'></div>
@@ -380,45 +375,67 @@
                             <div class="lineBreak"></div>
                             <div class="lineBreak"></div>
                             <div class="lineBreak"></div>
+                            <div class="lineBreak"></div>
+                            <div class="lineBreak"></div>
+                            <div class="lineBreak"></div>
+                            <div class="lineBreak"></div>
+                            <div class="lineBreak"></div>
+                            <div class="lineBreak"></div>
+                            <div class="lineBreak"></div>
+                            <div class="lineBreak"></div>
+                            <div class="lineBreak"></div>
+                            <div class="lineBreak"></div>
+                            <div class="lineBreak"></div>
+                            <div class="lineBreak"></div>
+                            <div class="lineBreak"></div>
+                            <div class="lineBreak"></div>
+                            <div class="lineBreak"></div>
+                            <div class="lineBreak"></div>
+                            <div class="lineBreak"></div>
+                            <div class="lineBreak"></div>
+                            <div class="lineBreak"></div>
+                            <div class="lineBreak"></div>
+                            <div class="lineBreak"></div>
+                            <div class="lineBreak"></div>
                         </div>
                     </div>
                 </div> 
             </div>
             
-            <div class="contacts chapter" id="contacts">
+            <div class="contacts    chapter" id="contacts">
                 <div class="contact banner glass" id="contact banner">
-                    <div class="email btn"      id="email btn">
+                    <a href="https://mail.google.com/mail/?view=cm&fs=1&to=furdu.mihaelionut@outlook.com&su=Bună!&body=Doresc să ne cunoaștem!" target="_blank" class="email btn"      id="email btn">
                         <icon class="icon">
                             <img src="assets/icons/emailIcon.svg">
                         </icon>
                         <p>Email</p>
-                    </div>
-                    <div class="linkedIn btn"   id="linkedIn btn">
+                    </a>
+                    <a href="https://www.linkedin.com/in/furduionut/" target="_blank" class="linkedIn btn"   id="linkedIn btn">
                         <icon class="icon">
                             <img src="assets/icons/linkedinIcon.svg">
                         </icon>
                         <p>LinkedIn</p>
-                    </div>
-                    <div class="whatsApp btn"   id="whatsApp btn">
+                    </a>
+                    <a href="https://wa.me/40772282767" target="_blank" class="whatsApp btn"   id="whatsApp btn">
                         <icon class="icon">
                             <img src="assets/icons/whatsappIcon.svg">
                         </icon>
                         <p>WhatsApp</p>                        
-                    </div>
-                    <div class="artStation btn" id="Stationbtn">
+                    </a>
+                    <a href="https://furduionut.artstation.com/" target="_blank" class="artStation btn" id="Stationbtn">
                         <icon class="icon">
                             <img src="assets/icons/artstationIcon.svg">
                         </icon>
                         <p>ArtStation</p>                        
-                    </div>
-                    <div class="gitHub btn"     id="gitHub btn">
+                    </a>
+                    <a href="https://github.com/furduionut" target="_blank" class="gitHub btn"     id="gitHub btn">
                         <icon class="icon">
                             <img src="assets/icons/gitIcon.svg">
                         </icon>
                         <p>GitHub</p>
-                    </div>
+                    </a>
                 </div>
-                <div class="contact details" id="contact details">
+                <div class="contactDetails" id="contact details">
                 </div>
             </div>
 

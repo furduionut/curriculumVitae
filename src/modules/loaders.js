@@ -387,9 +387,9 @@
                     child.material          = material.model;
                     child.position.y        = belowY;
                     
-                    neighborTimeline.to(child.scale,    {x: 1, y: 1, z:1,   duration: 16,    ease: "back.out(1.7)",   }, 0);
-                    neighborTimeline.to(child.material, {opacity: 1,        duration: 8,   ease: "power2.out",      }, 0);
-                    neighborTimeline.to(child.position, {y: originalY,      duration: 4.8,   ease: "bounce.out",      }, 0);
+                    neighborTimeline.to(child.scale,    {x: 1, y: 1, z:1,   duration: 16,       ease: "back.out(1.7)",   }, 0);
+                    neighborTimeline.to(child.material, {opacity: 1,        duration: 8,        ease: "power2.out",      }, 0);
+                    neighborTimeline.to(child.position, {y: originalY,      duration: 4.8,      ease: "bounce.out",      }, 0);
                         
                     return;
                 };
@@ -402,90 +402,25 @@
         
         }
     
-    // function loadingNeighbor        (scene, light, building, material){ 
-    //     let scale = .1;
+    function loadingPressIndicator  (dom) {
+        let on = false;
     
-    //     gltfLoader.load(building, (gltf) => {
+        const interval = setInterval(() => {
+            on = !on;
+            dom.style.outline = on 
+                ? `3px solid orange` 
+                : "none";
+        }, 200); // bounce speed
     
-    //         currentBuilding = gltf.scene;
-    //         currentBuilding.name = 'pageLayout';
-    //         currentBuilding.position.set(0, -0.1 * scale, 0);
-    //         currentBuilding.scale.set(scale, scale, scale);
-    
-    //         let tl = gsap.timeline({
-    //             scrollTrigger: {
-    //                 trigger: '.infoBar',
-    //                 start: "1250em 25%",
-    //                 end: "3500em 20%",
-    //                 scrub: 1,
-    //                 markers: true
-    //             }
-    //         });
-    
-    //         currentBuilding.traverse((child) => {
-    //             if (!child.isMesh) return;
-    
-    //             if (child.name.includes('cloud')) child.material = material.cloudDiffuse;
-    //             if (child.name.includes('neighboar')) child.material = material.model;
-    //             if (child.name.includes('papper')) child.material = material.support;
-    //             if (child.name.includes('desk')) child.material = material.desk;
-    
-    //             child.material.transparent = true;
-    //             child.material.opacity = 0;
-    
-    //             const originalX = child.position.x;
-    //             const originalY = child.position.y;
-    //             const originalZ = child.position.z;
-    
-    //             if (child.name.includes('neighboar')) {
-    //                 const belowY = originalY - (Math.random() * 2 + 1);
-    //                 child.scale.set(0, 0, 0);
-    //                 child.position.y = belowY;
-    
-    //                 tl.to(child.scale, {
-    //                     x: 1, y: 1, z: 1,
-    //                     duration: 1,
-    //                     ease: "back.out(1.7)",
-    //                     delay: 1
-    //                 }, 0);
-    
-    //                 tl.to(child.material, {
-    //                     opacity: 1,
-    //                     duration: 0.8,
-    //                     ease: "power2.out",
-    //                     delay: 1
-    //                 }, 0);
-    
-    //                 tl.to(child.position, {
-    //                     y: originalY,
-    //                     duration: 1.2,
-    //                     ease: "bounce.out"
-    //                 }, 0);
-    
-    //                 return;
-    //             }
-    
-    //             if (child.name.includes('desk')) {
-    //                 const startPosition = originalZ + 350;
-    //                 child.material      = material.desk;
+        setTimeout(() => {
+            clearInterval(interval);
+            dom.style.outline = "none"; // reset
+        }, 2000); // total duration
+        };
 
-    //                 child.position.z = startPosition;
-                
-    //                 tl.to(child.position, {z: originalZ, duration: 50, ease: "power2.out"});
-                
-    //                 return;
-    //             };
-    
-    //             tl.to(child.material, {
-    //                 opacity: 1,
-    //                 duration: 0.5,
-    //                 ease: "power1.out"
-    //             }, 0);
-    //         });
-    
-    //         scene.add(currentBuilding);
-    //     });
-    // }
+    function loadingScroll          (scrollY) {
+        window.scrollTo({ top: scrollY, behavior: "smooth" });
+        };
 
     function loadingBuilding        (scene, light, building, material){ 
         let scale  = .1;
@@ -883,7 +818,9 @@
         loadModel:          loadingModel,
         loadMaterial:       loadingMaterial,
         loadSkill:          loadingSkills,
+        loadPress:          loadingPressIndicator,
         loadDisplay:        loadingDisplay,
+        loadScroll:         loadingScroll,
         loadLevel:          showLevel
     };
 
