@@ -116,7 +116,7 @@
     border: 0;
     padding: 0;
 
-    border: 1px solid red;
+    /* border: 1px solid red; */
     }
 
     img {
@@ -249,6 +249,7 @@
     }
     .background {
         position: absolute;
+        z-index: var(--viewport-order);
         left: 0;
         background: linear-gradient(
             to bottom,
@@ -458,7 +459,7 @@
     /* box */
     /* size */
     width: auto;
-    height: 550em;
+    height: 655em;
     /* position */
     /* distance */
     gap: var(--general-gap);
@@ -566,9 +567,7 @@
     /* ----EXPERIENCES-----*/
     .expDetails {
     /* box */
-    padding: var(--general-padding);
-    padding-top: 5em;
-    padding-bottom: 5em;
+    padding: 5em;
     /* size */
     width: 100%;
     height: auto;
@@ -641,6 +640,7 @@
     width: 25em;
     height: auto;
     /* position */
+    z-index: var(--control-order);
     position: relative;
     /* distance */
     /* geometry */

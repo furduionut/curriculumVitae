@@ -65,33 +65,33 @@
     
         function updateCam() {
             // Section 0
-            const camPosA = new THREE.Vector3(15, 15, 10);
-            const lookA = new THREE.Vector3(-5.5, 15, -10);
+            const camPosA = new THREE.Vector3(15, 15, 10.5);
+            const lookA = new THREE.Vector3(-5.5, 15, -10.5);
             const zoomA = 1;
             // Section 1
-            const camPosB = new THREE.Vector3(15, 15, 10);
-            const lookB = new THREE.Vector3(-5.5, 10, -10);
-            const zoomB = 1;
+            const camPosB = new THREE.Vector3(15, 10, 10.5);
+            const lookB = new THREE.Vector3(-5.5, 7.5, -9.5);
+            const zoomB = 2;
             // Section 2
-            const camPosC = new THREE.Vector3(15, 40, 10);
-            const lookC = new THREE.Vector3(-5.5, 2.5, -10);
-            const zoomC = 3;
+            const camPosC = new THREE.Vector3(15, 20, 10.5);
+            const lookC = new THREE.Vector3(-5.5, 1.5, -10.5);
+            const zoomC = 4;
             // Section 3
-            const camPosD = new THREE.Vector3(15, 0, -10);
-            const lookD = new THREE.Vector3(-5.5, 2.5, -10);
-            const zoomD = 2;
+            const camPosD = new THREE.Vector3(15, 0, -10.5);
+            const lookD = new THREE.Vector3(-5.5, 1.5, -10.5);
+            const zoomD = 4;
             // Section 4
-            const camPosE = new THREE.Vector3(15, -2.5, -10);
-            const lookE = new THREE.Vector3(-5.5, 0, -10);
-            const zoomE = 2;
+            const camPosE = new THREE.Vector3(15, 0, -10.5);
+            const lookE = new THREE.Vector3(-5.5, 0, -10.5);
+            const zoomE = 4;
             // Section 5
-            const camPosF = new THREE.Vector3(15, -3.5, -10);
-            const lookF = new THREE.Vector3(-5.5, -3.5, -10);
-            const zoomF = 2;
+            const camPosF = new THREE.Vector3(15, -9.5, -10.5);
+            const lookF = new THREE.Vector3(-5.5, -9.5, -10.5);
+            const zoomF = 4;
             // Section 6
-            const camPosG = new THREE.Vector3(15, -4.5, -10);
-            const lookG = new THREE.Vector3(-5.5, -4.5, -10);
-            const zoomG = 2;
+            const camPosG = new THREE.Vector3(15, -9.5, -10.5);
+            const lookG = new THREE.Vector3(-5.5, -9.5, -10.5);
+            const zoomG = 4;
             
             let scroll = window.scrollY / sectionHeight;
             let section = Math.floor(scroll);
@@ -466,7 +466,6 @@
             });
           });
         
-
         const sectionsNavBar = document.getElementById("navBar");
         const sectionsBtns = Array.from(sectionsNavBar.children);
         const projectsBanner = document.getElementById("controls");
@@ -493,17 +492,17 @@
                     break;
 
                 case 'navAbilities':
-                    loaders.loadScroll(sectionHeight * 3.60);
+                    loaders.loadScroll(sectionHeight * 3.590);
                     loaders.loadPress(abilitiesBanner);
                     break;
                 
                 case 'navExperiences':
-                    loaders.loadScroll(sectionHeight * 3.68);
+                    loaders.loadScroll(sectionHeight * 4.115);
                     loaders.loadPress(experiencesBanner);
                     break;
 
                 case 'navContacts':
-                    loaders.loadScroll(sectionHeight * 5);
+                    loaders.loadScroll(sectionHeight * 4.375);
                     loaders.loadPress(contactsBanner);
                     break;
                 }
