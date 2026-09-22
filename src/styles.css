@@ -18,11 +18,13 @@
 
     /* box */
     --general-padding:          1.0em;
+    --main-padding:             17.5em;
     --offset-padding:           15em;
 
     /* sizes */
     --general-fontSize:         12px;
     --important-fontSize:       5em;
+
 
     --banner-fontSize:          12px;
     --control-fontSize:         12px;
@@ -117,25 +119,6 @@
     border: 1px solid red;
     }
 
-    body {
-    /* box */
-    padding: var(--general-padding);
-    /* size */
-    height: auto;
-    min-width: 35em;
-    /* position */
-    /* distance */
-    gap: var(--general-gap);
-    /* style */
-    font: var(--general-font);
-    /* color */
-    /* display */
-    display: flex;
-    justify-content: space-evenly;
-    flex-flow: column nowrap;
-    /* content */
-    }
-
     img {
         width: 2.5em;
         height: 2.5em;
@@ -143,7 +126,6 @@
 
     /*-------DEBUG--------*/
     .dg {
-    z-index: 999999 !important;
     }
     .dg .cr .property-name {
     color: #fff !important;
@@ -153,15 +135,32 @@
     }
 
     /*-----GENERAL------ */
+    
+    .main {
+        /* box */
+        padding: var(--main-padding);
+        /* size */
+        height: auto;
+        min-width: 95em;
+        /* position */
+        /* distance */
+        gap: var(--general-gap);
+        /* style */
+        font: var(--general-font);
+        /* color */
+        /* display */
+        display: flex;
+        flex-flow: column nowrap;
+        /* content */
+        /* filter  */
+        /* animation */        
+    }
     .chapter {
         /* box */
-        padding-left:       var(--offset-padding);
-        padding-right:      var(--offset-padding);
         /* size */
-        width: 100%;
-        height: auto;
+        width:              100%;
+        height:             auto;
         /* position */
-        z-index:            var(--chapter-order);
         /* distance */
         /* geometry */
         gap:                var(--general-gap);
@@ -184,9 +183,7 @@
         width:              100%;
         height:             auto;
         /* position */
-        z-index:            var(--banner-order);
         /* distance */
-        gap:                var(--general-gap);
         /* geometry */
         /* style */
         font:               var(--banner-font);
@@ -203,10 +200,9 @@
     .btn {
         /* box */
         /* size */
-        width: 5em;
-        height: 5em;
+        width:              5em;
+        height:             5em;
         /* position */
-        z-index:            var(--button-order);
         /* distance */
         /* geometry */
         border-radius:      var(--general-border-radius);
@@ -233,13 +229,55 @@
         outline: var(--outline-style) var(--outline-color);
     }
 
+    /* ----GENERAL------*/
+    .press-indicator {
+        position: absolute;
+        top: 205em;
+    
+        width: 2em;
+        height: 2em;
+        border-radius: 50%;
+        border: 5px solid orange;
+        opacity: 0.8;
+    
+        animation: pressPulse 1.5s infinite ease-out;
+    }
+    @keyframes pressPulse {
+    0%   { transform: translateX(-50%) scale(1); opacity: 0.8; }
+    50%  { transform: translateX(-50%) scale(1.2); opacity: 1; }
+    100% { transform: translateX(-50%) scale(1); opacity: 0.8; }
+    }
+    .background {
+        position: absolute;
+        left: 0;
+        background: linear-gradient(
+            to bottom,
+            var(--first-background-color) 0%,
+            var(--first-background-color) 10%,
+            var(--first-background-color) 25%,
+            transparent 100%);
+    }
+    .start {
+        width: 100%;
+        height: 20em;
+        position: fixed;
+        top: 0;
+    }
+    .end {
+        width: 100%;
+        height: 10em;
+        position: fixed;
+        bottom: 0;
+        transform: scaleY(-1);
+    }
+
     /* ----ABOUT ME-----*/
     .aboutMe {
     /* box */
     /* size */
-    height: 35em;
+    width: 100%;
+    height: 45em;
     /* position */
-    z-index: 0;
     position: fixed;
     left: 0;
     top: 25%;
@@ -253,10 +291,8 @@
     .navBar {
     /* box */
     /* size */
-    width: auto;
     height: 100%;
     /* position */
-    z-index: var(--control-order);
     position: absolute;
     left: 0;
     /* distance */
@@ -277,7 +313,6 @@
     width: 30em;
     height: 100%;
     /* position */
-    z-index: var(--control-order);
     position: absolute;
     right: 0;
     transform: translateX(-25em);
@@ -338,8 +373,8 @@
     /* size */
     height: 5em;
     width: var(--offset-padding);
+    min-width: auto;
     /* position */
-    z-index: 9;
     /* distance */
     /* geometry */
     border-top-left-radius: 0;
@@ -421,13 +456,10 @@
     /*-----PROJECTS-----*/
     .projects {
     /* box */
-    padding-left: var(--offset-padding);
-    padding-right: var(--offset-padding);
     /* size */
     width: auto;
-    height: 300em;
+    height: 550em;
     /* position */
-    z-index: -1;
     /* distance */
     gap: var(--general-gap);
     /* geometry */
@@ -436,7 +468,6 @@
     /* display */
     display: flex;
     flex-flow: column wrap;
-    justify-content: space-evenly;
     align-items: center;
     /* content */
     }
@@ -447,10 +478,10 @@
     width: 100%;
     height: 100vh;
     /* position */
+    z-index: var(--viewport-order);
     position: fixed;
     top: 0;
     left: 0;
-    z-index: var(--viewport-order);
     /* distance */
     gap: var(--general-gap);
     /* geometry */
@@ -462,36 +493,15 @@
     /* flex-flow: column wrap;
     /* content */
     }
-    .canvas {
-    /* box */
-    /* size */
-    width: auto;
-    height: auto;
-    /* position */
-
-    position: absolute;
-    z-index: var(--viewport-order);
-    /* distance */
-    /* geometry */
-    /* style */
-    /* color */
-    /* display */
-    display: block;
-    /* content */
-    /* filter */
-    }
     .viewport2 {
     /* box */
     /* size */
-    width: 100%;
-    height: 50em;
+    width: 70%;
+    height: 100%;
     /* position */
-    z-index: 0;
     position: fixed;
-    top: 25em;
-    z-index: var(--control-order);
+    top: 15em;
     /* distance */
-    gap: var(--general-gap);
     /* geometry */
     /* style */
     /* color */
@@ -501,54 +511,23 @@
     background: transparent;
     /* content */
     }
-    .background {
-        width: 100%;
-        height: 25em;
-        position: fixed;
-        top: 0;
-        z-index: var(--chapter-order);
-        background: linear-gradient(
-            to bottom,
-            var(--first-background-color) 0%,
-            var(--first-background-color) 10%,
-            var(--first-background-color) 25%,
-            transparent 100%);
-
-    }
-    .canvaso {
-    /* box */
-    /* size */
-    width: auto;
-    height: auto;
-    /* position */
-    /* distance */
-    /* geometry */
-    /* style */
-    /* color */
-    /* display */
-    /* content */
-    /* filter */
-    background: transparent;
-    }
     .controls {
     /* box */
     /* size */
-    width: 100%;
     /* position */
+    width: 100%;
     position: relative;
-    top: 145em;
+    top: 105em;
     /* distance */
-    gap: var(--general-gap);
     /* geometry */
     /* style */
-    border-radius: var(--general-border-radius);
     /* color */
     /* display */
     display: flex;
-    align-content: center;
     justify-content: space-between;
+    align-items: center;
+    flex-flow: row wrap;
     /* content */
-    
     }
     .stageNav {
     /* box */
@@ -557,19 +536,19 @@
     height: 100%;
     /* position */
     /* distance */
-    gap: var(--general-gap);
     /* geometry */
     /* style */
     /* color */
     /* display */
     display: flex;
-    justify-content: space-around;
     flex-flow: column wrap;
     /* content */
     }
     .navBtn {
+        height: 100%;
         padding: var(--general-padding);
         display: flex;
+        flex-wrap: row wrap;
         justify-content: center;
         align-items: center;
     }
@@ -578,36 +557,10 @@
     justify-content: center;
     align-items: center;
     }
-    .prevBtn {
-        display:flex;
-        position:relative;
-    }
-    .nextBtn {
-        display:flex;
-        position:relative;
-    }
 
     /* ----ABILITIES-----*/
     .abilityDetails {
         display: none;
-    }
-    .press-indicator {
-    position: absolute;
-    top: 205em;
-
-    width: 2em;
-    height: 2em;
-    border-radius: 50%;
-    border: 5px solid orange;
-    opacity: 0.8;
-    z-index: var(--control-order);
-
-    animation: pressPulse 1.5s infinite ease-out;
-    }
-    @keyframes pressPulse {
-    0%   { transform: translateX(-50%) scale(1); opacity: 0.8; }
-    50%  { transform: translateX(-50%) scale(1.2); opacity: 1; }
-    100% { transform: translateX(-50%) scale(1); opacity: 0.8; }
     }
 
     /* ----EXPERIENCES-----*/
@@ -620,7 +573,6 @@
     width: 100%;
     height: auto;
     /* position */
-    z-index: var(--detail-order);
     /* distance */
     gap: var(--general-gap);
     /* geometry */
@@ -690,7 +642,6 @@
     height: auto;
     /* position */
     position: relative;
-    z-index: var(--detail-order);
     /* distance */
     /* geometry */
     /* style */
@@ -718,7 +669,6 @@
     height: 1.5em;
     /* position */
     position: relative;
-    z-index: var(--subject-order);
     /* distance */
     /* geometry */
     /* style */
@@ -971,7 +921,6 @@
     position: absolute;
     top: 1%;
     left: 50%;
-    z-index: var(--detail-order);
     /* distance */
     /* geometry */
     /* style */

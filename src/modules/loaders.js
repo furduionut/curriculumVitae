@@ -68,9 +68,6 @@
     //         });
         };
 
-    function textAnimation          () {
-        };
-    
     function applyLogoMaterials     (model) {
         const purple = materials.lightBulbDiffuse;
         const glassPurple = materials.tube;
@@ -282,7 +279,7 @@
                         trigger: '.viewport2',
                         start: "70% 15%",
                         end: "100% 15%",
-                        markers: true,
+                        markers: false,
                         toggleActions: "play none reverse reverse"
                     }
                 });
@@ -344,29 +341,39 @@
             currentBuilding.name = 'pageLayout';
             currentBuilding.position.set(0, -0.1 * scale, 0);
             currentBuilding.scale.set(scale, scale, scale);
+
+            console.log(currentBuilding.children);
         
             let neighborTimeline = gsap.timeline({
                 scrollTrigger: {
                     trigger: '.projects',
-                    start: "2500em 25%",
-                    end: "3500em 20%",
+                    start: "5% 0%",
+                    end: "100% 100%",
                     scrub: 1,
                     markers: true
                 }
             });
         
             currentBuilding.traverse((child) => {
+
                 if (!child.isMesh) return;
-        
-                if (child.name.includes('cloud')) child.material        = material.cloudDiffuse;
-                if (child.name.includes('papper')) child.material       = material.support;
-        
-                child.material.transparent = true;
-                child.material.opacity  = 0;
         
                 const originalX = child.position.x;
                 const originalY = child.position.y;
                 const originalZ = child.position.z;
+
+                child.material.transparent = true;
+                child.material.opacity = 0;
+
+                if (child.name.includes('pictureFrame')) {
+                    child.material = materials.support;
+                    child.material.transparent = true;
+                    child.material.opacity = 0;
+                    child.position.y = originalY - 2;
+
+                    neighborTimeline.to(child.material, {opacity: 1, duration: 5, ease: "power2.out"}, 1);
+                    return;
+                };
 
                 if (child.name.includes('desk')) {
                     const startPosition = originalZ + 200;
@@ -375,7 +382,7 @@
                     child.position.z = startPosition;
                 
                     neighborTimeline
-                        .to(child.position, {z: originalZ, duration: 15, ease: "power2.out"}, "-=10");
+                        .to(child.position, {z: originalZ, duration: 15, ease: "power2.out"}, 6);
                 
                     return;
                 };
@@ -387,13 +394,12 @@
                     child.material          = material.model;
                     child.position.y        = belowY;
                     
-                    neighborTimeline.to(child.scale,    {x: 1, y: 1, z:1,   duration: 16,       ease: "back.out(1.7)",   }, 0);
-                    neighborTimeline.to(child.material, {opacity: 1,        duration: 8,        ease: "power2.out",      }, 0);
-                    neighborTimeline.to(child.position, {y: originalY,      duration: 4.8,      ease: "bounce.out",      }, 0);
+                    neighborTimeline.to(child.scale,    {x: 1, y: 1, z:1,   duration: 16,       ease: "back.out(1.7)",   }, 15);
+                    neighborTimeline.to(child.material, {opacity: 1,        duration: 8,        ease: "power2.out",      }, 15);
+                    neighborTimeline.to(child.position, {y: originalY,      duration: 4.8,      ease: "bounce.out",      }, 15);
                         
                     return;
                 };
-
 
             });
         
@@ -430,8 +436,7 @@
         
         gltfLoader.load( building, (gltf) => 
             {
-            if (currentModel || currentBuilding 
-                && currentBuilding.name !== 'pageLayout') {
+            if (currentModel || currentBuilding && currentBuilding.name !== 'pageLayout') {
                 scene.remove(currentModel, currentBuilding)
                 currentBuilding = null;
                 currentModel = null;};

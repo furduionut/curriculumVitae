@@ -88,7 +88,7 @@
     cameras.perspective.updateProjectionMatrix();
     cameras.orthographic.updateProjectionMatrix();
 
-/* GUI ELEMENT */
+/* GUI ELEMENT 
     const gui = new GUI();
     const orthocameraFolder = gui.addFolder('Orthographic Camera');
 
@@ -167,6 +167,6 @@
         cameras.perspective.updateProjectionMatrix();});
 
     perspCameraFolder.close();
-
+*/
 /* EXPORTS */
     export {cameras, resizeOrthoCamera} 

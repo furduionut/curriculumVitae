@@ -32,6 +32,7 @@
         import { controls }     from "./modules/controls.js";
         import { materials }    from "./modules/materials.js";
 
+
     /* ELEMENTS */
         let dom                 = domain;
         let rendererWidth       = dom.viewport.clientWidth;
@@ -58,22 +59,41 @@
         let orthoCamera         = cameras.orthographic;
 
     /* CAMERA ANIMATION */
+        let main            = document.getElementById('main');
+        let mainHeight      = main.scrollHeight;
+        let sectionHeight   = mainHeight / 5;
+    
         function updateCam() {
+            // Section 0
             const camPosA = new THREE.Vector3(15, 15, 10);
+            const lookA = new THREE.Vector3(-5.5, 15, -10);
+            const zoomA = 1;
+            // Section 1
             const camPosB = new THREE.Vector3(15, 15, 10);
-            const camPosC = new THREE.Vector3(15, 25, 10);
-            const camPosD = new THREE.Vector3(20, 45, 15);
-            const camPosE = new THREE.Vector3(15, 5, -10);
-            const camPosF = new THREE.Vector3(15, -15, -10);
-        
-            const lookA = new THREE.Vector3(-5.5, 18, -10);
-            const lookB = new THREE.Vector3(-5.5, 7.5, -10);
+            const lookB = new THREE.Vector3(-5.5, 10, -10);
+            const zoomB = 1;
+            // Section 2
+            const camPosC = new THREE.Vector3(15, 40, 10);
             const lookC = new THREE.Vector3(-5.5, 2.5, -10);
+            const zoomC = 3;
+            // Section 3
+            const camPosD = new THREE.Vector3(15, 0, -10);
             const lookD = new THREE.Vector3(-5.5, 2.5, -10);
-            const lookE = new THREE.Vector3(-5.5, -5, -10);
-            const lookF = new THREE.Vector3(-5.5, -5, -10);
-        
-            let scroll = window.scrollY / 1000;
+            const zoomD = 2;
+            // Section 4
+            const camPosE = new THREE.Vector3(15, -2.5, -10);
+            const lookE = new THREE.Vector3(-5.5, 0, -10);
+            const zoomE = 2;
+            // Section 5
+            const camPosF = new THREE.Vector3(15, -3.5, -10);
+            const lookF = new THREE.Vector3(-5.5, -3.5, -10);
+            const zoomF = 2;
+            // Section 6
+            const camPosG = new THREE.Vector3(15, -4.5, -10);
+            const lookG = new THREE.Vector3(-5.5, -4.5, -10);
+            const zoomG = 2;
+            
+            let scroll = window.scrollY / sectionHeight;
             let section = Math.floor(scroll);
             let t = scroll % 1;
             let sectionName;
@@ -84,9 +104,9 @@
                     posEnd = camPosB;
                     lookStart = lookA; 
                     lookEnd = lookB;
-                    zoomStart = 1; 
-                    zoomEnd = 2;
-                    sectionName = 'presentation';
+                    zoomStart = zoomA; 
+                    zoomEnd = zoomB;
+                    sectionName = 'Greetings';
                     break;
         
                 case 1:
@@ -94,9 +114,9 @@
                     posEnd = camPosC;
                     lookStart = lookB; 
                     lookEnd = lookC;
-                    zoomStart = 2; 
-                    zoomEnd = 3;
-                    sectionName = 'aboutMe';
+                    zoomStart = zoomB;
+                    zoomEnd = zoomC;
+                    sectionName = 'About Me';
                     break;
         
                 case 2:
@@ -104,9 +124,9 @@
                     posEnd = camPosD;
                     lookStart = lookC; 
                     lookEnd = lookD;
-                    zoomStart = 3; 
-                    zoomEnd = 3;
-                    sectionName = 'layout';
+                    zoomStart = zoomC; 
+                    zoomEnd = zoomD;
+                    sectionName = 'Projects';
                     break;
         
                 case 3:
@@ -114,8 +134,8 @@
                     posEnd = camPosE;
                     lookStart = lookD; 
                     lookEnd = lookE;
-                    zoomStart = 3; 
-                    zoomEnd = 3;
+                    zoomStart = zoomD; 
+                    zoomEnd = zoomE;
                     sectionName = 'Abilities';
                     break;
 
@@ -124,25 +144,45 @@
                     posEnd = camPosF;
                     lookStart = lookE; 
                     lookEnd = lookF;
-                    zoomStart = 3; 
-                    zoomEnd = 3;
+                    zoomStart = zoomE; 
+                    zoomEnd = zoomF;
                     sectionName = 'Experiences';
                     break;
-        
-                default:
-                    posStart = camPosE; 
-                    posEnd = camPosF;
-                    lookStart = lookE; 
-                    lookEnd = lookF;
-                    zoomStart = 3; 
-                    zoomEnd = 3;
+
+                case 5:
+                    posStart = camPosF; 
+                    posEnd = camPosG;
+                    lookStart = lookF; 
+                    lookEnd = lookG;
+                    zoomStart = zoomF; 
+                    zoomEnd = zoomG;
                     sectionName = 'Contacts';
+                    break;
+                    
+                case 6:
+                    posStart = camPosF; 
+                    posEnd = camPosG;
+                    lookStart = lookF; 
+                    lookEnd = lookG;
+                    zoomStart = zoomG; 
+                    zoomEnd = zoomG;
+                    sectionName = 'Contacts';
+                    break;
+
+                default:
+                    posStart = camPosG; 
+                    posEnd = camPosG;
+                    lookStart = lookG; 
+                    lookEnd = lookG;
+                    zoomStart = zoomG; 
+                    zoomEnd = zoomG;
+                    sectionName = '';
                     break;
             }
             console.log(`Window at zone ${section} at ${scroll} ${sectionName}`);
             let easedT = t;
             easedT = Math.pow(easedT, 2.0);
-            easedT = Math.min(easedT, 0.9);
+            easedT = Math.min(easedT, 0.95);
         
             const pos = posStart.clone().lerp(posEnd, easedT);
             perspCamera.position.copy(pos);
@@ -156,8 +196,6 @@
             const sectionEl = document.getElementById('section');
             sectionEl.innerHTML = `$${sectionName}`;
         }
-    
-
     /* CAMERA FOCUS */
         const focusPoint        = new THREE.Vector3(-5, 0, -10);
 
@@ -233,11 +271,11 @@
                 style               = info.styles[buildingIndex];
             }
         function updateCanvas(){
-                rendererWidth       = dom.viewport.clientWidth;
-                rendererHeight      = dom.viewport.clientHeight;
-                renderer.setSize    (rendererWidth, rendererHeight);
-                perspCamera.aspect  = rendererWidth / rendererHeight;
-                perspCamera.updateProjectionMatrix();
+            rendererWidth       = dom.viewport.clientWidth;
+            rendererHeight      = dom.viewport.clientHeight;
+            renderer.setSize    (rendererWidth, rendererHeight);
+            perspCamera.aspect  = rendererWidth / rendererHeight;
+            perspCamera.updateProjectionMatrix();
             }
         function updateCanvaso(){
             renderoWidth            = dom.viewport2.clientWidth;
@@ -379,7 +417,7 @@
                     trigger: '.infoBar',
                     start:"1250em 25%",
                     end: "5000em 35%",
-                    markers: true,
+                    markers: false,
                     scrub: true,
                     scrub: 1,
                     toggleActions: "play none reverse reverse"
@@ -395,15 +433,15 @@
                 trigger: '.viewport2',
                 start: "15% 25%",
                 end: "125% 25%",
-                markers: true,
+                markers: false,
                 scrub: 1, 
                 toggleActions: "play none reverse reverse"}
         })
         
         mainTimeline
-            .add(orthoCameraAnimation())
-            .add(viewportAnimation(), "-=1")
-            .add(descriptionAnimation())
+            .add(orthoCameraAnimation(), 0)
+            .add(viewportAnimation(), 1)
+            .add(descriptionAnimation(), 2)
 
     // EVENTS
         window.addEventListener('resize', ()=>{
@@ -428,6 +466,7 @@
             });
           });
         
+
         const sectionsNavBar = document.getElementById("navBar");
         const sectionsBtns = Array.from(sectionsNavBar.children);
         const projectsBanner = document.getElementById("controls");
@@ -438,40 +477,43 @@
         sectionsBtns.forEach((e)=>{e.addEventListener("click", 
             ()=>{
             switch (e.id) {
+                case 'navGreeting':
+                    loaders.loadScroll(sectionHeight * 0);
+                    loaders.loadPress(projectsBanner);
+                    break;
+
                 case 'navAboutMe':
-                    loaders.loadScroll(1000);
+                    loaders.loadScroll(sectionHeight * 1);
                     loaders.loadPress(projectsBanner);
                     break;
                 
                 case 'navProjects':
-                    loaders.loadScroll(2000);
+                    loaders.loadScroll(sectionHeight * 2.25);
                     loaders.loadPress(projectsBanner);
                     break;
 
                 case 'navAbilities':
-                    loaders.loadScroll(3000);
+                    loaders.loadScroll(sectionHeight * 3.60);
                     loaders.loadPress(abilitiesBanner);
                     break;
                 
                 case 'navExperiences':
-                    loaders.loadScroll(4000);
+                    loaders.loadScroll(sectionHeight * 3.68);
                     loaders.loadPress(experiencesBanner);
                     break;
 
                 case 'navContacts':
-                    loaders.loadScroll(5000);
+                    loaders.loadScroll(sectionHeight * 5);
                     loaders.loadPress(contactsBanner);
                     break;
                 }
             })});
             
-        
-
     /* COMMITS */
         updateRefs();
         // loaders.loadPage();
         let descriptionIni = document.getElementById("description");
-        descriptionIni.innerHTML = "";
+        descriptionIni.innerText = "";
 
         loaders.loadText        (secondScene, text);
         loaders.loadIndicator   (dom);
