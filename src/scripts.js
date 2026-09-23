@@ -65,32 +65,32 @@
     
         function updateCam() {
             // Section 0
-            const camPosA = new THREE.Vector3(15, 15, 10.5);
-            const lookA = new THREE.Vector3(-5.5, 15, -10.5);
+            const camPosA = new THREE.Vector3(15, 15, 11);
+            const lookA = new THREE.Vector3(-5.5, 15, -11);
             const zoomA = 1;
             // Section 1
-            const camPosB = new THREE.Vector3(15, 10, 10.5);
-            const lookB = new THREE.Vector3(-5.5, 7.5, -9.5);
+            const camPosB = new THREE.Vector3(15, 10, 11);
+            const lookB = new THREE.Vector3(-5.5, 7.5, -11);
             const zoomB = 2;
             // Section 2
-            const camPosC = new THREE.Vector3(15, 20, 10.5);
-            const lookC = new THREE.Vector3(-5.5, 1.5, -10.5);
+            const camPosC = new THREE.Vector3(15, 20, 11);
+            const lookC = new THREE.Vector3(-5.5, 1.5, -11);
             const zoomC = 4;
             // Section 3
-            const camPosD = new THREE.Vector3(15, 0, -10.5);
-            const lookD = new THREE.Vector3(-5.5, 1.5, -10.5);
+            const camPosD = new THREE.Vector3(15, 0, -11);
+            const lookD = new THREE.Vector3(-5.5, 1.5, -11);
             const zoomD = 4;
             // Section 4
-            const camPosE = new THREE.Vector3(15, 0, -10.5);
-            const lookE = new THREE.Vector3(-5.5, 0, -10.5);
+            const camPosE = new THREE.Vector3(15, 0, -11);
+            const lookE = new THREE.Vector3(-5.5, 0, -11);
             const zoomE = 4;
             // Section 5
-            const camPosF = new THREE.Vector3(15, -9.5, -10.5);
-            const lookF = new THREE.Vector3(-5.5, -9.5, -10.5);
+            const camPosF = new THREE.Vector3(15, -9.5, -11);
+            const lookF = new THREE.Vector3(-5.5, -9.5, -11);
             const zoomF = 4;
             // Section 6
-            const camPosG = new THREE.Vector3(15, -9.5, -10.5);
-            const lookG = new THREE.Vector3(-5.5, -9.5, -10.5);
+            const camPosG = new THREE.Vector3(15, -9.5, -11);
+            const lookG = new THREE.Vector3(-5.5, -9.5, -11);
             const zoomG = 4;
             
             let scroll = window.scrollY / sectionHeight;

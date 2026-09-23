@@ -6,7 +6,6 @@
     import { ScrollTrigger } from "gsap/ScrollTrigger";
     import { gsap }         from "gsap";
     
-    import { BIM, DWG, TXT, OBJ, IMG, SWG, CGI, ART, THC, MAN, CLB, COM, DEC } from "./abilities.js";
     import { styles } from "./styles.js";
     import { domain as dom } from "./domain.js";
     import { materials } from "./materials.js";
@@ -32,40 +31,40 @@
     function changePageTheme        () {
         };
 
-    function animateModel           (model) {
-    //     gsap.registerPlugin(ScrollTrigger);
-    //     let sceneTimeline = gsap.timeline(
-    //         {scrollTrigger: {
-    //             trigger: '.viewport',
-    //             start: "15% 5%",
-    //             end: "85% 35%",
-    //             markers: true,
-    //             toggleActions: "play none reverse pause"
-    //         }});
+    function animateBuilding        (model) {
+        gsap.registerPlugin(ScrollTrigger);
+        let sceneTimeline = gsap.timeline(
+            {scrollTrigger: {
+                trigger: '.viewport',
+                start: "15% 5%",
+                end: "85% 35%",
+                markers: true,
+                toggleActions: "play none reverse pause"
+            }});
 
-    //     sceneTimeline.fromTo(
-    //         model.position,
-    //         {x: model.position.x},
-    //         {x: 2, duration: 1, ease: "power4.out"
-    //         });
+        sceneTimeline.fromTo(
+            model.position,
+            {x: model.position.x},
+            {x: 2, duration: 1, ease: "power4.out"
+            });
 
-    //     sceneTimeline.fromTo(
-    //         model.scale,
-    //         {x: model.scale.x},
-    //         {x: .01, duration: .1, ease: "power4.out"
-    //         });
+        sceneTimeline.fromTo(
+            model.scale,
+            {x: model.scale.x},
+            {x: .01, duration: .1, ease: "power4.out"
+            });
 
-    //     sceneTimeline.fromTo(
-    //         model.scale,
-    //         {y: model.scale.y},
-    //         {y: .01, duration: .1, ease: "power4.out"
-    //         });
+        sceneTimeline.fromTo(
+            model.scale,
+            {y: model.scale.y},
+            {y: .01, duration: .1, ease: "power4.out"
+            });
 
-    //     sceneTimeline.fromTo(
-    //         model.scale,
-    //         {z: model.scale.z},
-    //         {z: .01, duration: .1, ease: "power4.out"
-    //         });
+        sceneTimeline.fromTo(
+            model.scale,
+            {z: model.scale.z},
+            {z: .01, duration: .1, ease: "power4.out"
+            });
         };
 
     function applyLogoMaterials     (model) {
@@ -339,7 +338,7 @@
         
             currentBuilding = gltf.scene;
             currentBuilding.name = 'pageLayout';
-            currentBuilding.position.set(0, -0.1 * scale, 0);
+            currentBuilding.position.set(0, 0, 0);
             currentBuilding.scale.set(scale, scale, scale);
 
             console.log(currentBuilding.children);
@@ -387,6 +386,16 @@
                     return;
                 };
 
+                if (child.name.includes('neighboar_012') || child.name.includes('neighboar_013')){
+                    child.material = child.material.clone();
+                    child.material.transparent = true;
+                    child.material.opacity = 1;
+                    child.material.depthWrite = false;
+                    
+                    neighborTimeline.to(child.material, {opacity: 0,        duration: 1,        ease: "power2.out",      }, 9);
+                    return;
+                };
+
                 if (child.name.includes('neighboar')) {
                     const belowY = originalY - (Math.random() * 2 + 1);
 
@@ -394,18 +403,18 @@
                     child.material          = material.model;
                     child.position.y        = belowY;
                     
-                    neighborTimeline.to(child.scale,    {x: 1, y: 1, z:1,   duration: 16,       ease: "back.out(1.7)",   }, 8);
-                    neighborTimeline.to(child.material, {opacity: 1,        duration: 8,        ease: "power2.out",      }, 8);
-                    neighborTimeline.to(child.position, {y: originalY,      duration: 4.8,      ease: "bounce.out",      }, 8);
+                    neighborTimeline.to(child.scale,    {x: 1, y: 1, z:1,   duration: 16,       ease: "back.out(1.7)",   }, 9);
+                    neighborTimeline.to(child.material, {opacity: 1,        duration: 8,        ease: "power2.out",      }, 9);
+                    neighborTimeline.to(child.position, {y: originalY,      duration: 4.8,      ease: "bounce.out",      }, 9);
                         
                     return;
                 };
+
             });
         
             scene.add(currentBuilding);
         });
-        
-        }
+        };
     
     function loadingPressIndicator  (dom) {
         let on = false;
@@ -517,115 +526,10 @@
             return mat;
         };
 
-    function loadingExperience      (dom, experiences, style){
-        const archExpNames  = experiences.map(e => e.identifier.name);
-        const archPeriods   = experiences.map(e => e.identifier.period);
-        const archAbout     = experiences.map(e => e.identifier.about);
-        const archTypes     = experiences.map(e => e.identifier.type);
-        const archRoles     = experiences.map(e => e.identifier.role);
-        
-        experiences.forEach(e => {
-        let position = experiences.index % 2 ? 'Right' : 'Left';
-
-        const experience        = document.createElement('div');
-        experience.setAttribute     ('class', 'experience');
-
-        const geometryUp        = document.createElement('div');
-        geometryUp.setAttribute     ('class', 'geometryUp');
-
-        const geometryDown      = document.createElement('div');
-        geometryDown.setAttribute   ('class', 'goeometryDown');
-
-        const content           = document.createElement('div');
-        content.setAttribute        ('class', 'content');
-
-        const treeBind          = document.createElement('div');
-        treeBind.setAttribute       ('class', `treeBind-${position}`);
-
-        const branch            = document.createElement('div');
-        branch.setAttribute         ('class', `branch-${position}`);
-
-        const base              = document.createElement('div');
-        base.setAttribute           ('class', `base-${position}`);
-
-        const title             = document.createElement('div');
-        title.setAttribute          ('class', 'title');
-        title.textContent       = archExpNames[e];
-
-        const description       = document.createElement('div');
-        description.setAttribute    ('class', 'description');
-        description.textContent = archAbout[e];
-    
-        content.appendChild(title, description);
-        treeBind.appendChild(branch, base);
-        experience.appendChild(geometryUp, content, geometryDown, treeBind);
-        dom.appendChild(experience);
-        })
-        };
-
     function loadingDisplay         (dom){
         const style = window.getComputedStyle(dom);
         if (style.display === "none") {dom.style.display = "flex";
         } else {dom.style.display = "none";}
-        };
-
-    function loadingAbilities       (dom, abilities, style){
-        // Create ability
-        const createAbility = (a) => {
-            let abilities;
-            abilities = document.createElement('div');
-            a.forEach(e => {
-                const icon = document.createElement('icon');
-                const svg  = document.createElement('svg');
-                const use  = document.createElement('use');
-        
-                icon.className = e.name;
-                icon.id        = e.name;
-        
-                svg.className  = e.name;
-                svg.id         = e.name;
-        
-                use.className  = e.name;
-                use.id         = e.name;
-        
-                use.setAttribute('href', e.source);
-        
-                svg.appendChild(use);
-                icon.appendChild(svg);
-
-                abilities.appendChild(icon);
-            });
-            return abilities;
-        }
-
-        // Define elements
-            let allAbilities;
-            let hardAbilities;
-            let softAbilities;
-            
-        // Assign dom
-            hardAbilities   = createAbility(abilities.hardAbilities);
-            softAbilities   = createAbility(abilities.softAbilities);
-            allAbilities    = document.createElement("div");
-
-        // Set attributes
-            allAbilities.setAttribute     ('id',    'abilities');
-            allAbilities.setAttribute     ('class', 'abilities');
-
-        // Set styles
-            /* box */
-            /* size */
-            /* position */
-            /* distance */
-            /* geometry */
-            /* style */
-            /* color */
-            /* display */
-            /* content */
-
-        // Append element
-            allAbilities.appendChild        (softAbilities);
-            allAbilities.appendChild        (hardAbilities);
         };
     
     function loadingSkills          (dom, skills, style){
@@ -676,140 +580,6 @@
             hardLeveling.appendChild(skill);
         };
 
-    function showLevel              (e){
-        // Choosing object based on className
-        switch (e) {
-            case 'BIM': e = BIM;
-            break;
-                
-            case 'DWG': e = DWG;
-            break;
-                
-            case 'TXT': e = TXT;
-            break;
-
-            case 'OBJ': e = OBJ;
-            break;
-
-            case 'IMG': e = IMG;
-            break;
-
-            case 'SWG': e = SWG;
-            break;
-
-            case 'CGI': e = CGI;
-            break;
-                
-            case 'ART': e = ART;
-            break;
-                
-            case 'THC': e = THC;
-            break;
-
-            case 'MAN': e = MAN;
-            break;
-
-            case 'CLB': e = CLB;
-            break;
-
-            case 'COM': e = COM;
-            break;
-
-            case 'DEC': e = DEC;
-            break;
-
-            default: undefined
-            }
-        // Default values;
-
-        // Measure the object length.
-            const entries = Object.entries(e);
-
-        // Update Hard-skills
-        // Iterate and applies to each entry;
-        dom.hardLeveling.style.display = 'flex';
-        dom.hardLeveling.style.flexFlow = 'column wrap'
-        dom.hardLeveling.style.justifyContent = 'space-between';
-        dom.softLeveling.style.display = 'flex';
-        dom.softLeveling.style.flexFlow = 'column wrap'
-        dom.softLeveling.style.justifyContent = 'center';
-
-        if (e == BIM || e == DWG || e == TXT || e == OBJ || e == IMG || e == SWG || e == CGI ) 
-        {
-        dom.hardLeveling.innerHTML = '';
-        for (let i=0; i<entries.length; i++) {
-
-            // Convert the object into a array using Destructing
-            const [key, value] = entries[i];
-
-            // Adding content to DOM
-            const skill = document.createElement('div');
-            const symbol = document.createElement('div');
-            const bar = document.createElement ('div');
-
-            skill.setAttribute('class', 'skill');
-            symbol.setAttribute('class', 'symbol');
-            bar.setAttribute('class', 'bar');
-            
-            bar.style.padding = '1em';
-            bar.style.display = 'flex';
-            bar.style.justifyContent = 'flex-start';
-            bar.style.alignItems = 'center'
-
-            symbol.style.display = 'flex';
-            symbol.style.justifyContent = 'center';
-            symbol.style.alignItems = 'center'
-
-            bar.style.background = `linear-gradient(to right, ${styles.color3} ${value.completed}%, ${styles.color1} ${value.completed+10}%)`;
-            bar.innerHTML = key;
-            symbol.innerHTML = value.symbol;
-
-            skill.appendChild(symbol);
-            skill.appendChild(bar);
-            dom.hardLeveling.appendChild(skill);
-        }
-        }
-        else if (e == ART || e == THC || e == MAN || e == CLB || e == COM || e == DEC ) {
-            dom.softLeveling.innerHTML = '';
-
-            for (let i=0; i<entries.length; i++) {
-
-                // Convert the object into a array using Destructing
-                const [key, value] = entries[i];
-    
-                // Adding content to DOM
-                const skill = document.createElement('div');
-                const symbol = document.createElement('div');
-                const bar = document.createElement ('div');
-    
-                skill.setAttribute('class', 'skill');
-                symbol.setAttribute('class', 'symbol');
-                bar.setAttribute('class', 'bar');
-    
-                bar.style.padding = '1em';
-                bar.style.display = 'flex';
-                bar.style.justifyContent = 'flex-start';
-                bar.style.alignItems = 'center'
-    
-                symbol.style.display = 'flex';
-                symbol.style.justifyContent = 'center';
-                symbol.style.alignItems = 'center'
-
-                bar.style.background = `linear-gradient(to right, ${styles.color3} ${value.completed}%, ${styles.color1} ${value.completed+10}%)`;
-                bar.innerHTML = key;
-                symbol.innerHTML = value.symbol;
-    
-                skill.appendChild(symbol);
-                skill.appendChild(bar);
-                dom.softLeveling.appendChild(skill);
-
-        }
-        }
-        else {console.log('no skill to show')}
-        };
-
-    function showCredit             (){
-        };        
 
     const loaders = {
         loadLogo:           loadingLogo3D,
@@ -824,8 +594,7 @@
         loadSkill:          loadingSkills,
         loadPress:          loadingPressIndicator,
         loadDisplay:        loadingDisplay,
-        loadScroll:         loadingScroll,
-        loadLevel:          showLevel
+        loadScroll:         loadingScroll
     };
 
     export { loaders }

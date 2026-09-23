@@ -16,10 +16,10 @@ const projects =
 
                 {   
                 arc:{
-                    main:   './public/assets/meshes/casaBacau/casaBacau_baked/casaBacau_outterShell.glb',
+                    main:   './public/assets/meshes/casaBacau/casaBacau_baked/casaBacau_outerShell.glb',
                     meshes: 
                         [
-                            './public/assets/meshes/casaBacau/casaBacau_baked/casaBacau_outterShell.glb',
+                            './public/assets/meshes/casaBacau/casaBacau_baked/casaBacau_outerShell.glb',
                             './public/assets/meshes/casaBacau/casaBacau_baked/casaBacau_baseFloor.glb',
                             './public/assets/meshes/casaBacau/casaBacau_baked/casaBacau_groundFloor.glb',
                             './public/assets/meshes/casaBacau/casaBacau_baked/casaBacau_firstFloor.glb'
@@ -51,11 +51,10 @@ const projects =
 
                 {
                 arc: {
-                    main:   './public/assets/meshes/casaClim/casaClim_baked/casaClim_outterShell.glb',
+                    main:   './public/assets/meshes/casaClim/casaClim_baked/casaClim_outerShell.glb',
                     meshes:
                         [
-                            './public/assets/meshes/casaClim/casaClim_baked/casaClim_outterShell.glb',
-                            './public/assets/meshes/casaClim/casaClim_baked/casaClim_baseFloor.glb',
+                            './public/assets/meshes/casaClim/casaClim_baked/casaClim_outerShell.glb',
                             './public/assets/meshes/casaClim/casaClim_baked/casaClim_groundFloor.glb', 
                             './public/assets/meshes/casaClim/casaClim_baked/casaClim_firstFloor.glb'
                         ],
@@ -83,10 +82,10 @@ const projects =
 
                     {
                     arc:{
-                        main:   './public/assets/meshes/casaStolnicu/casaStolnicu_baked/casaStolnicu_outterShell.glb',
+                        main:   './public/assets/meshes/casaStolnicu/casaStolnicu_baked/casaStolnicu_outerShell.glb',
                         meshes: 
                             [
-                                './public/assets/meshes/casaStolnicu/casaStolnicu_baked/casaStolnicu_outterShell.glb',
+                                './public/assets/meshes/casaStolnicu/casaStolnicu_baked/casaStolnicu_outerShell.glb',
                                 './public/assets/meshes/casaStolnicu/casaStolnicu_baked/casaStolnicu_groundFloor.glb', 
                                 './public/assets/meshes/casaStolnicu/casaStolnicu_baked/casaStolnicu_firstFloor.glb'
                             ],
@@ -95,7 +94,7 @@ const projects =
                             diffuse: './public/assets/textures/casaStolnicu/casaStolnicu_diffuseMap_1k.jpg',
                             roughness: './public/assets/textures/casaStolnicu/casaStolnicu_roughnessMap_1k.jpg',
                             normal: './public/assets/textures/casaStolnicu/casaStolnicu_normalMap_1k.jpg',
-                            transmission: './public/assets/textures/casaStolnicu/casaStolnicu_transmitionMap_1k.jpg'
+                            transmission: './public/assets/textures/casaStolnicu/casaStolnicu_transmissionMap_1k.jpg'
                             }
                         },
                     str: {},
