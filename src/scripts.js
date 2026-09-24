@@ -399,17 +399,17 @@
             };
 
         function orthoCameraAnimation   () {
-            let orthoCameraTimeline = gsap.timeline({
-                defaults: { duration: 3, ease: "power2.out" }});
 
-            orthoCameraTimeline
-            .to(orthoCamera.position, {x: 0})
-            .to(orthoCamera.position, {z: 0}, "-=0.5")
+            let orthoCameraTimeline = gsap.timeline({
+                defaults: { duration: 5, ease: "power2.out" }});
+
+                orthoCameraTimeline
+                .to(orthoCamera.position, { x: 0, z: 0.0001}, 1, 0)
             
 
             return orthoCameraTimeline
             };
-
+        
         function descriptionAnimation   () {      
             let descriptionTimeline = gsap.timeline({
                 defaults: { duration: 1, ease: "power4.inOut"},
@@ -427,21 +427,33 @@
             descriptionTimeline.fromTo('.infoBar', { x: '0em' }, { x: '17.5em'});
             };
 
+        function orthoCameraRotation (){
+            let orthoCameraTimeline = gsap.timeline({
+                defaults: { duration: 5, ease: "power2.out" }});
+
+            orthoCameraTimeline
+            .to(orthoCamera.rotation, {y: Math.PI}, 1)     
+    
+            return orthoCameraTimeline
+            
+            };
+
         const mainTimeline = gsap.timeline({
             pause: true,
             scrollTrigger: {
                 trigger: '.viewport2',
                 start: "15% 25%",
-                end: "125% 25%",
-                markers: false,
+                end: "200% 25%",
+                markers: true,
                 scrub: 1, 
                 toggleActions: "play none reverse reverse"}
         })
         
         mainTimeline
-            .add(orthoCameraAnimation(), 0)
+            .add(orthoCameraAnimation(), 1)
             .add(viewportAnimation(), 1)
             .add(descriptionAnimation(), 2)
+            .add(orthoCameraRotation(), 1)
 
     // EVENTS
         window.addEventListener('resize', ()=>{
@@ -511,9 +523,6 @@
     /* COMMITS */
         updateRefs();
         // loaders.loadPage();
-        let descriptionIni = document.getElementById("description");
-        descriptionIni.innerText = "";
-
         loaders.loadText        (secondScene, text);
         loaders.loadIndicator   (dom);
         loaders.loadLogo        (secondScene, light, logo3D, materials, logoAnimation);

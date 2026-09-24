@@ -1,6 +1,7 @@
 /* IMPORTS */
     import * as THREE from "three";
     import { GUI } from 'dat.gui';
+import { orthographicDepthToViewZ } from "three/tsl";
 
 /* DOM ELEMETS */
     const viewport      = document.getElementById('viewport');
@@ -19,7 +20,10 @@
         offsetY: 0,
         positionX: 10,
         positionY: 10,
-        positionZ: 10
+        positionZ: 10,
+        rotationX: 1,
+        rotationY: 1,
+        rotationZ: 1
     }
 
     function resizeOrthoCamera(width, height) {
@@ -72,18 +76,26 @@
     cameras.orthographic.position.set(
         orthographicParams.positionX,
         orthographicParams.positionY,
-        orthographicParams.positionZ);
+        orthographicParams.positionZ
+    );
+
+    cameras.orthographic.rotation.set(
+        orthographicParams.rotationX,
+        orthographicParams.rotationY,
+        orthographicParams.rotationZ,
+    );
 
     cameras.perspective.position.set(
         perpectiveParams.positionX,
         perpectiveParams.positionX,
-        perpectiveParams.positionX);
+        perpectiveParams.positionX
+    );
 
     cameras.perspective.rotation.set(
         10 * Math.PI,
         10 * Math.PI,
         10 * Math.PI
-    )
+    );
 
     cameras.perspective.updateProjectionMatrix();
     cameras.orthographic.updateProjectionMatrix();
@@ -166,7 +178,7 @@
         cameras.perspective.position.z = value;
         cameras.perspective.updateProjectionMatrix();});
 
-    perspCameraFolder.close();
-*/
+    perspCameraFolder.close();*/
+
 /* EXPORTS */
     export {cameras, resizeOrthoCamera} 
