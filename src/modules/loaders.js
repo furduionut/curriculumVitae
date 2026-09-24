@@ -279,7 +279,7 @@
                         start: "70% 15%",
                         end: "100% 15%",
                         markers: false,
-                        toggleActions: "play none reverse reverse"
+                        toggleActions: "play none reverse reset"
                     }
                 });
         
@@ -306,7 +306,7 @@
                     const letter = new THREE.Mesh(geo, mat);
         
                     letter.scale.set(.01, .01, .01);
-                    letter.position.set(0, 100, 1.25);
+                    letter.position.set(-12.75, -10, 7.5);
                     letter.rotation.x = -Math.PI/2;
                     letter.translateX(offsetX);
                     
@@ -314,17 +314,17 @@
         
                     scene.add(letter);
         
-                    typingTL.to(letter, { visible: true, duration: 0 }, i * 0.1);
+                    typingTL.to(letter, { visible: true, duration: 0 }, i * 0.2);
         
                     typingTL.fromTo(letter.material,
                         { opacity: 0 },
-                        { opacity: 1, duration: 0.3, ease: "power2.out", delay: 1.25 },
+                        { opacity: 1, duration: 0.6, ease: "power2.out", delay: 2.5 },
                         i * 0.1
                     );
         
                     typingTL.fromTo(letter.position,
                         { y: -0.5 },
-                        { y: 3, duration: 0.3, ease: "back.out(2)", delay: 1.25 },
+                        { y: 3, duration: 0.6, ease: "back.out(2)", delay: 2.5 },
                         i * 0.1
                     );
                 });
@@ -531,54 +531,6 @@
         if (style.display === "none") {dom.style.display = "flex";
         } else {dom.style.display = "none";}
         };
-    
-    function loadingSkills          (dom, skills, style){
-        // Define elements
-            let skill;
-            let symbol;
-            let bar;
-
-        // Assign dom
-            skill = document.createElement('div');
-            symbol = document.createElement('div');
-            bar = document.createElement('div');
-
-        // Set attributes
-            skill.setAttribute          ('class', 'skill');
-            symbol.setAttribute         ('class', 'skill');
-            bar.setAttribute            ('class', 'skill');
-
-        // Set styles
-            /* box */
-            skill.style.padding         = style.padding;
-            symbol.style.padding        = style.padding;
-            bar.style.padding           = style.padding;
-
-            /* size */
-            /* position */
-            /* distance */
-            /* geometry */
-            /* style */
-            /* color */
-            /* display */
-            skill.style.display         = style.display;
-            skill.style.justifyContent  = style.justify;
-            skill.style.alignItems      = style.alignItems;
-
-            symbol.style.display        = style.display;
-            symbol.style.justifyContent = style.justify;
-            symbol.style.alignItems     = style.alignItems;
-            
-            bar.style.display           = style.display;
-            bar.style.justifyContent    = style.justify;
-            bar.style.alignItems        = style.alignItems;
-
-            /* content */
-
-        // Append element
-            skill.appendChild(symbol, bar);
-            hardLeveling.appendChild(skill);
-        };
 
 
     const loaders = {
@@ -591,7 +543,6 @@
         loadBuilding:       loadingBuilding,
         loadModel:          loadingModel,
         loadMaterial:       loadingMaterial,
-        loadSkill:          loadingSkills,
         loadPress:          loadingPressIndicator,
         loadDisplay:        loadingDisplay,
         loadScroll:         loadingScroll

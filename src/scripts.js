@@ -392,8 +392,9 @@
                 defaults: { duration: 3, ease: "power2.out" }});
                     
             viewportTimeline
-                .to(".viewport2", {scale: 0.2})
-                .to(".viewport2", {y: -600}, "-=1")
+                .to(".viewport2", {scale: 0.15})
+                .to(".viewport2", {y: -625}, "-=1")
+                
 
             return viewportTimeline;
             };
@@ -427,17 +428,6 @@
             descriptionTimeline.fromTo('.infoBar', { x: '0em' }, { x: '17.5em'});
             };
 
-        function orthoCameraRotation (){
-            let orthoCameraTimeline = gsap.timeline({
-                defaults: { duration: 5, ease: "power2.out" }});
-
-            orthoCameraTimeline
-            .to(orthoCamera.rotation, {y: Math.PI}, 1)     
-    
-            return orthoCameraTimeline
-            
-            };
-
         const mainTimeline = gsap.timeline({
             pause: true,
             scrollTrigger: {
@@ -453,7 +443,6 @@
             .add(orthoCameraAnimation(), 1)
             .add(viewportAnimation(), 1)
             .add(descriptionAnimation(), 2)
-            .add(orthoCameraRotation(), 1)
 
     // EVENTS
         window.addEventListener('resize', ()=>{
