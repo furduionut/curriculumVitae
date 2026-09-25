@@ -194,7 +194,7 @@
             perspCamera.updateProjectionMatrix();
         
             const sectionEl = document.getElementById('section');
-            sectionEl.innerHTML = `$${sectionName}`;
+            sectionEl.innerHTML = `${sectionName}`;
         }
     /* CAMERA FOCUS */
         const focusPoint        = new THREE.Vector3(-5, 0, -10);
@@ -387,6 +387,9 @@
         let logoAnimation = new LogoAnimation();
         gsap.registerPlugin(ScrollTrigger);
 
+        let infoBar = document.getElementById('infoBar');
+        infoBar.style.width = "5em"; 
+
         function viewportAnimation      () {
             let viewportTimeline = gsap.timeline({
                 defaults: { duration: 3, ease: "power2.out" }});
@@ -411,30 +414,48 @@
             return orthoCameraTimeline
             };
         
-        function descriptionAnimation   () {      
-            let descriptionTimeline = gsap.timeline({
-                defaults: { duration: 1, ease: "power4.inOut"},
+        function infoBarAnimation() {
+            let tl = gsap.timeline({
+                defaults: { duration: 3, ease: "power2.inOut" },
                 scrollTrigger: {
-                    trigger: '.infoBar',
-                    start:"1250em 25%",
-                    end: "5000em 35%",
-                    markers: false,
-                    scrub: true,
+                    trigger: '.main',
+                    start: "0% 10%",
+                    end: "80% 10%",
                     scrub: 1,
-                    toggleActions: "play none reverse reverse"
+                    markers: false
                 }
-            })
-            descriptionTimeline.fromTo('.infoBar', { x: '17.5em' }, { x: '0em'});
-            descriptionTimeline.fromTo('.infoBar', { x: '0em' }, { x: '17.5em'});
-            };
+            });
+        
+            tl.fromTo('.infoBar', { width: '5em' }, { width: '25.5em' });
+            tl.fromTo('.infoBar', { width: '25.5em' }, { width: '5em' });
+        }
+
+        function descriptionAnimation() {
+            let tl = gsap.timeline({
+                defaults: { duration: 1, ease: "power4.inOut" },
+                scrollTrigger: {
+                    trigger: '.main',
+                    start: "40% 25%",
+                    end: "60% 25%",
+                    scrub: 1,
+                    markers: true
+                }
+            });
+        
+            tl.fromTo('.description', { display: 'none' }, { display: 'flex' }, "=-1");
+            tl.fromTo('.description', { opacity: 0 }, { opacity: 1 }, 1);
+            tl.fromTo('.description', { opacity: 1 }, { opacity: 0 }, 1);
+            tl.fromTo('.description', { display: 'flex' }, { display: 'none' }, ">");
+        }
+
 
         const mainTimeline = gsap.timeline({
             pause: true,
             scrollTrigger: {
                 trigger: '.viewport2',
-                start: "15% 25%",
-                end: "200% 25%",
-                markers: true,
+                start: "20% 25%",
+                end: "30% 25%",
+                markers: false,
                 scrub: 1, 
                 toggleActions: "play none reverse reverse"}
         })
@@ -442,7 +463,8 @@
         mainTimeline
             .add(orthoCameraAnimation(), 1)
             .add(viewportAnimation(), 1)
-            .add(descriptionAnimation(), 2)
+            .add(infoBarAnimation(), 3)
+            .add(descriptionAnimation(), 3)
 
     // EVENTS
         window.addEventListener('resize', ()=>{
@@ -516,11 +538,12 @@
         loaders.loadIndicator   (dom);
         loaders.loadLogo        (secondScene, light, logo3D, materials, logoAnimation);
         loaders.loadNeighboar   (scene, light, neighbor, materials);
+        loaders.loadBuilding    (scene, light, building, material);
         loaders.loadInfo        (name, about, type, style);
 
 
     // CAMERA TIMELINE 
-    
+    console.log(scene)
 
     // RENDERING
         function animate() {

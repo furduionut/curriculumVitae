@@ -38,7 +38,7 @@
                 trigger: '.viewport',
                 start: "15% 5%",
                 end: "85% 35%",
-                markers: true,
+                markers: false,
                 toggleActions: "play none reverse pause"
             }});
 
@@ -220,7 +220,6 @@
 
     function loadingInformations    (name, about, type, style){
         const informations       = dom.abouts;
-        informations.innerHTML   = null;
 
         const clasifications     = document.createElement('div');
         
@@ -349,7 +348,7 @@
                     start: "5% 0%",
                     end: "100% 100%",
                     scrub: 1,
-                    markers: true
+                    markers: false
                 }
             });
         
@@ -373,6 +372,14 @@
                     neighborTimeline.to(child.material, {opacity: 1, duration: 5, ease: "power2.out"}, 1);
                     return;
                 };
+
+                if (child.name.includes('greetingBox')) {
+
+                    child.material          = material.model;
+
+                    return;
+                };
+                
 
                 if (child.name.includes('desk')) {
                     const startPosition = originalZ + 200;
@@ -443,7 +450,8 @@
         let scaleZ = scale;
         
         gltfLoader.load( building, (gltf) => 
-            {
+            {scene.children.slice().forEach(obj => {if (obj.name !== "pageLayout") {scene.remove(obj); }
+                });
             if (currentModel || currentBuilding && currentBuilding.name !== 'pageLayout') {
                 scene.remove(currentModel, currentBuilding)
                 currentBuilding = null;

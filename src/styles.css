@@ -140,7 +140,6 @@
     }
 
     /*-----GENERAL------ */
-    
     .main {
         /* box */
         padding: var(--main-padding);
@@ -155,7 +154,7 @@
         /* color */
         /* display */
         display: flex;
-        flex-flow: column nowrap;
+        flex-flow: column wrap;
         /* content */
         /* filter  */
         /* animation */        
@@ -229,7 +228,6 @@
     }
 
     /* ---BEHAVIOURS---- */
-
     .btn:hover {
         outline: var(--outline-style) var(--outline-color);
     }
@@ -316,12 +314,11 @@
     /* box */
     padding: var(--general-padding);
     /* size */
-    width: 30em;
+    width: 5em;
     height: 100%;
     /* position */
     position: absolute;
-    right: 0;
-    transform: translateX(-25em);
+    right: 0em;
     /* distance */
     /* geometry */
     border-top-right-radius: 0;
@@ -337,18 +334,25 @@
     }
     .description {
     /* box */
-    padding: var(--general-padding);
+    padding: 2em;
     /* size */
     width: auto;
     height: 100%;
     /* position */
+    position:relative;
+    left: 2em;
     /* distance */
+    gap: gap(--general-gap);
     /* geometry */
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
     /* style */
     /* color */
     /* display */
+    display: none;
+    flex-flow: column wrap;
+    justify-content: center;
+    align-items: center;
     /* content */
     /* filter */
     }
@@ -462,6 +466,15 @@
         20%  { opacity: 1;   transform: translateY(6px) rotate(45deg); }
         50% { opacity: 0.4; transform: translateY(0) rotate(45deg); }
     }
+    .hello {
+        display: absolute;
+        top: 25em;
+        transform: translateX(15em);
+        width: 30em;
+        height: 30em;
+        background-color: #ADB6D3;
+        border-radius: var(--general-border-radius);
+    }
 
     /*-----PROJECTS-----*/
     .projects {
@@ -476,9 +489,6 @@
     /* style */
     /* color */
     /* display */
-    display: flex;
-    flex-flow: column wrap;
-    align-items: center;
     /* content */
     }
     .viewport {
@@ -567,360 +577,257 @@
     justify-content: center;
     align-items: center;
     }
-
-
-    /* ----ABILITIES-----*/
+    
+    /* ----ABILITIES BANNER-----*/
+    /* ----ABILITIES DETAILS----*/
     .abilityDetails {
         display: none;
     }
 
-    /* ----EXPERIENCES-----*/
+    /* ----EXPERIENCES BANNER------*/
+    /* ----EXPERIENCES DETAIlS-----*/
     .expDetails {
-    /* box */
-    padding: 5em;
-    /* size */
-    width: 100%;
-    height: auto;
-    /* position */
-    /* distance */
-    gap: var(--general-gap);
-    /* geometry */
-    /* style */
-    /* color */
-    /* display */
-    display: flex;
-    flex-flow: column wrap;
-    /* content */
-    overflow: hidden;
-    }
-    .expDetails > div:nth-child(even):not(:last-child){
-    /* box */
-    padding: var(--general-padding);
-    /* size */
-    height: auto;
-    width: auto;
-    /* position */
-    /* distance */
-    /* geometry */
-    /* style */
-    /* color */
-    /* display */
-    align-self: flex-start;
-    /* content */
-    }
-    .expDetails > div:nth-child(odd):not(:last-child){
-    /* box */
-    padding: var(--general-padding);
-    /* size */
-    height: auto;
-    width: auto;
-    /* position */
-    /* distance */
-    /* geometry */
-    /* style */
-    /* color */
-    /* display */
-    align-self: flex-end;
-    /* content */
-    }
-    .expDetails > div > div:not(:last-child) {
-    display: flex;
-    flex-wrap: wrap;
-    background-color: var(--third-background-color);
-    }
-    .expDescription {
         /* box */
         padding: var(--general-padding);
+        /* size */
+        width: 100%;
+        height: auto;
+        /* position */
+        /* distance */
+        gap: var(--general-gap);
+        /* geometry */
+        /* style */
+        /* color */
+        /* display */
+        display: flex;
+        flex-flow: column wrap;
+        overflow: hidden;
+        /* content */
+        /* filter */
+        /* animation */
+    }
+    .expDetails > div:nth-child(even):not(:last-child)  {
+        /* box */
         /* size */
         /* position */
         /* distance */
         /* geometry */
         /* style */
-        text-align: left;
-        text-justify: left;
+        /* color */
+        /* display */
+        align-self: flex-start;
+    }
+    .expDetails > div:nth-child(odd):not(:last-child)   {
+        /* box */
+        /* size */
+        /* position */
+        /* distance */
+        /* geometry */
+        /* style */
+        /* color */
+        /* display */
+        align-self: flex-end;
+        /* content */
+    }
+    .expDetails > div:nth-child(odd)    .geometry-down  {
+        left: 15%;
+    }
+    .expDetails > div:nth-child(odd)    .geometry-up    {
+        left: 35%
+    }
+    .expDetails > div:nth-child(even)   .geometry-down  {
+        left: 35%;
+    }
+    .expDetails > div:nth-child(even)   .geometry-up    {
+        left: 15%;
+    }
+
+    /*----EXPERIENCES CONTENT-----*/
+    .content {
+        /* box */
+        padding:            var(--general-padding);    
+        /* size */
+        width:              100%;
+        height:             auto;
+        /* position */
+        z-index:            var(--control-order);
+        position:           relative;
+        /* distance */
+        /* geometry */
+        /* style */
+        box-shadow:         var(--shadow-style) var(--shadow-color);
+        /* color */
+        border-radius:      var(--general-border-radius);
+        /* display */
+        display:            flex;
+        flex-flow:          column wrap;
+        align-items:        center;
+        justify-content:    center;
+        text-align:         flex-end;
+        /* content */
+    }
+    .content:hover > .expDescription {
+        display: flex;
+    }
+    .expDescription {
+        /* box */
+        /* size */
+        width: auto;
+        /* position */
+        /* distance */
+        /* geometry */
+        /* style */
         /* color */
         /* display */
         display: none;
+        flex-flow: column wrap;
+        justify-content: center;
         /* content */
     }
-    .content {
-    /* box */
-    padding: var(--general-padding);    
-    /* size */
-    width: 25em;
-    height: auto;
-    /* position */
-    z-index: var(--control-order);
-    position: relative;
-    /* distance */
-    /* geometry */
-    /* style */
-    box-shadow: var(--shadow-style) var(--shadow-color);
-    /* color */
-    border-radius: var(--general-border-radius);
-    /* display */
-    display: flex;
-    flex-flow: column wrap;
-    align-items: center;
-    justify-content: center;
-    text-align: flex-end;
-    overflow: hidden;
-    white-space: normal;
-    /* content */
+
+    /*----EXPERIENCES CLOUD-----*/
+    .expDetails > div:nth-child(even) .pointCloud {
+        transform: scaleX(1);
+        position: relative;
+        right: -50%;
     }
-    .content:hover > .expDescription {
-    display: flex;
-    flex-flow: column wrap;
-    }
-    div[class^='geometry'] {
-    /* box */
-    /* size */
-    width: 50%;
-    height: 1.5em;
-    /* position */
-    position: relative;
-    /* distance */
-    /* geometry */
-    /* style */
-    box-shadow: var(--shadow-style) var(--shadow-color);
-    /* color */
-    background-color: var(--third-background-color);
-    /* display */
-    display: flex;
-    justify-content: center;
-    align-content: center;
-    /* content */
-    }
-    .geometry-up {
-    /* box */
-    padding: var(--general-padding);
-    /* size */
-    width: auto;
-    /* position */
-    position: relative;
-    left: 10%;
-    /* distance */
-    /* geometry */
-    border-top-left-radius: var(--general-border-radius);
-    border-top-right-radius: var(--general-border-radius);
-    /* style */
-    /* color */
-    /* display */
-    /* content */
-    }
-    .geometry-down {
-    /* box */
-    padding: var(--general-padding);
-    /* size */
-    height: auto;
-    width: auto;
-    /* position */
-    /* distance */
-    /* geometry */
-    border-bottom-left-radius: var(--general-border-radius);
-    border-bottom-right-radius: var(--general-border-radius);
-    /* style */
-    /* color */
-    background-color: var(--third-background-color);
-    /* display */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    /* content */
-    }
-    .expDetails > div:nth-child(odd) .geometry-down {
-    min-width: auto;
-    left: 15%
-    }
-    .expDetails > div:nth-child(odd) .geometry-up {
-    min-width: auto;
-    left: 35%
-    }
-    .expDetails > div:nth-child(even) .geometry-down {
-    min-width: 15em;
-    left: 25%;
-    }
-    .expDetails > div:nth-child(even) .geometry-up {
-    min-width: auto;
-    left: 15%;
-    top: 15%;
-    justify-content: center;
-    align-content: center;
-    }
-    .treeBind-left {
-    /* box */
-    /* size */
-    /* position */
-    position: relative;
-    bottom: 2em;
-    /* distance */
-    /* geometry */
-    /* style */
-    /* color */
-    /* display */
-    transform: scaleX(1);
-    /* content */
-    }
-    .branch-left {
-    /* box */
-    /* size */
-    width: 1em;
-    height: 5em;
-    /* position */
-    position: relative;
-    left: 12.5em;
-    /* distance */
-    /* geometry */
-    /* style */
-    /* color */
-    background-color: var(--third-background-color);
-    /* display */
-    transform: scaleX(1);
-    /* content */
-    }
-    .base-left {
-    /* box */
-    /* size */
-    height: 1em;
-    width: 50vw;
-    /* position */
-    position: relative;
-    right: 1vw;
-    /* distance */
-    /* geometry */
-    /* style */
-    /* color */
-    background-color: var(--third-background-color);
-    /* display */
-    transform: scaleX(1);
-    /* content */
-    }
-    .treeBind-right {
-    /* box */
-    /* size */
-    /* position */
-    position: relative;
-    bottom: 2em;
-    /* distance */
-    /* geometry */
-    /* style */
-    /* color */
-    /* display */
-    transform: scaleX(-1);
-    /* content */
-    }
-    .branch-right {
-    /* box */
-    /* size */
-    width: 1em;
-    height: 5em;
-    /* position */
-    position: relative;
-    left: 10em;
-    /* distance */
-    /* geometry */
-    /* style */
-    /* color */
-    background-color: var(--third-background-color);
-    /* display */
-    transform: scaleX(-1);
-    /* content */
-    }
-    .base-right {
-    /* box */
-    /* size */
-    width: 49vw;
-    height: 1em;
-    /* position */
-    position: relative;
-    right: 1.5vw;
-    /* distance */
-    /* geometry */
-    /* style */
-    /* color */
-    background-color: var(--third-background-color);
-    /* display */
-    justify-self: flex-start;
-    transform: scaleX(-1);
-    /* content */
+    .expDetails > div:nth-child(odd)  .pointCloud {
+        position: relative;
+        left: -50%;
     }
     .pointCloud {
-    /* box */
-    /* size */
-    width: 25em;
-    height: auto;
-    /* position */
-    position: relative;
-    top: 1em;
-    right: 45%;
-    /* distance */
-    /* geometry */
-    gap: var(--general-gap);
-    transform: scaleX(-1);
-    /* style */
-    /* color */
-    /* display */
-    display: flex;
-    align-items: center;
-    flex-grow: row wrap;
-    /* content */
+        /* box */
+        /* size */
+        width: 25em;
+        height: auto;
+        /* position */
+        position: relative;
+        top: 1em;
+        right: 45%;
+        /* distance */
+        /* geometry */
+        gap: var(--general-gap);
+        transform: scaleX(-1);
+        /* style */
+        /* color */
+        /* display */
+        display: flex;
+        align-items: center;
+        flex-grow: row wrap;
+        /* content */
     }
     .biggerCloud {
-    /* box */
-    /* size */
-    width: 7.5em;
-    height: 2.5em;
-    /* position */
-    position: relative;
-    /* distance */
-    /* geometry */
-    border-radius: var(--general-border-radius);
-    /* style */
-    /* color */
-    background-color: var(--third-background-color);
-    /* display */
-    /* content */
+        /* box */
+        /* size */
+        width: 7.5em;
+        height: 2.5em;
+        /* position */
+        position: relative;
+        /* distance */
+        /* geometry */
+        border-radius: var(--general-border-radius);
+        /* style */
+        /* color */
+        background-color: var(--third-background-color);
+        /* display */
+        /* content */
     }
     .bigCloud {
-    /* box */
-    /* size */
-    width: 2.5em;
-    height: 2.5em;
-    /* position */
-    position: relative;
-    /* distance */
-    /* geometry */
-    border-radius: var(--general-border-radius);
-    /* style */
-    /* color */
-    background-color: var(--third-background-color);
-    /* display */
-    /* content */
+        /* box */
+        /* size */
+        width: 2.5em;
+        height: 2.5em;
+        /* position */
+        position: relative;
+        /* distance */
+        /* geometry */
+        border-radius: var(--general-border-radius);
+        /* style */
+        /* color */
+        background-color: var(--third-background-color);
+        /* display */
+        /* content */
     }
     .smallCloud {
-    /* box */
-    /* size */
-    width: 1em;
-    height: 1em;
-    /* position */
-    position: relative;
-    /* distance */
-    /* geometry */
-    border-radius: var(--general-border-radius);
-    /* style */
-    /* color */
-    background-color: var(--third-background-color);
-    /* display */
-    /* content */
+        /* box */
+        /* size */
+        width: 1em;
+        height: 1em;
+        /* position */
+        position: relative;
+        /* distance */
+        /* geometry */
+        border-radius: var(--general-border-radius);
+        /* style */
+        /* color */
+        background-color: var(--third-background-color);
+        /* display */
+        /* content */
     }
-    .expDetails > div:nth-child(even) .pointCloud {
-    transform: scaleX(1);
-    position: relative;
-    right: -50%;
+
+    /*----EXPERIENCES GEOMETRY-----*/
+    div[class^='geometry'] {
+        /* box */
+        /* size */
+        width: 50%;
+        height: 1.5em;
+        /* position */
+        position: relative;
+        /* distance */
+        /* geometry */
+        /* style */
+        box-shadow: var(--shadow-style) var(--shadow-color);
+        /* color */
+        background-color: var(--third-background-color);
+        /* display */
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        /* content */
     }
-    .expDetails > div:nth-child(odd) .pointCloud {
-    position: relative;
-    left: -50%;
+    .geometry-up {
+        /* box */
+        padding: var(--general-padding);
+        /* size */
+        width: auto;
+        /* position */
+        position: relative;
+        left: 10%;
+        /* distance */
+        /* geometry */
+        border-top-left-radius: var(--general-border-radius);
+        border-top-right-radius: var(--general-border-radius);
+        /* style */
+        /* color */
+        /* display */
+        /* content */
+    }
+    .geometry-down {
+        /* box */
+        padding: var(--general-padding);
+        /* size */
+        height: auto;
+        width: auto;
+        /* position */
+        /* distance */
+        /* geometry */
+        border-bottom-left-radius: var(--general-border-radius);
+        border-bottom-right-radius: var(--general-border-radius);
+        /* style */
+        /* color */
+        background-color: var(--third-background-color);
+        /* display */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        /* content */
+    }
+
+    /*----EXPERIENCES TIMELINE-----*/
+    .expDetails > div > div:not(:last-child) {
+        display: flex;
+        flex-wrap: wrap;
+        background-color: var(--third-background-color);
     }
     .timeline {
     /* box */
@@ -979,4 +886,99 @@
     .contactDetails {
         display:none;
     }
-    @media (width <= 720px) {}
+
+    @media (width <= 480px) {
+        .main {
+            /* box */
+            padding: calc(var(--main-padding)/3);
+            /* size */
+            font-size: 8px;
+            width: 100vw;
+            min-width: 100vw;
+            /* position */
+            /* distance */
+            /* geometry */
+            /* style */
+            /* color */
+            /* display */
+            /* content */
+            /* filter */
+            /* animation */
+        }
+
+        .chapter {
+            display:            flex;
+            flex-flow:          column wrap;
+            justify-content:    space-evenly;
+            align-items:        center;
+        }
+
+        .banner {
+            width: 100%;
+            flex-wrap:          wrap-reverse;
+            align-items:        center;
+            justify-content:    center;
+            justify-content:    space-around;
+            gap:                var(--general-gap);
+        }
+
+        .btn {
+            width:              7.5em;
+            height:             7.5em;
+        }
+      
+        img {
+            padding: calc(var(--general-padding)/2);
+            width:              100%;
+            height:             100%;
+        }
+
+        .navBar {
+            transform: translateX(-10em);
+        }
+
+        .expDetails {
+            padding: 0;
+            display: flex;
+            width: 100%;
+            align-content: center;
+            justify-content: center;
+        }
+        .expDetails > div:not(:last-child) {
+            display: flex;
+            width: 100em;
+        }
+
+        .content {
+            width: 35em;
+        }
+
+        .expDescription {
+            /* display: flex; */
+            flex-flow: column wrap;
+            justify-content: center;
+        }
+
+        .timeline {
+            display:none;
+        }
+        .pointCloud {
+            display:none;
+        }
+    }
+
+    @media (width > 480px) and (width <= 1024px) {
+        .content {
+            /* size */
+            width:              50em;
+            height:             5em;
+        }
+
+        .timeline {
+            display:none;
+        }
+
+        .pointCloud {
+            display:none;
+        }
+    }
