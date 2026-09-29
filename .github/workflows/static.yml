@@ -4,12 +4,20 @@ name: Deploy static content to Pages
 on:
   # Runs on pushes targeting the default branch
   push:
+<<<<<<< HEAD
     branches: ["moduleJS3"]
+=======
+    branches: ["main"]
+>>>>>>> 05fb857db57842b6326ab0af61d48ab7e73d1baf
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+<<<<<<< HEAD
 # Sets permissions of the GITHgitUB_TOKEN to allow deployment to GitHub Pages
+=======
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+>>>>>>> 05fb857db57842b6326ab0af61d48ab7e73d1baf
 permissions:
   contents: read
   pages: write

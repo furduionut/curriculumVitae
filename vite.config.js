@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 
 export default defineConfig({
+<<<<<<< HEAD
     base: process.env.NODE_ENV === 'production' ? "/curriculumVitae/": "",
     server: {
       port: 9010,
@@ -22,4 +23,7 @@ export default defineConfig({
       });
     },
   }, ]
+=======
+    base: "/curriculumVitae/",
+>>>>>>> 05fb857db57842b6326ab0af61d48ab7e73d1baf
 })

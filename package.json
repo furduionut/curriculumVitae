@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+<<<<<<< HEAD
     "dat.gui": "^0.7.9",
     "vite": "^6.4.1",
     "vite-plugin-full-reload": "^1.2.0"
@@ -22,5 +23,12 @@
   },
   "allowScripts": {
     "esbuild@0.25.12": true
+=======
+    "vite": "^6.1.0"
+  },
+  "dependencies": {
+    "gh-pages": "^6.3.0",
+    "three": "^0.173.0"
+>>>>>>> 05fb857db57842b6326ab0af61d48ab7e73d1baf
   }
 }
