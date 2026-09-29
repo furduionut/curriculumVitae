@@ -16,21 +16,21 @@ const projects =
 
                 {   
                 arc:{
-                    main:   './public/assets/meshes/casaBacau/casaBacau_baked/casaBacau_outerShell.glb',
+                    main:   './assets/meshes/casaBacau/casaBacau_baked/casaBacau_outerShell.glb',
                     meshes: 
                         [
-                            './public/assets/meshes/casaBacau/casaBacau_baked/casaBacau_outerShell.glb',
-                            './public/assets/meshes/casaBacau/casaBacau_baked/casaBacau_baseFloor.glb',
-                            './public/assets/meshes/casaBacau/casaBacau_baked/casaBacau_groundFloor.glb',
-                            './public/assets/meshes/casaBacau/casaBacau_baked/casaBacau_firstFloor.glb'
+                            './assets/meshes/casaBacau/casaBacau_baked/casaBacau_outerShell.glb',
+                            './assets/meshes/casaBacau/casaBacau_baked/casaBacau_baseFloor.glb',
+                            './assets/meshes/casaBacau/casaBacau_baked/casaBacau_groundFloor.glb',
+                            './assets/meshes/casaBacau/casaBacau_baked/casaBacau_firstFloor.glb'
                         ],
 
                     textures:
                         {               
-                        diffuse:      './public/assets/textures/casaBacau/casaBacau_diffuseMap_1k.jpg',
-                        roughness:    './public/assets/textures/casaBacau/casaBacau_roughnessMap_1k.jpg',
-                        normal:       './public/assets/textures/casaBacau/casaBacau_normalMap_1k.jpg',
-                        transmission: './public/assets/textures/casaBacau/casaBacau_transmitionMap_1k.jpg'
+                        diffuse:      './assets/textures/casaBacau/casaBacau_diffuseMap_1k.jpg',
+                        roughness:    './assets/textures/casaBacau/casaBacau_roughnessMap_1k.jpg',
+                        normal:       './assets/textures/casaBacau/casaBacau_normalMap_1k.jpg',
+                        transmission: './assets/textures/casaBacau/casaBacau_transmitionMap_1k.jpg'
                         }
                     },
                 str: {},
@@ -51,20 +51,20 @@ const projects =
 
                 {
                 arc: {
-                    main:   './public/assets/meshes/casaClim/casaClim_baked/casaClim_outerShell.glb',
+                    main:   './assets/meshes/casaClim/casaClim_baked/casaClim_outerShell.glb',
                     meshes:
                         [
-                            './public/assets/meshes/casaClim/casaClim_baked/casaClim_outerShell.glb',
-                            './public/assets/meshes/casaClim/casaClim_baked/casaClim_groundFloor.glb', 
-                            './public/assets/meshes/casaClim/casaClim_baked/casaClim_firstFloor.glb'
+                            './assets/meshes/casaClim/casaClim_baked/casaClim_outerShell.glb',
+                            './assets/meshes/casaClim/casaClim_baked/casaClim_groundFloor.glb', 
+                            './assets/meshes/casaClim/casaClim_baked/casaClim_firstFloor.glb'
                         ],
 
                     textures:
                         {
-                        diffuse:       './public/assets/textures/casaClim/casaClim_diffuseMap_1k.jpg',
-                        roughness:     './public/assets/textures/casaClim/casaClim_roughnessMap_1k.jpg',
-                        normal:        './public/assets/textures/casaClim/casaClim_normalMap_1k.jpg',
-                        transmission:  './public/assets/textures/casaClim/casaClim_transmitionMap_1k.jpg'
+                        diffuse:       './assets/textures/casaClim/casaClim_diffuseMap_1k.jpg',
+                        roughness:     './assets/textures/casaClim/casaClim_roughnessMap_1k.jpg',
+                        normal:        './assets/textures/casaClim/casaClim_normalMap_1k.jpg',
+                        transmission:  './assets/textures/casaClim/casaClim_transmitionMap_1k.jpg'
                         }
                     },
                 str: {},
@@ -82,19 +82,19 @@ const projects =
 
                     {
                     arc:{
-                        main:   './public/assets/meshes/casaStolnicu/casaStolnicu_baked/casaStolnicu_outerShell.glb',
+                        main:   './assets/meshes/casaStolnicu/casaStolnicu_baked/casaStolnicu_outerShell.glb',
                         meshes: 
                             [
-                                './public/assets/meshes/casaStolnicu/casaStolnicu_baked/casaStolnicu_outerShell.glb',
-                                './public/assets/meshes/casaStolnicu/casaStolnicu_baked/casaStolnicu_groundFloor.glb', 
-                                './public/assets/meshes/casaStolnicu/casaStolnicu_baked/casaStolnicu_firstFloor.glb'
+                                './assets/meshes/casaStolnicu/casaStolnicu_baked/casaStolnicu_outerShell.glb',
+                                './assets/meshes/casaStolnicu/casaStolnicu_baked/casaStolnicu_groundFloor.glb', 
+                                './assets/meshes/casaStolnicu/casaStolnicu_baked/casaStolnicu_firstFloor.glb'
                             ],
                         textures:
                             {
-                            diffuse: './public/assets/textures/casaStolnicu/casaStolnicu_diffuseMap_1k.jpg',
-                            roughness: './public/assets/textures/casaStolnicu/casaStolnicu_roughnessMap_1k.jpg',
-                            normal: './public/assets/textures/casaStolnicu/casaStolnicu_normalMap_1k.jpg',
-                            transmission: './public/assets/textures/casaStolnicu/casaStolnicu_transmissionMap_1k.jpg'
+                            diffuse: './assets/textures/casaStolnicu/casaStolnicu_diffuseMap_1k.jpg',
+                            roughness: './assets/textures/casaStolnicu/casaStolnicu_roughnessMap_1k.jpg',
+                            normal: './assets/textures/casaStolnicu/casaStolnicu_normalMap_1k.jpg',
+                            transmission: './assets/textures/casaStolnicu/casaStolnicu_transmissionMap_1k.jpg'
                             }
                         },
                     str: {},
