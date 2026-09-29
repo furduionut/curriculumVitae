@@ -15,7 +15,7 @@
     const textureLoader = new THREE.TextureLoader();
     const fontLoader = new FontLoader();
     
-    dracoLoader.setDecoderPath('./src/utils/draco/');
+    dracoLoader.setDecoderPath('./utils/draco/');
     gltfLoader.setDRACOLoader(dracoLoader);
 
     let currentBuilding
