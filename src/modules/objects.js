@@ -6,10 +6,10 @@ const objects = {
     modelsList:     Object.values(Object.values(Object.values(projects).map(o => o.geometries.arc.meshes))),
     texturesList:   Object.values(projects).map(t => t.geometries.arc.textures),
     neighbor: {
-        main:  `${urlBase}assets/meshes/mainScene/pageLayout-07.glb`,
+        main:  `./assets/meshes/mainScene/pageLayout-07.glb`,
         textures: ''},
     logo3D: {
-        main:   `${urlBase}assets/meshes/mainScene/logo3D.glb`
+        main:   `./assets/meshes/mainScene/logo3D.glb`
     }
 }
 
