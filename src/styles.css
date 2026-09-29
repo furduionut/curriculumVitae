@@ -120,8 +120,8 @@
     }
 
     svg {
-        width: 5em;
-        height: 5em;
+        width: 100%;
+        height: 100%;
         fill: var(--forth-background-color);
     }
 
@@ -228,6 +228,7 @@
         /* animation */
     }
     .icon {
+        padding: calc(var(--general-padding)/2);
         display: flex;
     }
     
@@ -896,16 +897,11 @@
         display:none;
     }
 
-    @media (width <= 1024px) {
-        * {
-            font-size: 12px;
-        }
-        
+    @media (width <= 480px) {
         .main {
             /* box */
-            padding: calc(var(--main-padding)/1);
+            padding: calc(var(--main-padding)/2);
             /* size */
-            font-size: 8px;
             width: 100vw;
             min-width: 480px;
             /* position */
@@ -943,13 +939,13 @@
         }
 
         .btn {
-            width:              12.5em;
-            height:             12.5em;
+            width:              3.5em;
+            height:             3.5em;
         }
 
         .aboutMe {
             top: 12.5%;
-            height: 105em;
+            height: 70em;
         }
 
         .navBar {
