@@ -1,7 +1,7 @@
 import { defineConfig } from "vite";
 
 export default defineConfig({
-    base: "/curriculumVitae/",
+    base: process.env.NODE_ENV === 'production' ? "/curriculumVitae/": "",
     server: {
       port: 9010,
       strictPort: true
