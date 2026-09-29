@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 26.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="logo.architizer" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+	 y="0px" viewBox="0 0 200 200" style="enable-background:new 0 0 200 200;" xml:space="preserve">
+<style type="text/css">
+	.st0{display:none;}
+	.st1{display:inline;fill:none;stroke:#B5B2D9;stroke-width:11;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st2{display:inline;}
+	.st3{fill:none;stroke:#4858A7;stroke-width:11;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+</style>
+<g id="layer_x5F_arch" class="st0">
+	<g id="background_x5F_arch">
+		<polyline class="st1" points="132.56,67.44 165.12,100 151.45,113.68 		"/>
+		<polyline class="st1" points="67.44,132.56 34.88,100 48.55,86.32 		"/>
+		<line class="st1" x1="67.44" y1="67.44" x2="132.56" y2="132.56"/>
+	</g>
+	<g id="arch" class="st2">
+		<polygon class="st3" points="132.56,67.44 165.12,100 132.56,132.56 		"/>
+		<polygon class="st3" points="67.44,132.56 34.88,100 67.44,67.44 		"/>
+		<line class="st3" x1="67.44" y1="47.29" x2="67.44" y2="67.44"/>
+		<line class="st3" x1="132.56" y1="132.56" x2="132.56" y2="152.71"/>
+	</g>
+</g>
+<g id="layer_x5F_code">
+	<g id="background_x5F_code" class="st0">
+		<polygon class="st1" points="132.56,67.44 165.12,100 132.56,132.56 		"/>
+		<polygon class="st1" points="67.44,132.56 34.88,100 67.44,67.44 		"/>
+		<line class="st1" x1="67.44" y1="47.29" x2="67.44" y2="67.44"/>
+		<line class="st1" x1="132.56" y1="132.56" x2="132.56" y2="152.71"/>
+		<line class="st1" x1="67.44" y1="67.44" x2="132.56" y2="132.56"/>
+		<polygon class="st1" points="67.44,132.56 34.88,100 67.44,67.44 		"/>
+	</g>
+	<g id="code">
+		<polyline class="st3" points="132.56,67.44 165.12,100 151.45,113.68 		"/>
+		<polyline class="st3" points="67.44,132.56 34.88,100 48.55,86.32 		"/>
+		<line class="st3" x1="67.44" y1="67.44" x2="132.56" y2="132.56"/>
+	</g>
+</g>
+</svg>
