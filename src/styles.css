@@ -912,14 +912,15 @@
         .aboutMe {
             height: 70%;
         }
+        .controls {
+            width: 100%;
+            top: 18.5%;
+        }
         .navItem {
             transform: translateX(-1em);
         }
         .navItem > a {
             display:none;
-        }
-        .controls {
-            top: 18.5%;
         }
         .navBtn {
             width: 10em;
