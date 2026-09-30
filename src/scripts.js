@@ -192,9 +192,7 @@
         
             perspCamera.zoom = THREE.MathUtils.lerp(zoomStart, zoomEnd, easedT);
             perspCamera.updateProjectionMatrix();
-        
-            const sectionEl = document.getElementById('section');
-            sectionEl.innerHTML = `${sectionName}`;
+
         }
     /* CAMERA FOCUS */
         const focusPoint        = new THREE.Vector3(-5, 0, -10);
@@ -392,11 +390,11 @@
 
         function viewportAnimation      () {
             let viewportTimeline = gsap.timeline({
-                defaults: { duration: 3, ease: "power2.out" }});
+                defaults: { duration: 6, ease: "power2.out" }});
                     
             viewportTimeline
                 .to(".viewport2", {scale: 0.15})
-                .to(".viewport2", {y: '-60%'}, "-=1")
+                .to(".viewport2", {y: '-50%'}, "-=1")
                 
 
             return viewportTimeline;
@@ -430,31 +428,12 @@
             tl.fromTo('.infoBar', { x: '-500%' }, { x: '0' });
         }
 
-        function descriptionAnimation() {
-            let tl = gsap.timeline({
-                defaults: { duration: 1, ease: "power4.inOut" },
-                scrollTrigger: {
-                    trigger: '.main',
-                    start: "40% 25%",
-                    end: "60% 25%",
-                    scrub: 1,
-                    markers: true
-                }
-            });
-        
-            tl.fromTo('.description', { display: 'none' }, { display: 'flex' }, "=-1");
-            tl.fromTo('.description', { opacity: 0 }, { opacity: 1 }, 1);
-            tl.fromTo('.description', { opacity: 1 }, { opacity: 0 }, 1);
-            tl.fromTo('.description', { display: 'flex' }, { display: 'none' }, ">");
-        }
-
-
         const mainTimeline = gsap.timeline({
             pause: true,
             scrollTrigger: {
                 trigger: '.viewport2',
                 start: "20% 25%",
-                end: "30% 25%",
+                end: "50% 25%",
                 markers: false,
                 scrub: 1, 
                 toggleActions: "play none reverse reverse"}
@@ -463,8 +442,6 @@
         mainTimeline
             .add(orthoCameraAnimation(), 1)
             .add(viewportAnimation(), 1)
-            // .add(infoBarAnimation(), 3)
-            .add(descriptionAnimation(), 3)
 
     // EVENTS
         window.addEventListener('resize', ()=>{
@@ -510,12 +487,12 @@
                     break;
                 
                 case 'navProjects':
-                    loaders.loadScroll(sectionHeight * 2.25);
+                    loaders.loadScroll(sectionHeight * 2.50);
                     loaders.loadPress(projectsBanner);
                     break;
 
                 case 'navAbilities':
-                    loaders.loadScroll(sectionHeight * 3.590);
+                    loaders.loadScroll(sectionHeight * 3.70);
                     loaders.loadPress(abilitiesBanner);
                     break;
                 
@@ -525,7 +502,7 @@
                     break;
 
                 case 'navContacts':
-                    loaders.loadScroll(sectionHeight * 4.375);
+                    loaders.loadScroll(sectionHeight * 4.5);
                     loaders.loadPress(contactsBanner);
                     break;
                 }
@@ -539,7 +516,7 @@
         loaders.loadLogo        (secondScene, light, logo3D, materials, logoAnimation);
         loaders.loadNeighboar   (scene, light, neighbor, materials);
         loaders.loadBuilding    (scene, light, building, material);
-        loaders.loadInfo        (name, about, type, style);
+        // loaders.loadInfo        (name, about, type, style);
 
 
     // CAMERA TIMELINE 
