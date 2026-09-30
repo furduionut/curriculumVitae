@@ -466,50 +466,116 @@
             });
           });
         
-        const sectionsNavBar = document.getElementById("navBar");
-        const sectionsBtns = Array.from(sectionsNavBar.children);
-        const projectsBanner = document.getElementById("controls");
-        const abilitiesBanner = document.getElementById("ability banner");
-        const experiencesBanner = document.getElementById("experience banner");
-        const contactsBanner = document.getElementById("contact banner");
+        const sectionsNavBar        = document.getElementById("navBar");
+        const sectionsBtns          = Array.from(sectionsNavBar.children);
+
+        const projectsBanner        = document.getElementById("controls");
+        const abilitiesBanner       = document.getElementById("ability banner");
+        const experiencesBanner     = document.getElementById("experience banner");
+        const contactsBanner        = document.getElementById("contact banner");
+
+        const aboutMeBody           = document.getElementById("aboutMe");
+        const projectsBody          = document.getElementById("viewport");
+        const abilitiesBody         = document.getElementById("abilities");
+        const experiencesBody       = document.getElementById("experiences");
+        const contactsBody          = document.getElementById("contacts");
+        
+
+        let bodyPos;
+        let aboutMePos;    
+        let projectsPos; 
+        let abilitiesPos; 
+        let experiencePos; 
+        let contactsPos;  
+        
+        function resizeSections() {
+            let numberOfSections = 7;
+            let totalHeight = window.innerHeight * numberOfSections;
+        }
+
+        function updateSectionsPos() {
+            let aboutMeHeight           = parseFloat(getComputedStyle(aboutMeBody).height);
+            let projectsHeight          = parseFloat(getComputedStyle(projectsBody).height);
+            let abilitiesHeight         = parseFloat(getComputedStyle(abilitiesBody).height);
+            let experiencesHeight       = parseFloat(getComputedStyle(experiencesBody).height);
+            let contactsHeight          = parseFloat(getComputedStyle(contactsBody).height);
+            let totalHeight = [
+                    aboutMeBody,
+                    projectsBody,
+                    abilitiesBody,
+                    experiencesBody,
+                    contactsBody
+                    ].reduce((sum, el) => sum + parseFloat(getComputedStyle(el).height), 0);
+    
+            bodyPos        = 0;
+            aboutMePos     = totalHeight    - (abilitiesHeight + experiencesHeight + contactsHeight);
+            projectsPos    = totalHeight    - (abilitiesHeight + experiencesHeight + contactsHeight) + aboutMePos;
+            abilitiesPos   = totalHeight    - (experiencesHeight + contactsHeight) + projectsPos;
+            experiencePos  = totalHeight    - contactsHeight + abilitiesPos;
+            contactsPos    = totalHeight    - totalHeight;
+        
+            console.log(
+                bodyPos,
+                aboutMePos,
+                projectsPos,
+                abilitiesPos,
+                experiencePos,
+                contactsPos,
+                totalHeight
+            );
+        }
+        
+        // IMPORTANT: call this once after DOM loads
+        // updateSectionsPos();
+        const section1 = document.getElementById("section viewports")
+        const section2 = document.getElementById("section informations")
+        const section12 = parseInt(getComputedStyle(section1).height) + parseInt(getComputedStyle(section2).height)
+        const section1startPos = parseInt(getComputedStyle(section1).height);
+        const section2startPos = parseInt(getComputedStyle(section1).height) - parseInt(getComputedStyle(section2).height);
+        const abilityStartPos = section1startPos - parseInt(getComputedStyle(abilitiesBody).height)/4;
+        const experienceStartPos = section2startPos + parseInt(getComputedStyle(experiencesBody).height) + parseInt(getComputedStyle(abilitiesBody).height)*2.575;
+        console.log(section2startPos, abilityStartPos, experienceStartPos)
 
         sectionsBtns.forEach((e)=>{e.addEventListener("click", 
             ()=>{
-            switch (e.id) {
-                case 'navGreeting':
-                    loaders.loadScroll(sectionHeight * 0);
-                    loaders.loadPress(projectsBanner);
-                    break;
+                switch (e.id) {
+                    case 'navGreeting':
+                        loaders.loadScroll(sectionHeight * 0);
+                        loaders.loadPress(projectsBanner);
+                        break;
+    
+                    case 'navAboutMe':
+                        loaders.loadScroll(sectionHeight * 1);
+                        loaders.loadPress(projectsBanner);
+                        break;
+                    
+                    case 'navProjects':
+                        loaders.loadScroll(sectionHeight * 2.35);
+                        loaders.loadPress(projectsBanner);
+                        break;
+    
+                    case 'navAbilities':
+                        loaders.loadScroll(abilityStartPos);
+                        loaders.loadPress(abilitiesBanner);
+                        break;
+                    
+                    case 'navExperiences':
+                        loaders.loadScroll(experienceStartPos);
+                        loaders.loadPress(experiencesBanner);
+                        break;
+    
+                    case 'navContacts':
+                        loaders.loadScroll(section12);
+                        loaders.loadPress(contactsBanner);
+                        break;
+            }
+        })});
+        
 
-                case 'navAboutMe':
-                    loaders.loadScroll(sectionHeight * 1);
-                    loaders.loadPress(projectsBanner);
-                    break;
-                
-                case 'navProjects':
-                    loaders.loadScroll(sectionHeight * 2.50);
-                    loaders.loadPress(projectsBanner);
-                    break;
-
-                case 'navAbilities':
-                    loaders.loadScroll(sectionHeight * 3.70);
-                    loaders.loadPress(abilitiesBanner);
-                    break;
-                
-                case 'navExperiences':
-                    loaders.loadScroll(sectionHeight * 4.115);
-                    loaders.loadPress(experiencesBanner);
-                    break;
-
-                case 'navContacts':
-                    loaders.loadScroll(sectionHeight * 4.5);
-                    loaders.loadPress(contactsBanner);
-                    break;
-                }
-            })});
             
     /* COMMITS */
         updateRefs();
+        updateSectionsPos();
         // loaders.loadPage();
         loaders.loadText        (secondScene, text);
         loaders.loadIndicator   (dom);

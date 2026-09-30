@@ -162,6 +162,13 @@
         /* filter  */
         /* animation */        
     }
+    .section {
+        padding-bottom: var(--general-padding);
+        height: auto;
+        display:flex;
+        flex-flow: column wrap;
+        gap: var(--general-gap); 
+    }
     .chapter {
         /* box */
         /* size */
@@ -897,13 +904,17 @@
         .aboutMe {
             height: 60%;
         }
+        .viewport2 {
+            pointer-events: none;
+        }
         .projects {
             height: 625em;
         }
         .controls {
+            position: sticky;
             height: 10em;
             width: 100%;
-            top: 23.5%;
+            top: 80%;
         }
         .navItem {
             padding: 0;
