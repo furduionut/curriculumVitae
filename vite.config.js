@@ -3,7 +3,7 @@ import { defineConfig } from "vite";
 export default defineConfig({
     base: "/curriculumVitae/",
     server: {
-      port: 9010,
+      port: 8010,
       strictPort: true
     },
     plugins: [{

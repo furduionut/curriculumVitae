@@ -396,7 +396,7 @@
                     
             viewportTimeline
                 .to(".viewport2", {scale: 0.15})
-                .to(".viewport2", {y: -625}, "-=1")
+                .to(".viewport2", {y: '-60%'}, "-=1")
                 
 
             return viewportTimeline;
@@ -426,8 +426,8 @@
                 }
             });
         
-            tl.fromTo('.infoBar', { width: '5em' }, { width: '25.5em' });
-            tl.fromTo('.infoBar', { width: '25.5em' }, { width: '5em' });
+            tl.fromTo('.infoBar', { x: '0' }, { x: '-500%' });
+            tl.fromTo('.infoBar', { x: '-500%' }, { x: '0' });
         }
 
         function descriptionAnimation() {
@@ -463,7 +463,7 @@
         mainTimeline
             .add(orthoCameraAnimation(), 1)
             .add(viewportAnimation(), 1)
-            .add(infoBarAnimation(), 3)
+            // .add(infoBarAnimation(), 3)
             .add(descriptionAnimation(), 3)
 
     // EVENTS

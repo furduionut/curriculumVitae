@@ -1,7 +1,5 @@
 /* IMPORTS */
     import * as THREE from "three";
-    import { GUI } from 'dat.gui';
-import { orthographicDepthToViewZ } from "three/tsl";
 
 /* DOM ELEMETS */
     const viewport      = document.getElementById('viewport');
