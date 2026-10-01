@@ -1,9 +1,15 @@
 /* IMPORTS */
     import * as THREE from "three";
+import { perspectiveDepthToViewZ } from "three/tsl";
 
 /* DOM ELEMETS */
     const viewport      = document.getElementById('viewport');
     const viewport2     = document.getElementById('viewport2');
+
+    let orthoDim;
+    const changeDimension = () => {orthoDim = window.innerWidth < 1025 ? 25 : 15;};
+    changeDimension();
+    window.addEventListener("resize", changeDimension);
 
 /* CAMERA PARAMETERS */
     const orthographicParams = {
@@ -11,7 +17,7 @@
         width: viewport2.clientWidth,
         height: viewport2.clientHeight,
         aspect: viewport2.clientWidth / viewport2.clientHeight,
-        dimension: 15,
+        dimension: orthoDim,
         far: 50,
         near: 0.001,
         offsetX: 0,

@@ -16,6 +16,7 @@ const domain = {
     downBtn :        document.getElementById('downBtn'),
     abouts  :        document.getElementById('description'),
     btn     :        document.getElementById('btn'),
+    experience:      document.getElementById('experience-6'),
     
     /* ABILITIES */
     abilitiesBtn:    document.querySelectorAll('#abilityBtn'),

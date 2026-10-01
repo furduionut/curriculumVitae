@@ -1,115 +1,114 @@
 
 Senior developers improvements: 
-easy to understand, easier to change and harder to break
-
-    1. keep the path easy to follow:
-        STOP! doing this: action 3 level deep
-            if(user){
-                if(user.active){
-                    if (user.hasPermision) {
-                        updateProfile(user)
-                        }
+    1. Apply principles to easy to understand, easier to change and harder to break;
+        1. keep the path easy to follow:
+            STOP! doing this: action 3 level deep
+                if(user){
+                    if(user.active){
+                        if (user.hasPermision) {
+                            updateProfile(user)
+                            }
+                    }
                 }
-            }
 
-        START doing this:
-            if(!user) {return};
-            if(!user.active) {return};
-            if(!user.hasPermision) {return};
-            updateProfile(user);
+            START doing this:
+                if(!user) {return};
+                if(!user.active) {return};
+                if(!user.hasPermision) {return};
+                updateProfile(user);
+        2. name thing by meaning, keep it obvious:
+            STOP! doing this:
+                const data = getData(id);
+                if(data.status==='PENDING'){process(data)};
 
-    2. name thing by meaning, keep it obvious:
-        STOP! doing this:
-            const data = getData(id);
-            if(data.status==='PENDING'){process(data)};
+            START doing this:
+                const pendingOrder = getOrder(orderId);
+                if(pendingOrder.status==='PENDING'){processOrder(pendingOrder)};
+        3. keep external complexity system behind a boundary (you dont control external code, so don't depend of their field names)
+            STOP! doing this:
+                const response = await paymentService.getUser(id);
+                if (response.customer_status==='active'){enableFeature(response.customer_name)}
 
-        START doing this:
-            const pendingOrder = getOrder(orderId);
-            if(pendingOrder.status==='PENDING'){processOrder(pendingOrder)};
+            START doing this:
+                const response = await paymentService.getUser(id);
+                if(customer.isActive){enableFeature(customer_name)};
+        4. make invalid states harder to represent, less to guess, harder to get wrong
+            STOP! doing this: from make it optional
+                type Order = {
+                    id?: string;
+                    status?: string;
+                    paymentId?: string;
+                };
 
-    3. keep external complexity system behind a boundary (you dont control external code, so don't depend of their field names)
-        STOP! doing this:
-            const response = await paymentService.getUser(id);
-            if (response.customer_status==='active'){enableFeature(response.customer_name)}
+            START doing this: to more accurately, are expected to exist
+                type PaidOrder = {
+                    id: string;
+                    status: 'paid';
+                    paymentId: string;
+                };
+        5. separate decision from actions
+            STOP! doing this: harder to test
+                if(user.age >= 18 && user.isVerified){
+                    database.enableFeature(user.id);
+                    sendEmail(user.email);
+                }
 
-        START doing this:
-            const response = await paymentService.getUser(id);
-            if(customer.isActive){enableFeature(customer_name)};
+            START doing this: useful and reusable
+                const callUseFeature = user.age >= 18 && user.isVerified;
+                if(callUserFeature){enableFeature(user)};
+        6. make error useful
+            STOP! doing this: very little info to work with
+                {
+                'message': 'Somthing went wrong'
+                }
 
-    4. make invalid states harder to represent, less to guess, harder to get wrong
-        STOP! doing this: from make it optional
-            type Order = {
-                id?: string;
-                status?: string;
-                paymentId?: string;
-            };
+            START doing this: a predicable code error using human language
+                {
+                'code': 'EMAIL_ALREADY_EXISTS' // for systems
+                'message': 'Somthing went wrong' // for humans
+                }            
+        7. keep your changes focused
+            STOP! doing this:
+                Pull request with many changes: hard to validate
 
-        START doing this: to more accurately, are expected to exist
-            type PaidOrder = {
-                id: string;
-                status: 'paid';
-                paymentId: string;
-            };
-
-    5. separate decision from actions
-        STOP! doing this: harder to test
-            if(user.age >= 18 && user.isVerified){
-                database.enableFeature(user.id);
-                sendEmail(user.email);
-            }
-
-        START doing this: useful and reusable
-            const callUseFeature = user.age >= 18 && user.isVerified;
-            if(callUserFeature){enableFeature(user)};
-
-    6. make error useful
-        STOP! doing this: very little info to work with
-            {
-            'message': 'Somthing went wrong'
-            }
-
-        START doing this: a predicable code error using human language
-            {
-            'code': 'EMAIL_ALREADY_EXISTS' // for systems
-            'message': 'Somthing went wrong' // for humans
-            }
-        
-    7. keep your changes focused
-        STOP! doing this:
-            Pull request with many changes: hard to validate
-
-        START doing this:
-            Pull request, each change with a clear purpouse
-
-    8. use class SOLID principle for a clean code
-        8.1. Single resposibility; not a single job.
-        8.2. Open closed; open to extension but close to modification.
-        8.3. Liskov subtitution; what the parent can do the same is the child; ex: human class for man class and woman class
-        8.4. Interface segregation; separate actions;
-        8.5. Depedency inversion; all should depend on abstration not high level or low level component;
-
-    9. avoid unnecesay nesting/ long code
-
-    10. use name conventions like you expect a answer
-        doThing()       => functions that returns result based on a computation ;
-        isThisTrue()    => function that return a bolean response;
-
-    11. use comments just where is complicated. write self documenting script;
-
-    12. be consistent with indentation, brakets or/and spacing;
-
-    13. reduce the function repetition;
-
-    14. fail hard and early;
-
-    15. use DRY (Don't repeat yourself);
-
-    16. use KISS (Keep it stupid simple);
-
-    17. use YAGNI (You aren't gonna need it);
-
-    18. use SOC (Separation of concerns);
-
-    19. use LOD (Law of demeter);
-
-    20. use COI (Composition over inheritance);
+            START doing this:
+                Pull request, each change with a clear purpouse
+        8. use class SOLID principle for a clean code
+            8.1. Single resposibility; not a single job.
+            8.2. Open closed; open to extension but close to modification.
+            8.3. Liskov subtitution; what the parent can do the same is the child; ex: human class for man class and woman class
+            8.4. Interface segregation; separate actions;
+            8.5. Depedency inversion; all should depend on abstration not high level or low level component;
+        9. avoid unnecesay nesting/ long code
+        10. use name conventions like you expect a answer
+            doThing()       => functions that returns result based on a computation ;
+            isThisTrue()    => function that return a bolean response;
+        11. use comments just where is complicated. write self documenting script;
+        12. be consistent with indentation, brakets or/and spacing;
+        13. reduce the function repetition;
+        14. fail hard and early;
+        15. use DRY (Don't repeat yourself);
+        16. use KISS (Keep it stupid simple);
+        17. use YAGNI (You aren't gonna need it);
+        18. use SOC (Separation of concerns);
+        19. use LOD (Law of demeter);
+        20. use COI (Composition over inheritance);
+    2. Learn more about libraries you work with;
+        1. ThreeJS library;
+        2. GSAP library; 
+        3. Vite bundler;
+    3. Learn new frameworks and adapt to it;
+        1. React
+        2. R3F + GSAP/react
+        3. Tailwind
+        4. NextJS
+    4. Implementation of other features:
+        1. Adding animated objects around the project;
+        2. Changing scene based on darkMode/dayTime;
+        3. Switching language RO/EN and change content;
+        4. Adding loading screen based on loading content;
+        5. Adapting to phone performance and internet connection;
+        6. Button for forwarding to a detailed page of the building;
+        6. Change HTML to a semantic HTML;
+        7. Adapt your code to typeScript;
+        8. Apply database using mySQL or NodeJS;

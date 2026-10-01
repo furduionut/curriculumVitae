@@ -39,9 +39,9 @@
         let rendererHeight      = dom.viewport.clientHeight;
         let rendererCanvas      = dom.canvas;
 
-        let renderoWidth       = dom.viewport2.clientWidth;
-        let renderoHeight      = dom.viewport2.clientHeight;
-        let renderoCanvas      = dom.canvaso;
+        let renderoWidth        = dom.viewport2.clientWidth;
+        let renderoHeight       = dom.viewport2.clientHeight;
+        let renderoCanvas       = dom.canvaso;
 
     /* INDEXES */
         let buildingIndex       = 0;
@@ -51,47 +51,55 @@
         let scene               = scenes.mainScene;
         let secondScene         = scenes.secondScene;
 
-        const axes = new THREE.AxesHelper(5);
-        secondScene.add(axes);
-
     /* CAMERAS */
         let perspCamera         = cameras.perspective;
         let orthoCamera         = cameras.orthographic;
 
     /* CAMERA ANIMATION */
-        let main            = document.getElementById('main');
-        let mainHeight      = main.scrollHeight;
-        let sectionHeight   = mainHeight / 5;
+        let main                = document.getElementById('main');
+        let mainHeight;
+        let sectionHeight;
+        const changemainHeight = () => {
+            mainHeight = main.scrollHeight; console.log(mainHeight)
+            sectionHeight   = mainHeight / 5;}
+        changemainHeight();
+
+        window.addEventListener("resize", changemainHeight);
     
         function updateCam() {
+            let perspCameraZoom = 1;
+            const changeCameraZoom = () => {perspCameraZoom = window.innerWidth < 1025 ? .65 : 1}
+            changeCameraZoom();
+
+            window.addEventListener("resize", changeCameraZoom);
             // Section 0
-            const camPosA = new THREE.Vector3(15, 15, 11);
-            const lookA = new THREE.Vector3(-5.5, 15, -11);
-            const zoomA = 1;
+            const camPosA = new THREE.Vector3(15, 15, 10.5);
+            const lookA = new THREE.Vector3(-5.5, 15, -10.5);
+            const zoomA = perspCameraZoom * 1;
             // Section 1
-            const camPosB = new THREE.Vector3(15, 10, 11);
-            const lookB = new THREE.Vector3(-5.5, 7.5, -11);
-            const zoomB = 2;
+            const camPosB = new THREE.Vector3(15, 10, 10.5);
+            const lookB = new THREE.Vector3(-5.5, 7.5, -10.5);
+            const zoomB = perspCameraZoom * 2;
             // Section 2
-            const camPosC = new THREE.Vector3(15, 20, 11);
-            const lookC = new THREE.Vector3(-5.5, 1.5, -11);
-            const zoomC = 4;
+            const camPosC = new THREE.Vector3(15, 20, 10.5);
+            const lookC = new THREE.Vector3(-5.5, 1.5, -10.5);
+            const zoomC = perspCameraZoom * 4;
             // Section 3
-            const camPosD = new THREE.Vector3(15, 0, -11);
-            const lookD = new THREE.Vector3(-5.5, 1.5, -11);
-            const zoomD = 4;
+            const camPosD = new THREE.Vector3(15, 0, -10.5);
+            const lookD = new THREE.Vector3(-5.5, 1.5, -10.5);
+            const zoomD = perspCameraZoom * 4;
             // Section 4
-            const camPosE = new THREE.Vector3(15, 0, -11);
-            const lookE = new THREE.Vector3(-5.5, 0, -11);
-            const zoomE = 4;
+            const camPosE = new THREE.Vector3(15, 0, -10.5);
+            const lookE = new THREE.Vector3(-5.5, 0, -10.5);
+            const zoomE = perspCameraZoom * 4;
             // Section 5
-            const camPosF = new THREE.Vector3(15, -9.5, -11);
-            const lookF = new THREE.Vector3(-5.5, -9.5, -11);
-            const zoomF = 4;
+            const camPosF = new THREE.Vector3(15, -9.5, -10.5);
+            const lookF = new THREE.Vector3(-5.5, -9.5, -10.5);
+            const zoomF = perspCameraZoom * 4;
             // Section 6
-            const camPosG = new THREE.Vector3(15, -9.5, -11);
-            const lookG = new THREE.Vector3(-5.5, -9.5, -11);
-            const zoomG = 4;
+            const camPosG = new THREE.Vector3(15, -9.5, -10.5);
+            const lookG = new THREE.Vector3(-5.5, -9.5, -10.5);
+            const zoomG = perspCameraZoom * 4;
             
             let scroll = window.scrollY / sectionHeight;
             let section = Math.floor(scroll);
@@ -385,8 +393,6 @@
         let logoAnimation = new LogoAnimation();
         gsap.registerPlugin(ScrollTrigger);
 
-        let infoBar = document.getElementById('infoBar');
-        infoBar.style.width = "5em"; 
 
         function viewportAnimation      () {
             let viewportTimeline = gsap.timeline({
@@ -411,22 +417,6 @@
 
             return orthoCameraTimeline
             };
-        
-        function infoBarAnimation() {
-            let tl = gsap.timeline({
-                defaults: { duration: 3, ease: "power2.inOut" },
-                scrollTrigger: {
-                    trigger: '.main',
-                    start: "0% 10%",
-                    end: "80% 10%",
-                    scrub: 1,
-                    markers: false
-                }
-            });
-        
-            tl.fromTo('.infoBar', { x: '0' }, { x: '-500%' });
-            tl.fromTo('.infoBar', { x: '-500%' }, { x: '0' });
-        }
 
         const mainTimeline = gsap.timeline({
             pause: true,
@@ -570,8 +560,6 @@
                         break;
             }
         })});
-        
-
             
     /* COMMITS */
         updateRefs();
@@ -579,6 +567,7 @@
         // loaders.loadPage();
         loaders.loadText        (secondScene, text);
         loaders.loadIndicator   (dom);
+        loaders.loadPush        (dom.experience, "Vezi mai mult");
         loaders.loadLogo        (secondScene, light, logo3D, materials, logoAnimation);
         loaders.loadNeighboar   (scene, light, neighbor, materials);
         loaders.loadBuilding    (scene, light, building, material);

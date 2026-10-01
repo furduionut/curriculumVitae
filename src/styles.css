@@ -147,7 +147,7 @@
         /* size */
         height: auto;
         width: 100vw;
-        min-width: 640px;
+        min-width: 480px;
         /* position */
         position: static;
         /* distance */
@@ -241,13 +241,21 @@
         width:  7.5em;
         height: 6.0em;
         display: flex;
+        flex-flow: column-reverse nowrap;
         justify-content: center;
+        align-content: center;
         align-items: center;
     }
     .icons {
-        display: flex;
+        padding: var(--general-padding);
         width:  7.5em;
         height: 6.0em;
+        display: flex;
+        flex-flow: column-reverse nowrap;
+        justify-content: center;
+        align-content: center;
+        align-items: center;
+        overflow: hidden;
         stroke: var(--forth-background-color);
     }
 
@@ -301,20 +309,20 @@
 
     /* ----ABOUT ME-----*/
     .aboutMe {
-    /* box */
-    /* size */
-    width: 100%;
-    height: 70%;
-    /* position */
-    position: fixed;
-    top: 10%;
-    left: 0;
-    /* distance */
-    /* geometry */
-    /* style */
-    /* color */
-    /* display */
-    /* content */
+        /* box */
+        /* size */
+        width: 100%;
+        height: 70%;
+        /* position */
+        position: fixed;
+        top: 10%;
+        left: 0%;
+        /* distance */
+        /* geometry */
+        /* style */
+        /* color */
+        /* display */
+        /* content */
     }
 
     /* ----NAVIGATION-----*/
@@ -325,24 +333,23 @@
         height: 100%;
         /* position */
         position: absolute;
-        left: 0;
+        left: 0%;
         /* distance */
+        gap: var(--general-gap);
         /* geometry */
         /* style */
         /* color */
         /* display */
         display: flex;
-        flex-flow: column wrap;
-        justify-content: space-between;
+        flex-flow: column nowrap;
+        justify-content: stretch;
         /* content */
     }
     .navItem {
         /* box */
         padding: var(--general-padding);
         /* size */
-        width: 100%;
-        height: auto;
-        min-width: auto;
+        width: auto;
         /* position */
         /* distance */
         gap: var(--general-gap);
@@ -352,21 +359,25 @@
         /* style */
         /* color */
         /* display */
-        display: flex;
-        justify-content: space-around;
+        display:            flex;
+        flex-flow:          column wrap;
         align-items:        center;
+        justify-content:    center;
+        align-content:      center;
+        flex:               1 1 auto;
+        min-height:         0; 
         /* content */
     }
 
     /* ----INFORMATION-----*/
     .infoBar {
     /* box */
-    padding: var(--general-padding);
     /* size */
+    width: 15%;
     height: 100%;
     /* position */
     position: absolute;
-    right: 0;
+    right: 0%;
     /* distance */
     /* geometry */
     border-top-right-radius: 0;
@@ -376,7 +387,6 @@
     /* display */
     display:flex;
     align-items: center;
-    overflow: hidden;
     /* content */
     }
     .navItem:hover {
@@ -457,12 +467,38 @@
         background-color: #ADB6D3;
         border-radius: var(--general-border-radius);
     }
-
+    
+    /* ----INFORMATION-----*/
+    .pointer-indicator {
+        position: absolute;
+        padding: 0.4rem 0.7rem;
+        background: rgba(0, 0, 0, 0.75);
+        color: white;
+        border-radius: 999px;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        z-index: 9999;
+        pointer-events: none; /* IMPORTANT: user clicks the target, not the indicator */
+        animation: bounce 1s infinite;
+      }
+      
+      .highlight-outline {
+        outline: 3px solid orange;
+        animation: flicker 0.6s infinite alternate;
+    }
+    
+    @keyframes flicker {
+        0% { outline-color: orange; opacity: 1; }
+        50% { outline-color: orange; opacity: 0.6; }
+        100% { outline-color: orange; opacity: 1; }
+    }
+    
     /*-----PROJECTS-----*/
     .projects {
     /* box */
     /* size */
-    width: auto;
     height: 655em;
     /* position */
     /* distance */
@@ -514,50 +550,35 @@
     /* content */
     }
     .controls {
-    /* box */
-    /* size */
-    /* position */
-    width: 100%;
-    position: relative;
-    top: 12.5%;
-    /* distance */
-    /* geometry */
-    /* style */
-    /* color */
-    /* display */
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-flow: row wrap;
-    /* content */
+        position: sticky;
+        top: 85%;
+        width: 100%;
+        height: auto;
+        display: flex;
+        flex-flow: row wrap;
+        flex-shrink: 1;
+        gap: var(--general-gap);
+        align-content: center;
+        align-items: center;
     }
     .stageNav {
-    /* box */
-    /* size */
-    width: 37.5em;
-    height: 100%;
-    /* position */
-    /* distance */
-    /* geometry */
-    /* style */
-    /* color */
-    /* display */
-    display: flex;
-    flex-flow: column wrap;
-    /* content */
+        height: 100%;
+        width: auto;
+        flex-grow: 1;
     }
     .navBtn {
         height: 100%;
-        padding: var(--general-padding);
+        width: auto;
         display: flex;
-        flex-wrap: row wrap;
         justify-content: center;
+        align-content: center;
         align-items: center;
     }
     .stageBtn {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        align-items: center;   
     }
     
     /* ----ABILITIES BANNER-----*/
@@ -869,7 +890,7 @@
         display:none;
     }
 
-    @media (width <= 480px) {
+    @media (max-width: 1025px) and (min-width: 360px) and (orientation: portrait){
         .main {
             /* box */
             /* size */
@@ -898,11 +919,19 @@
             height: 100%; 
         }
         .icon {
-            width: 6.5em;
+            width:  6.5em;
             height: 6.5em;
         }
         .aboutMe {
-            height: 60%;
+            height: 70%;
+        }
+        .navItem {
+            width: 100%;
+            flex-flow: column nowrap;
+        }
+        .navItem > icon {
+            width: 100%;
+            height: 100%;
         }
         .viewport2 {
             pointer-events: none;
@@ -910,34 +939,10 @@
         .projects {
             height: 625em;
         }
-        .controls {
-            position: sticky;
-            height: 10em;
-            width: 100%;
-            top: 80%;
-        }
-        .navItem {
-            padding: 0;
-            transform: translateX(-1em);
-        }
-        .navItem > a {
-            display:none;
-        }
-        .navBtn {
-            width: 10em;
-            height: 100%;
-        }
-        .stageNav {
-            display: flex;
-            flex-flow: column wrap;
-            justify-content: space-evenly;
-            width: 15em;
-            height: 100%;
-        }
         .expDetails > div:not(:last-child) {
-            display: flex;
-            flex-flow: column wrap;
-            align-content: center;
+            display:            flex;
+            flex-flow:          column wrap;
+            align-content:      center;
             width:              100%;
             height:             auto;
         }
@@ -949,5 +954,18 @@
         }
     }
 
-    @media (width < 1024px) and ( width > 480px) {
+    @media (max-width: 1280px) and (min-width: 360px) and (orientation: landscape){
+        .aboutMe {
+            top: 15%;
+        }
+        .navBar {
+            height: 125%;
+        }
+        .infoBar {
+            height: 125%;
+        }
+        .navItem {
+            flex-flow: row-reverse;
+            font-size: 8px;
+        }
     }

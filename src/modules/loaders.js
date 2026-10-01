@@ -234,13 +234,6 @@
 
         const description        = document.createElement('p');
         description.textContent  = `${about}`;
-
-        clasifications.appendChild(category);
-        clasifications.appendChild(archType);
-
-        informations.appendChild(title);
-        informations.appendChild(clasifications);
-        informations.appendChild(description);    
         };
 
     function loadingIndicators      (dom){
@@ -475,25 +468,31 @@
         let scaleX = scale;
         let scaleY = scale;
         let scaleZ = scale; 
-        gltfLoader.load( model, (gltf) => 
-            {
-            if (currentModel || currentBuilding) {
-                scene.remove(currentModel, currentBuilding);
-                currentBuilding = null;
-                currentModel = null;};
+    
+        gltfLoader.load(model, (gltf) => {
+    
+            scene.children.slice().forEach(obj => {
+                if (obj.name !== "pageLayout") {
+                    scene.remove(obj);
+                }
+            });
+    
+            currentModel = null;
+            currentBuilding = null;
+    
             currentModel = gltf.scene;
-            
-            console.log(`Changed model to ${model}`);
-            currentModel.position.set(-50 * scale , 0 * scale, -100 * scale);
+    
+            currentModel.position.set(-50 * scale, 0 * scale, -100 * scale);
             currentModel.scale.set(scaleX, scaleY, scaleZ);
-            currentModel.traverse((child) => {  
-                if (child.isMesh) {child.material = material;}
-            console.log(`Changed material to ${child.material}`)
-            }); 
+    
+            currentModel.traverse(child => {
+                if (child.isMesh) child.material = material;
+            });
+    
             scene.add(currentModel);
-            })
+        });
         };
-
+        
     function loadingLogo3D          (scene, light, model, material, animationModel){
         let scale  = .1;
         let scaleX = scale;
@@ -540,7 +539,45 @@
         } else {dom.style.display = "none";}
         };
 
-
+    function loadingPush(element, message = "Tap here") {
+        // Create indicator
+        const indicator = document.createElement("div");
+        document.body.appendChild(indicator);
+    
+        // Get direct children
+        const children = Array.from(element.children);
+    
+        // Highlight all except last
+        children.slice(0, -1).forEach(child => {
+            child.classList.add("highlight-outline");
+        });
+    
+        // Highlight ONLY the children of the last child
+        const lastChild = children[children.length - 1];
+        if (lastChild) {
+            Array.from(lastChild.children).forEach(grandchild => {
+                grandchild.classList.add("highlight-outline");
+            });
+        }
+    
+        // Position indicator next to the element
+    
+        // Remove everything when user clicks the element
+        element.addEventListener("click", () => {
+            children.slice(0, -1).forEach(child => {
+                child.classList.remove("highlight-outline");
+            });
+    
+            if (lastChild) {
+                Array.from(lastChild.children).forEach(grandchild => {
+                    grandchild.classList.remove("highlight-outline");
+                });
+            }
+    
+            indicator.remove();
+        }, { once: true });
+        };
+    
     const loaders = {
         loadLogo:           loadingLogo3D,
         loadPage:           createLoadingPage,
@@ -553,7 +590,8 @@
         loadMaterial:       loadingMaterial,
         loadPress:          loadingPressIndicator,
         loadDisplay:        loadingDisplay,
-        loadScroll:         loadingScroll
+        loadScroll:         loadingScroll,
+        loadPush:           loadingPush
     };
 
     export { loaders }
