@@ -6,11 +6,12 @@
         import { gsap }         from "gsap";
         import  Stats           from "stats.js";
 
-        import { ScrollTrigger } from "gsap/ScrollTrigger";
-        import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
-        import { RenderPass }   from "three/examples/jsm/postprocessing/RenderPass.js";
-        import { BokehPass }    from "three/examples/jsm/postprocessing/BokehPass.js";
-        import { LogoAnimation } from "./modules/animations.js"; 
+        import { ScrollTrigger }    from "gsap/ScrollTrigger";
+        import { ScrollSmoother }   from "gsap/ScrollSmoother";
+        import { EffectComposer }   from "three/examples/jsm/postprocessing/EffectComposer.js";
+        import { RenderPass }       from "three/examples/jsm/postprocessing/RenderPass.js";
+        import { BokehPass }        from "three/examples/jsm/postprocessing/BokehPass.js";
+        import { LogoAnimation }    from "./modules/animations.js"; 
 
         import { personal }     from "./modules/personal.js";
         import { projects }     from "./modules/projects.js";
@@ -292,9 +293,6 @@
             }
             
     /* STATS */
-        var stats = new Stats();
-            stats.showPanel(1);
-        document.body.appendChild(stats.dom);
 
     /* ENVIRONMENT */
         const   hdrLoader       = new HDRLoader();
@@ -391,8 +389,7 @@
 
     // ANIMATIONS
         let logoAnimation = new LogoAnimation();
-        gsap.registerPlugin(ScrollTrigger);
-
+        gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
 
         function viewportAnimation      () {
             let viewportTimeline = gsap.timeline({
@@ -434,6 +431,16 @@
             .add(viewportAnimation(), 1)
 
     // EVENTS
+        // STOP SCROLLING AT TOP AND RELOAD TRIGGER
+        window.addEventListener("scroll", () => {
+            if (window.scrollY < 1) {
+            window.scrollTo({
+                top: 1,
+                behavior: "instant"
+            });
+            }
+        });
+
         window.addEventListener('resize', ()=>{
             updateCanvas();
             updateCanvaso();
@@ -454,7 +461,7 @@
               window.scrollTo(0, 0);
               ScrollTrigger.refresh();
             });
-          });
+        });
         
         const sectionsNavBar        = document.getElementById("navBar");
         const sectionsBtns          = Array.from(sectionsNavBar.children);
@@ -469,7 +476,6 @@
         const abilitiesBody         = document.getElementById("abilities");
         const experiencesBody       = document.getElementById("experiences");
         const contactsBody          = document.getElementById("contacts");
-        
 
         let bodyPos;
         let aboutMePos;    
