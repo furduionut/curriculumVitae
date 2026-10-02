@@ -20,7 +20,7 @@ const projects =
                     meshes: 
                         [
                             './assets/meshes/casaBacau/casaBacau_baked/casaBacau_outerShell.glb',
-                            './assets/meshes/casaBacau/casaBacau_baked/casaBacau_baseFloor.glb',
+                            // './assets/meshes/casaBacau/casaBacau_baked/casaBacau_baseFloor.glb',
                             './assets/meshes/casaBacau/casaBacau_baked/casaBacau_groundFloor.glb',
                             './assets/meshes/casaBacau/casaBacau_baked/casaBacau_firstFloor.glb'
                         ],

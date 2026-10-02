@@ -25,7 +25,6 @@
     --general-fontSize:         12px;
     --important-fontSize:       5em;
 
-
     --banner-fontSize:          12px;
     --control-fontSize:         12px;
     --chapters-fontSize:        12px;
@@ -132,6 +131,7 @@
     
     /*-------DEBUG--------*/
     .dg {
+        display: none;
     }
     .dg .cr .property-name {
     color: #fff !important;

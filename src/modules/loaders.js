@@ -5,6 +5,7 @@
     import { TextGeometry } from "three/examples/jsm/Addons.js";
     import { ScrollTrigger } from "gsap/ScrollTrigger";
     import { gsap }         from "gsap";
+    import { GUI }          from "dat.gui";
     
     import { styles } from "./styles.js";
     import { domain as dom } from "./domain.js";
@@ -436,41 +437,334 @@
         window.scrollTo({ top: scrollY, behavior: "smooth" });
         };
 
-    function loadingBuilding        (scene, light, building, material){ 
-        let scale  = .1;
-        let scaleX = scale;
-        let scaleY = scale;
-        let scaleZ = scale;
-        
-        gltfLoader.load( building, (gltf) => 
-            {scene.children.slice().forEach(obj => {if (obj.name !== "pageLayout") {scene.remove(obj); }
-                });
-            if (currentModel || currentBuilding && currentBuilding.name !== 'pageLayout') {
-                scene.remove(currentModel, currentBuilding)
-                currentBuilding = null;
-                currentModel = null;};
-            currentBuilding = gltf.scene;
-            console.log(currentBuilding);
-            
-            console.log(`Changed building to ${building}`);
-            currentBuilding.position.set(-50 * scale , 0 * scale, -100 * scale);
-            currentBuilding.scale.set(scaleX, scaleY, scaleZ);
-            currentBuilding.traverse((child) => {
-                if (child.isMesh) {child.material = material;}
-            console.log(`Changed material to ${child.material}`)
-            });
-            scene.add(currentBuilding);
-            })
+    function makeBlackWhite         (texture) {
+        const img = texture.image;
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+    
+        canvas.width = img.width;
+        canvas.height = img.height;
+    
+        ctx.drawImage(img, 0, 0);
+    
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
+    
+        for (let i = 0; i < data.length; i += 4) {
+            const r = data[i];
+            const g = data[i + 1];
+            const b = data[i + 2];
+    
+            // luminance formula
+            const gray = 0.299 * r + 0.587 * g + 0.114 * b;
+    
+            data[i]     = gray;
+            data[i + 1] = gray;
+            data[i + 2] = gray;
+        }
+    
+        ctx.putImageData(imageData, 0, 0);
+    
+        const bwTexture = new THREE.CanvasTexture(canvas);
+        bwTexture.needsUpdate = true;
+    
+        return bwTexture;
         };
 
-    function loadingModel           (scene, light, model, material){ 
-        let scale  = .1;
-        let scaleX = scale;
-        let scaleY = scale;
-        let scaleZ = scale; 
+    function applyFilter            (texture, color, strength, mode) {
+
+        const overlayColor = new THREE.Color(color);
+    
+        return new THREE.ShaderMaterial({
+            uniforms: {
+                map:      { value: texture },
+                overlay:  { value: overlayColor },
+                strength: { value: strength },
+                mode:     { value: mode }
+            },
+            vertexShader: `
+                varying vec2 vUv;
+                void main() {
+                    vUv = uv;
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                }
+            `,
+            fragmentShader: `
+                uniform sampler2D map;
+                uniform vec3 overlay;
+                uniform float strength;
+                uniform int mode;
+                varying vec2 vUv;
+    
+                // -----------------------------
+                // Basic Blend Modes
+                // -----------------------------
+    
+                vec3 blendMultiply(vec3 base, vec3 blend) {
+                    return base * blend;
+                }
+    
+                vec3 blendScreen(vec3 base, vec3 blend) {
+                    return 1.0 - (1.0 - base) * (1.0 - blend);
+                }
+    
+                vec3 blendOverlay(vec3 base, vec3 blend) {
+                    return vec3(
+                        base.r < 0.5 ? (2.0 * base.r * blend.r) : (1.0 - 2.0 * (1.0 - base.r) * (1.0 - blend.r)),
+                        base.g < 0.5 ? (2.0 * base.g * blend.g) : (1.0 - 2.0 * (1.0 - base.g) * (1.0 - blend.g)),
+                        base.b < 0.5 ? (2.0 * base.b * blend.b) : (1.0 - 2.0 * (1.0 - base.b) * (1.0 - blend.b))
+                    );
+                }
+    
+                vec3 blendSoftLight(vec3 base, vec3 blend) {
+                    return mix(
+                        base - (1.0 - 2.0 * blend) * base * (1.0 - base),
+                        base + (2.0 * blend - 1.0) * (sqrt(base) - base),
+                        step(0.5, blend)
+                    );
+                }
+    
+                vec3 blendHardLight(vec3 base, vec3 blend) {
+                    return blendOverlay(blend, base);
+                }
+    
+                vec3 blendColorDodge(vec3 base, vec3 blend) {
+                    return base / (1.0 - blend);
+                }
+    
+                vec3 blendColorBurn(vec3 base, vec3 blend) {
+                    return 1.0 - (1.0 - base) / blend;
+                }
+    
+                vec3 blendLinearDodge(vec3 base, vec3 blend) {
+                    return base + blend;
+                }
+    
+                vec3 blendLinearBurn(vec3 base, vec3 blend) {
+                    return base + blend - 1.0;
+                }
+    
+                vec3 blendVividLight(vec3 base, vec3 blend) {
+                    return vec3(
+                        blend.r < 0.5 ? (1.0 - (1.0 - base.r) / (2.0 * blend.r)) : (base.r / (2.0 * (1.0 - blend.r))),
+                        blend.g < 0.5 ? (1.0 - (1.0 - base.g) / (2.0 * blend.g)) : (base.g / (2.0 * (1.0 - blend.g))),
+                        blend.b < 0.5 ? (1.0 - (1.0 - base.b) / (2.0 * blend.b)) : (base.b / (2.0 * (1.0 - blend.b)))
+                    );
+                }
+    
+                vec3 blendLinearLight(vec3 base, vec3 blend) {
+                    return base + 2.0 * blend - 1.0;
+                }
+    
+                vec3 blendPinLight(vec3 base, vec3 blend) {
+                    return vec3(
+                        blend.r < 0.5 ? min(base.r, 2.0 * blend.r) : max(base.r, 2.0 * blend.r - 1.0),
+                        blend.g < 0.5 ? min(base.g, 2.0 * blend.g) : max(base.g, 2.0 * blend.g - 1.0),
+                        blend.b < 0.5 ? min(base.b, 2.0 * blend.b) : max(base.b, 2.0 * blend.b - 1.0)
+                    );
+                }
+    
+                vec3 blendHardMix(vec3 base, vec3 blend) {
+                    return step(1.0, base + blend);
+                }
+    
+                vec3 blendDifference(vec3 base, vec3 blend) {
+                    return abs(base - blend);
+                }
+    
+                vec3 blendExclusion(vec3 base, vec3 blend) {
+                    return base + blend - 2.0 * base * blend;
+                }
+    
+                vec3 blendDarken(vec3 base, vec3 blend) {
+                    return min(base, blend);
+                }
+    
+                vec3 blendLighten(vec3 base, vec3 blend) {
+                    return max(base, blend);
+                }
+    
+                vec3 blendSubtract(vec3 base, vec3 blend) {
+                    return base - blend;
+                }
+    
+                vec3 blendDivide(vec3 base, vec3 blend) {
+                    return base / blend;
+                }
+    
+                // -----------------------------
+                // HSL Utility Functions
+                // -----------------------------
+    
+                vec3 rgb2hsl(vec3 c) {
+                    float maxc = max(max(c.r, c.g), c.b);
+                    float minc = min(min(c.r, c.g), c.b);
+                    float l = (maxc + minc) * 0.5;
+    
+                    float h = 0.0;
+                    float s = 0.0;
+    
+                    if (maxc != minc) {
+                        float d = maxc - minc;
+                        s = l > 0.5 ? d / (2.0 - maxc - minc) : d / (maxc + minc);
+    
+                        if (maxc == c.r) h = (c.g - c.b) / d + (c.g < c.b ? 6.0 : 0.0);
+                        else if (maxc == c.g) h = (c.b - c.r) / d + 2.0;
+                        else h = (c.r - c.g) / d + 4.0;
+    
+                        h /= 6.0;
+                    }
+    
+                    return vec3(h, s, l);
+                }
+    
+                float hue2rgb(float p, float q, float t) {
+                    if (t < 0.0) t += 1.0;
+                    if (t > 1.0) t -= 1.0;
+                    if (t < 1.0/6.0) return p + (q - p) * 6.0 * t;
+                    if (t < 1.0/2.0) return q;
+                    if (t < 2.0/3.0) return p + (q - p) * (2.0/3.0 - t) * 6.0;
+                    return p;
+                }
+    
+                vec3 hsl2rgb(vec3 hsl) {
+                    float h = hsl.x;
+                    float s = hsl.y;
+                    float l = hsl.z;
+    
+                    float r, g, b;
+    
+                    if (s == 0.0) {
+                        r = g = b = l;
+                    } else {
+                        float q = l < 0.5 ? l * (1.0 + s) : l + s - l * s;
+                        float p = 2.0 * l - q;
+                        r = hue2rgb(p, q, h + 1.0/3.0);
+                        g = hue2rgb(p, q, h);
+                        b = hue2rgb(p, q, h - 1.0/3.0);
+                    }
+    
+                    return vec3(r, g, b);
+                }
+    
+                // -----------------------------
+                // HSL Blend Modes
+                // -----------------------------
+    
+                vec3 blendHue(vec3 base, vec3 blend) {
+                    vec3 bHSL = rgb2hsl(base);
+                    vec3 oHSL = rgb2hsl(blend);
+                    return hsl2rgb(vec3(oHSL.x, bHSL.y, bHSL.z));
+                }
+    
+                vec3 blendSaturation(vec3 base, vec3 blend) {
+                    vec3 bHSL = rgb2hsl(base);
+                    vec3 oHSL = rgb2hsl(blend);
+                    return hsl2rgb(vec3(bHSL.x, oHSL.y, bHSL.z));
+                }
+    
+                vec3 blendColor(vec3 base, vec3 blend) {
+                    vec3 bHSL = rgb2hsl(base);
+                    vec3 oHSL = rgb2hsl(blend);
+                    return hsl2rgb(vec3(oHSL.x, oHSL.y, bHSL.z));
+                }
+    
+                vec3 blendLuminosity(vec3 base, vec3 blend) {
+                    vec3 bHSL = rgb2hsl(base);
+                    vec3 oHSL = rgb2hsl(blend);
+                    return hsl2rgb(vec3(bHSL.x, bHSL.y, oHSL.z));
+                }
+    
+                // -----------------------------
+                // Mode Selector
+                // -----------------------------
+    
+                vec3 blendMode(vec3 base, vec3 blend, int mode) {
+                    if (mode == 0) return blendMultiply(base, blend);
+                    if (mode == 1) return blendScreen(base, blend);
+                    if (mode == 2) return blendOverlay(base, blend);
+                    if (mode == 3) return blendSoftLight(base, blend);
+                    if (mode == 4) return blendHardLight(base, blend);
+                    if (mode == 5) return blendColorDodge(base, blend);
+                    if (mode == 6) return blendColorBurn(base, blend);
+                    if (mode == 7) return blendLinearDodge(base, blend);
+                    if (mode == 8) return blendLinearBurn(base, blend);
+                    if (mode == 9) return blendVividLight(base, blend);
+                    if (mode == 10) return blendLinearLight(base, blend);
+                    if (mode == 11) return blendPinLight(base, blend);
+                    if (mode == 12) return blendHardMix(base, blend);
+                    if (mode == 13) return blendDifference(base, blend);
+                    if (mode == 14) return blendExclusion(base, blend);
+                    if (mode == 15) return blendDarken(base, blend);
+                    if (mode == 16) return blendLighten(base, blend);
+                    if (mode == 17) return blendSubtract(base, blend);
+                    if (mode == 18) return blendDivide(base, blend);
+                    if (mode == 19) return blendHue(base, blend);
+                    if (mode == 20) return blendSaturation(base, blend);
+                    if (mode == 21) return blendColor(base, blend);
+                    if (mode == 22) return blendLuminosity(base, blend);
+    
+                    return base;
+                }
+    
+                void main() {
+                    vec4 base = texture2D(map, vUv);
+                    vec3 blended = blendMode(base.rgb, overlay, mode);
+                    vec3 finalColor = mix(base.rgb, blended, strength);
+                    gl_FragColor = vec4(finalColor, base.a);
+                }
+            `
+        });
+        };
+
+    function loadingBuilding        (scene, light, building, material, color, intensity, blendMode) {
+        let scale = .1;
+    
+        gltfLoader.load(building, (gltf) => {
+    
+            scene.children.slice().forEach(obj => {
+                if (obj.name !== "pageLayout") scene.remove(obj);
+            });
+    
+            if (currentModel || currentBuilding && currentBuilding.name !== 'pageLayout') {
+                scene.remove(currentModel, currentBuilding);
+                currentBuilding = null;
+                currentModel = null;
+            }
+    
+            currentBuilding = gltf.scene;
+    
+            currentBuilding.position.set(-50 * scale, 0, -100 * scale);
+            currentBuilding.scale.set(scale, scale, scale);
+    
+            currentBuilding.traverse(child => {
+                if (!child.isMesh) return;
+    
+                const tex =
+                    material.map ||
+                    child.material.map ||
+                    child.material.uniforms?.map?.value;
+    
+                if (!tex) return;
+    
+                child.material = applyFilter(
+                    tex,
+                    color,
+                    intensity,
+                    blendMode
+                );
+            });
+    
+            scene.add(currentBuilding);
+        });
+        };
+
+    function loadingModel           (scene, light, model, material, color, intensity, blendMode) {
+        let scale = .1;
     
         gltfLoader.load(model, (gltf) => {
     
+            // Remove everything except pageLayout
             scene.children.slice().forEach(obj => {
                 if (obj.name !== "pageLayout") {
                     scene.remove(obj);
@@ -482,11 +776,25 @@
     
             currentModel = gltf.scene;
     
-            currentModel.position.set(-50 * scale, 0 * scale, -100 * scale);
-            currentModel.scale.set(scaleX, scaleY, scaleZ);
+            currentModel.position.set(-50 * scale, 0, -100 * scale);
+            currentModel.scale.set(scale, scale, scale);
     
             currentModel.traverse(child => {
-                if (child.isMesh) child.material = material;
+                if (!child.isMesh) return;
+    
+                const tex =
+                    material.map ||
+                    child.material.map ||
+                    child.material.uniforms?.map?.value;
+    
+                if (!tex) return;
+    
+                child.material = applyFilter(
+                    tex,
+                    color,
+                    intensity,
+                    blendMode
+                );
             });
     
             scene.add(currentModel);
@@ -539,7 +847,7 @@
         } else {dom.style.display = "none";}
         };
 
-    function loadingPush(element, message = "Tap here") {
+    function loadingPush            (element, message = "Tap here") {
         // Create indicator
         const indicator = document.createElement("div");
         document.body.appendChild(indicator);

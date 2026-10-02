@@ -5,6 +5,7 @@
         import { HDRLoader, UnrealBloomPass }    from "three/examples/jsm/Addons.js";
         import { gsap }         from "gsap";
         import  Stats           from "stats.js";
+        import { GUI }           from "dat.gui";
 
         import { ScrollTrigger }    from "gsap/ScrollTrigger";
         import { ScrollSmoother }   from "gsap/ScrollSmoother";
@@ -62,10 +63,10 @@
         let sectionHeight;
         const changemainHeight = () => {
             mainHeight = main.scrollHeight; console.log(mainHeight)
-            sectionHeight   = mainHeight / 5;}
+            sectionHeight   = mainHeight / 5;
+            };
         changemainHeight();
 
-        window.addEventListener("resize", changemainHeight);
     
         function updateCam() {
             let perspCameraZoom = 1;
@@ -202,7 +203,114 @@
             perspCamera.zoom = THREE.MathUtils.lerp(zoomStart, zoomEnd, easedT);
             perspCamera.updateProjectionMatrix();
 
-        }
+            };
+
+    /* CHANGE COLOR FILTER */
+        let filterColor      = "#566E9C";
+        let filterIntensity  = 1;
+        let filterBlendMode  = 5;
+        
+        // The GUI panel
+        const gui = new GUI();
+        const blendModes = {
+            Multiply: 0,
+            Screen: 1,
+            Overlay: 2,
+            SoftLight: 3,
+            HardLight: 4,
+            ColorDodge: 5,
+            ColorBurn: 6,
+            LinearDodge: 7,
+            LinearBurn: 8,
+            VividLight: 9,
+            LinearLight: 10,
+            PinLight: 11,
+            HardMix: 12,
+            Difference: 13,
+            Exclusion: 14,
+            Darken: 15,
+            Lighten: 16,
+            Subtract: 17,
+            Divide: 18,
+            Hue: 19,
+            Saturation: 20,
+            Color: 21,
+            Luminosity: 22
+        };
+
+        function reloadScene() {
+
+                // 1. Dispose meshes
+                scene.traverse(obj => {
+                    if (obj.isMesh) {
+                        if (obj.geometry) obj.geometry.dispose();
+            
+                        if (obj.material) {
+                            if (Array.isArray(obj.material)) {
+                                obj.material.forEach(m => m.dispose());
+                            } else {
+                                obj.material.dispose();
+                            }
+                        }
+                    }
+                });
+            
+                // 2. Remove all objects except pageLayout (and optionally lights)
+                scene.children.slice().forEach(obj => {
+                    if (obj.name !== "pageLayout") {
+                        scene.remove(obj);
+                    }
+                });
+            
+                // 3. Reset indices if you want a full reset
+                // or keep them if you want to stay on current building/model
+                // buildingIndex = 0;
+                // buildingModelIndex = 0;
+            
+                // 4. Update references
+                updateRefs();
+            
+                // 5. Reload building + info with current filter settings
+                loaders.loadBuilding(
+                    scene,
+                    light,
+                    building,
+                    material,
+                    filterColor,
+                    filterIntensity,
+                    filterBlendMode
+                );
+            
+                loaders.loadInfo(name, about, type, style);
+            
+                console.log("Scene fully reloaded with new filter settings.");
+            };
+
+        gui.addColor({ value: filterColor }, "value")
+            .name("Filter Color")
+            .onChange(v => {
+                filterColor = v;
+                console.log("filterColor =", filterColor);
+                reloadScene(renderer, scene);
+            });
+        
+        // Intensity slider
+        gui.add({ value: filterIntensity }, "value", 0, 1, 0.001)
+            .name("Intensity")
+            .onChange(v => {
+                filterIntensity = v;
+                console.log("filterIntensity =", filterIntensity);
+                reloadScene(renderer, scene);
+            });
+
+        gui.add({ value: filterBlendMode }, "value", blendModes)
+            .name("Blend Mode")
+            .onChange(v => {
+                filterBlendMode = v;
+                console.log("filterBlendMode =", filterBlendMode);
+                reloadScene(renderer, scene);
+            });
+
     /* CAMERA FOCUS */
         const focusPoint        = new THREE.Vector3(-5, 0, -10);
 
@@ -227,7 +335,8 @@
     /* MESHES */
         let neighbor            = objects.neighbor.main;
         let building            = buildings[buildingIndex];
-        let model               = models[buildingIndex][buildingModelIndex];
+        let model               = models[buildingIndex];
+
         let logo3D              = objects.logo3D.main;
         let text                = 'Architizer';
 
@@ -242,30 +351,31 @@
         Object.values(light).forEach((light) => {scene.add(light), secondScene.add(light)});
 
     /* LOADERS */
-        const nextBuildingIndex = () => {
+        function nextBuildingIndex  () {
             if      (buildingIndex < buildings.length - 1) {buildingIndex++;} 
             else    {buildingIndex = 0;}
-            console.log(`Changed indexes ${buildingIndex+1} / ${buildings.length}`);};
-            
-        const prevBuildingIndex = () => {
+            console.log(`Changed indexes ${buildingIndex+1} / ${buildings.length}`);
+            };          
+        function prevBuildingIndex  () {
             if      (buildingIndex > 0) {buildingIndex--;} 
             else    {buildingIndex = buildings.length - 1;}
-            console.log(`Changed indexes ${buildingIndex+1} / ${buildings.length}`)};
-        
-        const prevModelIndex = () => {
+            console.log(`Changed indexes ${buildingIndex+1} / ${buildings.length}`)
+            };       
+        function prevModelIndex     () {
             if (buildingModelIndex > 0) {buildingModelIndex--;} 
             else {buildingModelIndex = models.length - 1;}
             console.log(`Changed indexes are: 
-                model ${buildingModelIndex} / ${models.length} of building ${buildingIndex+1}`)};
-            
-        const nextModelIndex = () => {
+                model ${buildingModelIndex} / ${models.length} of building ${buildingIndex+1}`)
+            }; 
+        function nextModelIndex     () {
             if (buildingModelIndex < models.length - 1) {buildingModelIndex++;} 
             else {buildingModelIndex = 0;}
             console.log(`Changed indexes are: 
-                model ${buildingModelIndex} / ${models.length} of building ${buildingIndex+1}`);};
+                model ${buildingModelIndex} / ${models.length} of building ${buildingIndex+1}`);
+            };
 
     /* UPDATERS */
-        function updateRefs() {
+        function updateRefs         () {
                 building            = buildings[buildingIndex];
                 model               = models[buildingIndex][buildingModelIndex];
                 texturePaths        = textures[buildingIndex];
@@ -276,68 +386,71 @@
                 about               = info.abouts[buildingIndex];
                 type                = info.types[buildingIndex];
                 style               = info.styles[buildingIndex];
-            }
-        function updateCanvas(){
+            };
+        function updateCanvas       () {
             rendererWidth       = dom.viewport.clientWidth;
             rendererHeight      = dom.viewport.clientHeight;
             renderer.setSize    (rendererWidth, rendererHeight);
             perspCamera.aspect  = rendererWidth / rendererHeight;
             perspCamera.updateProjectionMatrix();
-            }
-        function updateCanvaso(){
+            };
+        function updateCanvaso      () {
             renderoWidth            = dom.viewport2.clientWidth;
             renderoHeight           = dom.viewport2.clientHeight;
             renderero.setSize       (renderoWidth, renderoHeight);
             orthoCamera.aspect      = renderoWidth / renderoHeight;
             resizeOrthoCamera       (renderoWidth, renderoHeight);
-            }
+            };
             
     /* STATS */
 
     /* ENVIRONMENT */
         const   hdrLoader       = new HDRLoader();
-                hdrLoader.load('./assets/textures/environment/cloisterPassage/cloisterPassage_1k.hdr', 
-                    (texture) => {
-                        texture.mapping = THREE.EquirectangularReflectionMapping;
-                        scene.environment = texture;
-                    },
-                    undefined,
-                    (err) => console.log('HDR load error', err))
+            hdrLoader.load('./assets/textures/environment/cloisterPassage/cloisterPassage_1k.hdr', 
+                (texture) => {
+                    texture.mapping = THREE.EquirectangularReflectionMapping;
+                    scene.environment = texture;
+                },
+                undefined,
+                (err) => console.log('HDR load error', err)
+            );
     
     /* RENDERER */
         let renderer = renders(
             rendererWidth, 
             rendererHeight, 
-            rendererCanvas);
+            rendererCanvas
+            );
 
         let renderero = rendero(
             renderoWidth,
             renderoHeight,
-            renderoCanvas);
+            renderoCanvas
+            );
 
     /* ACTIONS */
         dom.nextBtn.addEventListener    
-        ('click', ()=>{
-            nextBuildingIndex();
-            updateRefs();
-            loaders.loadBuilding(scene, light, building, material);
-            loaders.loadInfo(name, about, type, style);
-            console.log("nextBtn was pressed");
+            ('click', ()=>{
+                nextBuildingIndex();
+                updateRefs();
+                loaders.loadBuilding(scene, light, building, material, filterColor, filterIntensity, filterBlendMode);
+                loaders.loadInfo(name, about, type, style);
+                console.log("nextBtn was pressed");
             });
 
         dom.prevBtn.addEventListener    
             ('click', ()=>{
                 prevBuildingIndex();
                 updateRefs();
-                loaders.loadBuilding(scene, light, building, material);
+                loaders.loadBuilding(scene, light, building, material, filterColor, filterIntensity, filterBlendMode);
                 loaders.loadInfo(name, about, type, style);
             });
 
         dom.upBtn.addEventListener      
             ('click', ()=>{
                 nextModelIndex();
-                updateRefs();
-                loaders.loadModel(scene, light, model, material);
+                updateRefs()
+                loaders.loadModel(scene, light, model, material, filterColor, filterIntensity, filterBlendMode);
                 loaders.loadInfo(name, about, type, style);
             });
 
@@ -345,7 +458,7 @@
             ('click', ()=>{
                 prevModelIndex();
                 updateRefs();
-                loaders.loadModel(scene, light, model, material);
+                loaders.loadModel(scene, light, model, material, filterColor, filterIntensity, filterBlendMode);
                 loaders.loadInfo(name, about, type, style);
             });
     
@@ -354,6 +467,8 @@
                 updateCanvas();
                 updateCanvaso();
             });
+
+        window.addEventListener("resize", changemainHeight);
               
     /* CONTROL */
     const control = controls(orthoCamera, renderero.domElement);
@@ -578,8 +693,7 @@
         loaders.loadNeighboar   (scene, light, neighbor, materials);
         loaders.loadBuilding    (scene, light, building, material);
         // loaders.loadInfo        (name, about, type, style);
-
-
+        
     // CAMERA TIMELINE 
     console.log(scene)
 
