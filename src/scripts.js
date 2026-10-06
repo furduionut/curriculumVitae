@@ -62,14 +62,13 @@
         let mainHeight;
         let sectionHeight;
         const changemainHeight = () => {
-            mainHeight = main.scrollHeight; console.log(mainHeight)
+            mainHeight = main.scrollHeight;
             sectionHeight   = mainHeight / 5;
             };
         changemainHeight();
 
-    
         function updateCam() {
-            let perspCameraZoom = 1;
+            let perspCameraZoom;
             const changeCameraZoom = () => {perspCameraZoom = window.innerWidth < 1025 ? .65 : 1}
             changeCameraZoom();
 
@@ -85,23 +84,23 @@
             // Section 2
             const camPosC = new THREE.Vector3(15, 20, 10.5);
             const lookC = new THREE.Vector3(-5.5, 1.5, -10.5);
-            const zoomC = perspCameraZoom * 4;
+            const zoomC = perspCameraZoom * 3.5;
             // Section 3
             const camPosD = new THREE.Vector3(15, 0, -10.5);
             const lookD = new THREE.Vector3(-5.5, 1.5, -10.5);
-            const zoomD = perspCameraZoom * 4;
+            const zoomD = perspCameraZoom * 3.5;
             // Section 4
             const camPosE = new THREE.Vector3(15, 0, -10.5);
             const lookE = new THREE.Vector3(-5.5, 0, -10.5);
-            const zoomE = perspCameraZoom * 4;
+            const zoomE = perspCameraZoom * 4.5;
             // Section 5
-            const camPosF = new THREE.Vector3(15, -9.5, -10.5);
-            const lookF = new THREE.Vector3(-5.5, -9.5, -10.5);
-            const zoomF = perspCameraZoom * 4;
+            const camPosF = new THREE.Vector3(15, -10.5, -10.5);
+            const lookF = new THREE.Vector3(-5.5, -10.5, -10.5);
+            const zoomF = perspCameraZoom * 5.5;
             // Section 6
-            const camPosG = new THREE.Vector3(15, -9.5, -10.5);
-            const lookG = new THREE.Vector3(-5.5, -9.5, -10.5);
-            const zoomG = perspCameraZoom * 4;
+            const camPosG = new THREE.Vector3(15, -10.5, -10.5);
+            const lookG = new THREE.Vector3(-5.5, -10.5, -10.5);
+            const zoomG = perspCameraZoom * 5.5;
             
             let scroll = window.scrollY / sectionHeight;
             let section = Math.floor(scroll);
@@ -189,10 +188,10 @@
                     sectionName = '';
                     break;
             }
-            console.log(`Window at zone ${section} at ${scroll} ${sectionName}`);
+            // console.log(`Window at zone ${section} at ${scroll} ${sectionName}`);
             let easedT = t;
             easedT = Math.pow(easedT, 2.0);
-            easedT = Math.min(easedT, 0.95);
+            easedT = Math.min(easedT, 0.8);
         
             const pos = posStart.clone().lerp(posEnd, easedT);
             perspCamera.position.copy(pos);
@@ -367,12 +366,12 @@
             console.log(`Changed indexes are: 
                 model ${buildingModelIndex} / ${models.length} of building ${buildingIndex+1}`)
             }; 
-        function nextModelIndex     () {
-            if (buildingModelIndex < models.length - 1) {buildingModelIndex++;} 
-            else {buildingModelIndex = 0;}
-            console.log(`Changed indexes are: 
-                model ${buildingModelIndex} / ${models.length} of building ${buildingIndex+1}`);
-            };
+        // function nextModelIndex     () {
+        //     if (buildingModelIndex < models.length - 1) {buildingModelIndex++;} 
+        //     else {buildingModelIndex = 0;}
+        //     console.log(`Changed indexes are: 
+        //         model ${buildingModelIndex} / ${models.length} of building ${buildingIndex+1}`);
+        //     };
 
     /* UPDATERS */
         function updateRefs         () {
@@ -401,8 +400,6 @@
             orthoCamera.aspect      = renderoWidth / renderoHeight;
             resizeOrthoCamera       (renderoWidth, renderoHeight);
             };
-            
-    /* STATS */
 
     /* ENVIRONMENT */
         const   hdrLoader       = new HDRLoader();
@@ -446,13 +443,13 @@
                 loaders.loadInfo(name, about, type, style);
             });
 
-        dom.upBtn.addEventListener      
-            ('click', ()=>{
-                nextModelIndex();
-                updateRefs()
-                loaders.loadModel(scene, light, model, material, filterColor, filterIntensity, filterBlendMode);
-                loaders.loadInfo(name, about, type, style);
-            });
+        // dom.upBtn.addEventListener      
+        //     ('click', ()=>{
+        //         nextModelIndex();
+        //         updateRefs()
+        //         loaders.loadModel(scene, light, model, material, filterColor, filterIntensity, filterBlendMode);
+        //         loaders.loadInfo(name, about, type, style);
+        //     });
 
         dom.downBtn.addEventListener    
             ('click', ()=>{
@@ -503,8 +500,25 @@
         composer.addPass(bloomPass)
 
     // ANIMATIONS
+        document.querySelectorAll(".navItem").forEach(item => {
+            item.addEventListener("mouseenter", () => {
+                gsap.to(item, {
+                    x: "50%",
+                    duration: 0.35,
+                    ease: "power2.out"
+                });
+            });
+            item.addEventListener("mouseleave", () => {
+                gsap.to(item, {
+                    x: "0%",
+                    duration: 0.35,
+                    ease: "power2.out"
+                });
+            });
+        });
+
         let logoAnimation = new LogoAnimation();
-        gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+        gsap.registerPlugin(ScrollTrigger);
 
         function viewportAnimation      () {
             let viewportTimeline = gsap.timeline({
@@ -516,6 +530,26 @@
                 
 
             return viewportTimeline;
+            };
+
+        function infoBarShowOn   () {
+            let infoBarTimline = gsap.timeline({
+                defaults: { duration: 6, ease: "power2.out" }});
+
+            infoBarTimline
+                .to(".infoBar", {x: '0%'});
+                
+            return infoBarTimline;
+            };
+
+        function infoBarShowOff   () {
+            let infoBarTimline = gsap.timeline({
+                defaults: { duration: 6, ease: "power2.out" }});
+
+            infoBarTimline
+                .to(".infoBar", {x: '75%'});
+                
+            return infoBarTimline;
             };
 
         function orthoCameraAnimation   () {
@@ -530,20 +564,120 @@
             return orthoCameraTimeline
             };
 
+        function controlNextBtn () {
+            let tl = gsap.timeline({
+                defaults: { duration: 0.5, ease: "power2.out" }
+            });
+        
+            tl.to(".nextBtn", {
+                left: "50%",
+                rotateZ: "720deg",
+                duration: 6,
+                ease: "power2.out",
+                delay: 1
+            })
+            .to(".nextBtn", {
+                left: "0%",
+                rotateZ: "45deg",
+                duration: 6,
+                ease: "power2.out",
+                delay: 1
+            })
+            .to(".nextBtn", {
+                bottom: "0%",
+                duration: 6,
+                delay: 3
+            });
+
+            return tl;
+            };
+
+        function controlPrevBtn () {
+            let tl = gsap.timeline({
+                defaults: { duration: 0.5, ease: "power2.out" }
+            });
+    
+            tl.to(".prevBtn", {
+                right: "50%",
+                rotateZ: "720deg",
+                duration: 6,
+                ease: "power2.out",
+                delay: 1
+            })
+            .to(".prevBtn", {
+                right: "0%",
+                rotateZ: "45deg",
+                duration: 6,
+                ease: "power2.out",
+                delay: 1
+            })
+            .to(".prevBtn", {
+                bottom: "0%",
+                duration: 6,
+                delay: 3
+            });
+
+            return tl;
+            };
+
+        function controlDownBtn () {
+            let tl = gsap.timeline({
+                defaults: { duration: 0.5, ease: "power2.out" }
+            });
+ 
+            tl.to(".downBtn", {
+                bottom: "-200%",
+                rotateZ: "180deg",
+                duration: 6,
+                ease: "power2.out",
+                delay: 1
+            })
+            .to(".downBtn", {
+                bottom: "65%",
+                rotateZ: "45deg",
+                duration: 6,
+                ease: "power2.out",
+                delay: 1
+            })
+            .to(".downBtn", {
+                opacity: 0,
+                duration: 2,
+                delay: 1
+            });
+
+            return tl;
+            };
+
+        function controlBtnsOff () {
+            let tl = gsap.timeline();
+        
+            tl.to(".controls", { opacity: 1, duration: 3, ease: "power2.out"})
+                .to(".controls", { opacity: 0, duration: 3, ease: "power2.out" });
+        
+            return tl;
+            };
+
         const mainTimeline = gsap.timeline({
             pause: true,
             scrollTrigger: {
                 trigger: '.viewport2',
                 start: "20% 25%",
-                end: "50% 25%",
+                end: "800% 25%",
                 markers: false,
                 scrub: 1, 
                 toggleActions: "play none reverse reverse"}
-        })
+            })
         
         mainTimeline
             .add(orthoCameraAnimation(), 1)
             .add(viewportAnimation(), 1)
+            .add(infoBarShowOn(), 2)
+            .add(controlNextBtn(), 2)
+            .add(controlPrevBtn(), 2)
+            .add(controlDownBtn(), 2)
+            .add(infoBarShowOff(), ">")
+            .add(controlBtnsOff(), ">")
+            
 
     // EVENTS
         // STOP SCROLLING AT TOP AND RELOAD TRIGGER
@@ -645,7 +779,6 @@
         const section2startPos = parseInt(getComputedStyle(section1).height) - parseInt(getComputedStyle(section2).height);
         const abilityStartPos = section1startPos - parseInt(getComputedStyle(abilitiesBody).height)/4;
         const experienceStartPos = section2startPos + parseInt(getComputedStyle(experiencesBody).height) + parseInt(getComputedStyle(abilitiesBody).height)*2.575;
-        console.log(section2startPos, abilityStartPos, experienceStartPos)
 
         sectionsBtns.forEach((e)=>{e.addEventListener("click", 
             ()=>{
@@ -694,8 +827,6 @@
         loaders.loadBuilding    (scene, light, building, material);
         // loaders.loadInfo        (name, about, type, style);
         
-    // CAMERA TIMELINE 
-    console.log(scene)
 
     // RENDERING
         function animate() {
@@ -705,5 +836,5 @@
             logoAnimation.update    ();
             composero.render        ();
             composer.render         ();
-        }
+        };
         animate()

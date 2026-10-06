@@ -333,14 +333,12 @@
             currentBuilding.name = 'pageLayout';
             currentBuilding.position.set(0, 0, 0);
             currentBuilding.scale.set(scale, scale, scale);
-
-            console.log(currentBuilding.children);
         
             let neighborTimeline = gsap.timeline({
                 scrollTrigger: {
                     trigger: '.projects',
                     start: "5% 0%",
-                    end: "100% 100%",
+                    end: "120% 100%",
                     scrub: 1,
                     markers: false
                 }
@@ -374,7 +372,6 @@
                     return;
                 };
                 
-
                 if (child.name.includes('desk')) {
                     const startPosition = originalZ + 200;
                     child.material      = material.desk;
@@ -382,18 +379,18 @@
                     child.position.z = startPosition;
                 
                     neighborTimeline
-                        .to(child.position, {z: originalZ, duration: 15, ease: "power2.out"}, 6);
+                        .to(child.position, {z: originalZ, duration: 10, ease: "power3.out"}, 2.5);
                 
                     return;
                 };
 
                 if (child.name.includes('neighboar_012') || child.name.includes('neighboar_013')){
-                    child.material = child.material.clone();
+                    child.material = materials.model;
                     child.material.transparent = true;
                     child.material.opacity = 1;
                     child.material.depthWrite = false;
                     
-                    neighborTimeline.to(child.material, {opacity: 0,        duration: 1,        ease: "power2.out",      }, 9);
+                    neighborTimeline.to(child.material, {opacity: 0,        duration: 1,        ease: "power2.out",      }, 7.5);
                     return;
                 };
 
@@ -404,9 +401,9 @@
                     child.material          = material.model;
                     child.position.y        = belowY;
                     
-                    neighborTimeline.to(child.scale,    {x: 1, y: 1, z:1,   duration: 16,       ease: "back.out(1.7)",   }, 9);
-                    neighborTimeline.to(child.material, {opacity: 1,        duration: 8,        ease: "power2.out",      }, 9);
-                    neighborTimeline.to(child.position, {y: originalY,      duration: 4.8,      ease: "bounce.out",      }, 9);
+                    neighborTimeline.to(child.scale,    {x: 1, y: 1, z:1,   duration: 1,       ease: "back.out(1.7)",   }, 5.25);
+                    neighborTimeline.to(child.material, {opacity: 1,        duration: 1,        ease: "power2.out",      }, 5.25);
+                    neighborTimeline.to(child.position, {y: originalY,      duration: 1,      ease: "bounce.out",      }, 5.25);
                         
                     return;
                 };
@@ -721,7 +718,12 @@
         let scale = .1;
     
         gltfLoader.load(building, (gltf) => {
-    
+            const   pivot = new THREE.Vector3(0,1,0);
+                    pivot.position.set(-50 * scale, 0, -100 * scale);
+            
+            const boundingbox = new THREE.Box3().setFromObject(currentBuilding);
+            const bbCenter = new THREE.Vector3();
+            
             scene.children.slice().forEach(obj => {
                 if (obj.name !== "pageLayout") scene.remove(obj);
             });
@@ -754,6 +756,8 @@
                     blendMode
                 );
             });
+
+            
     
             scene.add(currentBuilding);
         });

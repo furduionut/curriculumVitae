@@ -13,6 +13,7 @@ const domain = {
     upBtn   :        document.getElementById('upBtn'),
     nextBtn :        document.getElementById('nextBtn'),
     prevBtn :        document.getElementById('prevBtn'),
+    stageBtn :       document.getElementById('stageBtn'),
     downBtn :        document.getElementById('downBtn'),
     abouts  :        document.getElementById('description'),
     btn     :        document.getElementById('btn'),

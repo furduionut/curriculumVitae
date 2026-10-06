@@ -47,7 +47,7 @@ import { perspectiveDepthToViewZ } from "three/tsl";
         height: viewport.clientHeight,
         aspect: viewport.clientWidth / viewport.clientHeight,
         far: 150,
-        near: 0.01,
+        near: 10,
         positionX: 10,
         positionY: 10,
         positionZ: 10,
