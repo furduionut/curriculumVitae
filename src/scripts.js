@@ -59,6 +59,7 @@
 
     /* CAMERA ANIMATION */
         let main                = document.getElementById('main');
+        let sectionValue;
         let mainHeight;
         let sectionHeight;
         const changemainHeight = () => {
@@ -547,7 +548,7 @@
                 defaults: { duration: 6, ease: "power2.out" }});
 
             infoBarTimline
-                .to(".infoBar", {x: '75%'});
+                .to(".infoBar", {x: '90%'});
                 
             return infoBarTimline;
             };
@@ -626,7 +627,7 @@
             });
  
             tl.to(".downBtn", {
-                bottom: "-200%",
+                bottom: "-275%",
                 rotateZ: "180deg",
                 duration: 6,
                 ease: "power2.out",
@@ -671,12 +672,12 @@
         mainTimeline
             .add(orthoCameraAnimation(), 1)
             .add(viewportAnimation(), 1)
-            .add(infoBarShowOn(), 2)
-            .add(controlNextBtn(), 2)
-            .add(controlPrevBtn(), 2)
-            .add(controlDownBtn(), 2)
+            .add(infoBarShowOn(), 2.5)
+            .add(controlNextBtn(), 3.5)
+            .add(controlPrevBtn(), 3.5)
+            .add(controlDownBtn(), 3.5)
             .add(infoBarShowOff(), ">")
-            .add(controlBtnsOff(), ">")
+            .add(controlBtnsOff(), ">-1")
             
 
     // EVENTS
@@ -711,7 +712,55 @@
               ScrollTrigger.refresh();
             });
         });
+
+        dom.artistBtn.addEventListener('click', () => {
+            loaders.loadExperience(dom.artistBtn, experiences.artist);
+        });
+
+        dom.architectBtn.addEventListener('click', () => {
+            loaders.loadExperience(dom.architectBtn, experiences.architecture);
+        });
+
+        dom.programmerBtn.addEventListener('click', () => {
+            loaders.loadExperience(dom.programmerBtn, experiences.programmer);
+        });
+
+        window.addEventListener("scroll", () => {
+            const scroll = window.scrollY;
         
+            // Greeting zone
+            if (scroll >= aboutMePos*2 && scroll <= abilitiesPos) {
+                dom.infoBar.innerHTML = "hi";
+                return;
+            }
+        
+            // About zone
+            if (scroll >= abilitiesPos && scroll <= experiencePos) {
+                dom.infoBar.innerHTML = "ab";
+                return;
+            }
+        
+            // Anything else → clear
+            dom.infoBar.innerHTML = "";
+        });
+
+        const originalDisplay = getComputedStyle(expDetails).display;
+        function toggleExpDetails(domBtn, data) {
+            if (expDetails.style.display === 'none') {
+                expDetails.style.display = originalDisplay;
+                loadingExperience(domBtn, data);
+            } 
+            else {
+                expDetails.style.display = 'none';
+            }
+        }
+
+        const expBanner = document.getElementById('experience banner');
+        const expBannerChildren = Array.from(expBanner.children);
+        expBannerChildren.forEach((btn)=>{btn.addEventListener("click", toggleExpDetails)})
+
+        dom.experiencesBtn.addEventListener('click', toggleExpDetails);
+
         const sectionsNavBar        = document.getElementById("navBar");
         const sectionsBtns          = Array.from(sectionsNavBar.children);
 
@@ -789,7 +838,7 @@
                         break;
     
                     case 'navAboutMe':
-                        loaders.loadScroll(sectionHeight * 1);
+                        loaders.loadScroll(sectionHeight * 1.6);
                         loaders.loadPress(projectsBanner);
                         break;
                     

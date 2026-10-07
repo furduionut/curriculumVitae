@@ -18,6 +18,11 @@ const domain = {
     abouts  :        document.getElementById('description'),
     btn     :        document.getElementById('btn'),
     experience:      document.getElementById('experience-6'),
+    artistBtn:       document.getElementById('artistBtn'),
+    architectBtn:    document.getElementById('architectBtn'),
+    programmerBtn:   document.getElementById('programmerBtn'),
+    experiencesBtn:  document.getElementById('experiences'),
+    infoBar:        document.getElementById('infoBar'),
     
     /* ABILITIES */
     abilitiesBtn:    document.querySelectorAll('#abilityBtn'),
