@@ -5,13 +5,13 @@ const projects =
     casaBacau:  new Project(
                 {
                     name: 'Bacau House',
-                    type: 'Residential',
-                    style: 'Mediteranian',
-                    about: `A traditional two‑story residential house with intersecting gable roofs clad 
-                    in warm reddish shingles. The light-toned façade features symmetrical window placement 
-                    and an arched entrance supported by columns, giving it a classic suburban character. 
-                    The geometry mixes simple rectangular volumes with layered roof planes, while the 
-                    chromatic palette contrasts soft wall colors with the saturated roof tone.`
+                    type: 'Rezidențial',
+                    style: 'Mediteranean',
+                    about: `O locuință tradițională cu două niveluri, având acoperișuri în două ape care se intersectează, 
+                    acoperite cu țiglă roșiatică în tonuri calde. Fațada în culori deschise prezintă o dispunere simetrică 
+                    a ferestrelor și o intrare arcuită susținută de coloane, conferindu-i un caracter suburban clasic. 
+                    Geometria îmbină volume rectangulare simple cu planuri de acoperiș stratificate, în timp ce paleta 
+                    cromatică contrastează nuanțele blânde ale pereților cu tonul saturat al acoperișului.`
                 },
 
                 {   
@@ -41,12 +41,12 @@ const projects =
     casaClim:   new Project(
                 {
                     name: 'Clim House',
-                    type: 'Residential',
+                    type: 'Rezidențial',
                     style: 'Modern/Contemporan',
-                    about: `A modern two‑story house with clean rectangular volumes, 
-                    flat roof, and large horizontal windows. The façade blends light grey concrete, 
-                    warm wood panels, and dark metal trims, creating a crisp minimalist look with 
-                    strong geometric contrast.`,
+                    about: `O casă modernă cu două niveluri, definită de volume rectangulare curate,
+                    acoperiș plat și ferestre orizontale ample. Fațada combină beton gri deschis,
+                    panouri din lemn cald și detalii metalice închise la culoare, creând un aspect
+                    minimalist și clar, cu un contrast geometric puternic.`,
                 },
 
                 {
@@ -75,10 +75,15 @@ const projects =
     casaStolnicu:   new Project(
                     {
                         name: 'Stolnicu House',
-                        type: 'Residential',
+                        type: 'Rezidențial',
                         style: 'Eclectism',
-                        about: 'A refreshing design'
-                },
+                        about: `O locuință contemporană cu două niveluri, 
+                        redată în 3D, definită de volume geometrice curate, 
+                        un acoperiș și o fațadă în tonuri deschise, 
+                        precum și ferestre rectangulare bine proporționate. 
+                        Elevația principală include un gol amplu ce sugerează un garaj și o zonă de acces simplă, pavată. 
+                        Volumele neutre din jur reprezintă clădirile vecine, evidențiind casa ca element arhitectural central.`
+                    },
 
                     {
                     arc:{

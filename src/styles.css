@@ -373,8 +373,9 @@
     /* ----INFORMATION-----*/
     .infoBar {
     /* box */
+    padding: calc(var(--general-padding)*2);
     /* size */
-    width: 40%;
+    width: 30%;
     height: 100%;
     /* position */
     position: absolute;
@@ -389,8 +390,25 @@
     /* display */
     display:flex;
     align-items: center;
+    align-content: space-between;
     /* content */
     }
+    .infoBar h1 {
+        font-weight: 1000;
+    }
+    .infoBar h2 {
+        font-style: italic;
+        font-weight: 500;
+    }
+    .infoBar h3 {
+        font-style: italic;
+        font-weight: 250;
+    }
+
+    .infoBar p {
+        font-size: 16px;
+    }
+
     .navItem:hover {
         outline: var(--outline-style) var(--outline-color);
     }

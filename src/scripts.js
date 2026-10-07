@@ -320,15 +320,14 @@
         let textures            = objects.texturesList;
 
     /* INFORMATIONS */
-        let names               = info.names;
-        let abouts              = info.abouts;
-        let types               = info.types;
-        let styles              = info.styles;
-
         let name                = info.names[buildingIndex];
         let about               = info.abouts[buildingIndex];
         let type                = info.types[buildingIndex];
         let style               = info.styles[buildingIndex];
+
+        /* 
+            dom.innerHTML = `Proiect ${name} de tipul ${type} în stilul ${style} este ${about}`
+        */
 
         let symbols             = Object.values(abilities)
         
@@ -432,7 +431,7 @@
                 nextBuildingIndex();
                 updateRefs();
                 loaders.loadBuilding(scene, light, building, material, filterColor, filterIntensity, filterBlendMode);
-                loaders.loadInfo(name, about, type, style);
+                changeDescription(name, about, type, style);
                 console.log("nextBtn was pressed");
             });
 
@@ -441,7 +440,7 @@
                 prevBuildingIndex();
                 updateRefs();
                 loaders.loadBuilding(scene, light, building, material, filterColor, filterIntensity, filterBlendMode);
-                loaders.loadInfo(name, about, type, style);
+                changeDescription(name, about, type, style);
             });
 
         // dom.upBtn.addEventListener      
@@ -533,7 +532,7 @@
             return viewportTimeline;
             };
 
-        function infoBarShowOn   () {
+        function infoBarShowOn          () {
             let infoBarTimline = gsap.timeline({
                 defaults: { duration: 6, ease: "power2.out" }});
 
@@ -543,7 +542,7 @@
             return infoBarTimline;
             };
 
-        function infoBarShowOff   () {
+        function infoBarShowOff         () {
             let infoBarTimline = gsap.timeline({
                 defaults: { duration: 6, ease: "power2.out" }});
 
@@ -565,7 +564,7 @@
             return orthoCameraTimeline
             };
 
-        function controlNextBtn () {
+        function controlNextBtn         () {
             let tl = gsap.timeline({
                 defaults: { duration: 0.5, ease: "power2.out" }
             });
@@ -593,7 +592,7 @@
             return tl;
             };
 
-        function controlPrevBtn () {
+        function controlPrevBtn         () {
             let tl = gsap.timeline({
                 defaults: { duration: 0.5, ease: "power2.out" }
             });
@@ -621,7 +620,7 @@
             return tl;
             };
 
-        function controlDownBtn () {
+        function controlDownBtn         () {
             let tl = gsap.timeline({
                 defaults: { duration: 0.5, ease: "power2.out" }
             });
@@ -649,7 +648,7 @@
             return tl;
             };
 
-        function controlBtnsOff () {
+        function controlBtnsOff         () {
             let tl = gsap.timeline();
         
             tl.to(".controls", { opacity: 1, duration: 3, ease: "power2.out"})
@@ -725,24 +724,34 @@
             loaders.loadExperience(dom.programmerBtn, experiences.programmer);
         });
 
-        window.addEventListener("scroll", () => {
+        const changeDescription = (name, about, type, style) => {
             const scroll = window.scrollY;
-        
-            // Greeting zone
+
             if (scroll >= aboutMePos*2 && scroll <= abilitiesPos) {
-                dom.infoBar.innerHTML = "hi";
+                dom.infoBar.innerHTML = 
+                `<div>
+                    <h1>Salut!</h1>
+                    <h2>Mă numesc Mihael-Ionuț FURDU</h2>
+                    <p>Sunt arhitect cu drept de semnătură și cu această ocazie vă învit să parcurgeți cu curiozitate acest site personal</p>
+
+                </div>`;
                 return;
             }
-        
-            // About zone
             if (scroll >= abilitiesPos && scroll <= experiencePos) {
-                dom.infoBar.innerHTML = "ab";
-                return;
+               dom.infoBar.innerHTML = `
+                <div>
+                    <h1>${name}</h1>
+                    <h2>${type}</h2>
+                    <h3>${style}</h3>
+                    <p>${about}</p>
+                </div>`
+                return; 
             }
-        
-            // Anything else → clear
+            
             dom.infoBar.innerHTML = "";
-        });
+        }
+
+        window.addEventListener("scroll", changeDescription);
 
         const originalDisplay = getComputedStyle(expDetails).display;
         function toggleExpDetails(domBtn, data) {
