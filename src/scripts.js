@@ -712,17 +712,7 @@
             });
         });
 
-        dom.artistBtn.addEventListener('click', () => {
-            loaders.loadExperience(dom.artistBtn, experiences.artist);
-        });
-
-        dom.architectBtn.addEventListener('click', () => {
-            loaders.loadExperience(dom.architectBtn, experiences.architecture);
-        });
-
-        dom.programmerBtn.addEventListener('click', () => {
-            loaders.loadExperience(dom.programmerBtn, experiences.programmer);
-        });
+ 
 
         const changeDescription = (name, about, type, style) => {
             const scroll = window.scrollY;
