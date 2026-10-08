@@ -22,7 +22,10 @@ const domain = {
     architectBtn:    document.getElementById('architectBtn'),
     programmerBtn:   document.getElementById('programmerBtn'),
     experiencesBtn:  document.getElementById('experiences'),
-    infoBar:        document.getElementById('infoBar'),
+    experiencesDes:  document.querySelectorAll('#expDescription'),
+    experienceBnr:   document.getElementById('experience banner'),
+    infoBar:         document.getElementById('infoBar'),
+    text2D:          document.getElementById('text2D'),
     
     /* ABILITIES */
     abilitiesBtn:    document.querySelectorAll('#abilityBtn'),

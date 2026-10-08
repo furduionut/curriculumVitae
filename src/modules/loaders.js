@@ -260,7 +260,7 @@
         aboutMe.appendChild(scrollIndicator);
         };
 
-    function loadingText            (scene, text) {
+    function loading3DText          (scene, text) {
             gsap.registerPlugin(ScrollTrigger);
             fontLoader.load('assets/fonts/arialRegular.json', font => {
         
@@ -322,6 +322,25 @@
                     );
                 });
             });
+        };
+
+    function loading2DText          (dom, text, delay = 100) {
+        
+        const element = document.createElement("div");
+        dom.appendChild(element);
+        
+        const letters = Array.from(text); // Handles emoji and other Unicode characters
+        let index = 0;
+        
+        function showNextLetter() {
+            if (index >= letters.length) return;
+        
+            element.textContent += letters[index++];
+            setTimeout(showNextLetter, delay);
+        }
+        
+        showNextLetter();
+        return element;
         }
         
     function loadingNeighbor        (scene, light, building, material){ 
@@ -360,9 +379,11 @@
                     child.material.transparent = true;
                     child.material.opacity = 0;
                     child.position.y = originalY + 6.5;
-                    child.scale.set(.5,.5,.5);
+                    child.scale.set(.55,.55,.55);
 
-                    neighborTimeline.to(child.material, {opacity: 1, duration: 5, ease: "power2.out"}, 2);
+                    neighborTimeline
+                        .to(child.material, {opacity: 1, duration: 5, ease: "power2.out"}, 2)
+                        .to(child.material, {opacity: 0, duration: 8, ease: "power2.out"}, 4);
                     return;
                 };
 
@@ -389,7 +410,7 @@
                     child.material = materials.model;
                     child.material.transparent = true;
                     child.material.opacity = 1;
-                    child.material.depthWrite = false;
+                    child.material.depthWrite = true;
                     
                     neighborTimeline.to(child.material, {opacity: 0,        duration: 1,        ease: "power2.out",      }, 7.5);
                     return;
@@ -943,7 +964,8 @@
         loadPage:           createLoadingPage,
         loadInfo:           loadingInformations,
         loadIndicator:      loadingIndicators,
-        loadText:           loadingText,
+        load3DText:         loading3DText,
+        load2DText:         loading2DText,
         loadNeighboar:      loadingNeighbor,
         loadBuilding:       loadingBuilding,
         loadModel:          loadingModel,

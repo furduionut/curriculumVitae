@@ -121,7 +121,7 @@
     svg {
         width: 100%;
         height: 100%;
-        fill: var(--forth-background-color);
+        fill: var(--first-background-color);
     }
 
     .experience img {
@@ -238,8 +238,8 @@
     }
     .icon {
         padding: var(--general-padding);
-        width:  7.5em;
-        height: 6.0em;
+        width:  4.75em;
+        height: 4.25em;
         display: flex;
         flex-flow: column-reverse nowrap;
         justify-content: center;
@@ -257,6 +257,12 @@
         align-items: center;
         overflow: hidden;
         stroke: var(--forth-background-color);
+    }
+
+    .iconTest {
+        width: 5em;
+        fill: red;
+
     }
 
     /* ---BEHAVIOURS---- */
@@ -324,7 +330,18 @@
         /* display */
         /* content */
     }
-
+    .text2D {
+        position: fixed;
+        width: 100%;
+        height: auto;
+        opacity: 0;
+        font-size: 24px;
+        color: white;
+        left: 2.5%;
+        top: 3.5%;
+        display: flex;
+        justify-content: center;
+    }
     /* ----NAVIGATION-----*/
     .navBar {
         /* box */
@@ -628,6 +645,7 @@
         display: flex;
         flex-flow: column wrap;
         overflow: hidden;
+        z-index: var(--control-order);
         /* content */
         /* filter */
         /* animation */
@@ -740,9 +758,9 @@
         text-align:         flex-end;
         /* content */
     }
-    .content:hover > .expDescription {
+    /* .content:hover > .expDescription {
         display: flex;
-    }
+    } */
     .expDescription {
         /* box */
         /* size */
@@ -753,7 +771,7 @@
         /* style */
         /* color */
         /* display */
-        display: none;
+        display: flex;
         flex-flow: column wrap;
         justify-content: center;
         /* content */
