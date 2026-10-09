@@ -11,11 +11,29 @@
     import { domain as dom } from "./domain.js";
     import { materials } from "./materials.js";
 
-    const gltfLoader = new GLTFLoader();
-    const dracoLoader = new DRACOLoader();
-    const textureLoader = new THREE.TextureLoader();
-    const fontLoader = new FontLoader();
-    
+
+    const manager = new THREE.LoadingManager();
+          manager.onStart = () => {
+              console.log("Loading started");
+          };
+          
+          manager.onProgress = (url, itemsLoaded, itemsTotal) => {
+            const percent = Math.floor((itemsLoaded / itemsTotal) * 100);
+            const barFill = document.getElementById("loading-bar-fill");
+            if (barFill) barFill.style.width = percent + "%";
+        };
+        
+        // When everything is loaded
+        manager.onLoad = () => {
+            console.log("All assets loaded");
+            hideLoadingPage();
+        };
+
+    const gltfLoader = new GLTFLoader(manager);
+    const dracoLoader = new DRACOLoader(manager);
+    const textureLoader = new THREE.TextureLoader(manager);
+    const fontLoader = new FontLoader(manager);
+
     dracoLoader.setDecoderPath('./utils/draco/');
     gltfLoader.setDRACOLoader(dracoLoader);
 
@@ -188,30 +206,51 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-direction: column;
             z-index: 9999;
             transition: opacity .6s ease;
         `;
     
+        // LOGO
         const logo = document.createElement('img');
         logo.src = './assets/images/firmLogoAnimated.gif';
         logo.style.cssText = `
             width: 120px;
             opacity: .95;
             transition: transform 1s ease;
+            margin-bottom: 20px;
         `;
     
+        // LOADING BAR
+        const barContainer = document.createElement('div');
+        barContainer.style.cssText = `
+            width: 200px;
+            height: 6px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 3px;
+            overflow: hidden;
+        `;
+    
+        const barFill = document.createElement('div');
+        barFill.id = "loading-bar-fill";
+        barFill.style.cssText = `
+            width: 0%;
+            height: 100%;
+            background: white;
+            transition: width .3s ease;
+        `;
+    
+        barContainer.appendChild(barFill);
         loading.appendChild(logo);
+        loading.appendChild(barContainer);
         document.body.appendChild(loading);
     
-        // Rotate every 4 seconds
+        // Rotate logo
         setInterval(() => {
             logo.style.transform = `rotate(360deg)`;
         }, 1500);
-    
-        // Auto-hide after 2 seconds
-        setTimeout(() => hideLoadingPage(), 2000);
         };
-
+    
     function hideLoadingPage        () {
         const loading = document.getElementById('loading-page');
         if (!loading) return;
