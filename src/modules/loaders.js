@@ -260,7 +260,7 @@
         aboutMe.appendChild(scrollIndicator);
         };
 
-    function loadingText            (scene, text) {
+    function loading3DText          (scene, text) {
             gsap.registerPlugin(ScrollTrigger);
             fontLoader.load('assets/fonts/arialRegular.json', font => {
         
@@ -322,6 +322,25 @@
                     );
                 });
             });
+        };
+
+    function loading2DText          (dom, text, delay = 100) {
+        
+        const element = document.createElement("div");
+        dom.appendChild(element);
+        
+        const letters = Array.from(text); // Handles emoji and other Unicode characters
+        let index = 0;
+        
+        function showNextLetter() {
+            if (index >= letters.length) return;
+        
+            element.textContent += letters[index++];
+            setTimeout(showNextLetter, delay);
+        }
+        
+        showNextLetter();
+        return element;
         }
         
     function loadingNeighbor        (scene, light, building, material){ 
@@ -356,12 +375,15 @@
                 child.material.opacity = 0;
 
                 if (child.name.includes('pictureFrame')) {
-                    child.material = materials.support;
+                    // child.material = materials.support;
                     child.material.transparent = true;
                     child.material.opacity = 0;
-                    child.position.y = originalY - 2;
+                    child.position.y = originalY + 6.5;
+                    child.scale.set(.55,.55,.55);
 
-                    neighborTimeline.to(child.material, {opacity: 1, duration: 5, ease: "power2.out"}, 1);
+                    neighborTimeline
+                        .to(child.material, {opacity: 1, duration: 5, ease: "power2.out"}, 2)
+                        .to(child.material, {opacity: 0, duration: 8, ease: "power2.out"}, 4);
                     return;
                 };
 
@@ -388,7 +410,7 @@
                     child.material = materials.model;
                     child.material.transparent = true;
                     child.material.opacity = 1;
-                    child.material.depthWrite = false;
+                    child.material.depthWrite = true;
                     
                     neighborTimeline.to(child.material, {opacity: 0,        duration: 1,        ease: "power2.out",      }, 7.5);
                     return;
@@ -432,40 +454,6 @@
 
     function loadingScroll          (scrollY) {
         window.scrollTo({ top: scrollY, behavior: "smooth" });
-        };
-
-    function makeBlackWhite         (texture) {
-        const img = texture.image;
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-    
-        canvas.width = img.width;
-        canvas.height = img.height;
-    
-        ctx.drawImage(img, 0, 0);
-    
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const data = imageData.data;
-    
-        for (let i = 0; i < data.length; i += 4) {
-            const r = data[i];
-            const g = data[i + 1];
-            const b = data[i + 2];
-    
-            // luminance formula
-            const gray = 0.299 * r + 0.587 * g + 0.114 * b;
-    
-            data[i]     = gray;
-            data[i + 1] = gray;
-            data[i + 2] = gray;
-        }
-    
-        ctx.putImageData(imageData, 0, 0);
-    
-        const bwTexture = new THREE.CanvasTexture(canvas);
-        bwTexture.needsUpdate = true;
-    
-        return bwTexture;
         };
 
     function applyFilter            (texture, color, strength, mode) {
@@ -716,14 +704,10 @@
 
     function loadingBuilding        (scene, light, building, material, color, intensity, blendMode) {
         let scale = .1;
-    
+        let pivot = new THREE.Vector3(0,1,0);
+        let bbCenter = new THREE.Vector3();
+
         gltfLoader.load(building, (gltf) => {
-            const   pivot = new THREE.Vector3(0,1,0);
-                    pivot.position.set(-50 * scale, 0, -100 * scale);
-            
-            const boundingbox = new THREE.Box3().setFromObject(currentBuilding);
-            const bbCenter = new THREE.Vector3();
-            
             scene.children.slice().forEach(obj => {
                 if (obj.name !== "pageLayout") scene.remove(obj);
             });
@@ -889,13 +873,99 @@
             indicator.remove();
         }, { once: true });
         };
+
+    function loadingExperience      (domBtn, data) {
+        const expDetails = document.querySelector('#expDetails');
+        if (!expDetails) return;
+    
+        // 1. Curăță containerul
+        expDetails.style.display = 'flex';
+        expDetails.innerHTML = '';
+    
+        // 2. Creează experiențele
+        Object.keys(data).forEach((key, i) => {
+            const exp = data[key];
+    
+            const index = i + 1;      // începe pe partea dreaptă
+            const isOdd = index % 2 !== 0;
+    
+            const wrapper = document.createElement('div');
+            wrapper.classList.add(`experience-${index}`);
+            wrapper.classList.add(isOdd ? 'odd' : 'even');
+    
+            // geometry-up
+            const geometryUp = document.createElement('div');
+            geometryUp.classList.add('geometry-up');
+            geometryUp.textContent = exp.years;
+    
+            // content
+            const content = document.createElement('div');
+            content.classList.add('content');
+    
+            const h3 = document.createElement('h3');
+            h3.textContent = exp.title;
+    
+            const ul = document.createElement('ul');
+            ul.classList.add('expDescription');
+    
+            exp.items.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = item;
+                ul.appendChild(li);
+            });
+    
+            content.appendChild(h3);
+            content.appendChild(ul);
+    
+            // geometry-down
+            const geometryDown = document.createElement('div');
+            geometryDown.classList.add('geometry-down');
+            geometryDown.textContent = exp.company;
+    
+            // pointCloud
+            const pointCloud = document.createElement('div');
+            pointCloud.classList.add('pointCloud');
+    
+            pointCloud.appendChild(document.createElement('div')).classList.add('biggerCloud');
+            pointCloud.appendChild(document.createElement('div')).classList.add('bigCloud');
+            pointCloud.appendChild(document.createElement('div')).classList.add('smallCloud');
+    
+            // asamblare finală
+            wrapper.appendChild(geometryUp);
+            wrapper.appendChild(content);
+            wrapper.appendChild(geometryDown);
+            wrapper.appendChild(pointCloud);
+    
+            expDetails.appendChild(wrapper);
+        });
+    
+        // 3. Creează timeline EXACT ca în HTML-ul tău
+        const timeline = document.createElement('div');
+        timeline.classList.add('timeline');
+    
+        const mainPipe = document.createElement('div');
+        mainPipe.classList.add('mainPipe');
+    
+        // creează EXACT 38 lineBreaks ca în exemplul tău
+        for (let i = 0; i < 38; i++) {
+            const lineBreak = document.createElement('div');
+            lineBreak.classList.add('lineBreak');
+            mainPipe.appendChild(lineBreak);
+        }
+    
+        timeline.appendChild(mainPipe);
+    
+        // 4. Timeline este MEREU ultimul copil
+        expDetails.appendChild(timeline);
+        };
     
     const loaders = {
         loadLogo:           loadingLogo3D,
         loadPage:           createLoadingPage,
         loadInfo:           loadingInformations,
         loadIndicator:      loadingIndicators,
-        loadText:           loadingText,
+        load3DText:         loading3DText,
+        load2DText:         loading2DText,
         loadNeighboar:      loadingNeighbor,
         loadBuilding:       loadingBuilding,
         loadModel:          loadingModel,
@@ -903,7 +973,8 @@
         loadPress:          loadingPressIndicator,
         loadDisplay:        loadingDisplay,
         loadScroll:         loadingScroll,
-        loadPush:           loadingPush
+        loadPush:           loadingPush,
+        loadExperience:     loadingExperience
     };
 
     export { loaders }

@@ -18,6 +18,14 @@ const domain = {
     abouts  :        document.getElementById('description'),
     btn     :        document.getElementById('btn'),
     experience:      document.getElementById('experience-6'),
+    artistBtn:       document.getElementById('artistBtn'),
+    architectBtn:    document.getElementById('architectBtn'),
+    programmerBtn:   document.getElementById('programmerBtn'),
+    experiencesBtn:  document.getElementById('experiences'),
+    experiencesDes:  document.querySelectorAll('#expDescription'),
+    experienceBnr:   document.getElementById('experience banner'),
+    infoBar:         document.getElementById('infoBar'),
+    text2D:          document.getElementById('text2D'),
     
     /* ABILITIES */
     abilitiesBtn:    document.querySelectorAll('#abilityBtn'),
