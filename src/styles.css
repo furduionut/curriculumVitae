@@ -83,7 +83,7 @@
     --third-background-color:   #F2F4EF;
     --forth-background-color:   #12184D;
     --shadow-color:             #949CBF;
-    
+    --first-color:              #c85356;
     /* display */
 
     /* content */
@@ -153,6 +153,7 @@
         /* distance */
         gap: var(--general-gap);
         /* style */
+        opacity: 1;
         font: var(--general-font);
         /* color */
         /* display */
@@ -161,6 +162,10 @@
         /* content */
         /* filter  */
         /* animation */        
+    }
+    .main.ready{
+            opacity: 1;
+            transition: opacity .4s ease;
     }
     .section {
         padding-bottom: var(--general-padding);
@@ -208,6 +213,7 @@
         flex-flow:          row wrap;
         justify-content:    space-between;
         align-items:        center;
+        align-content:      center;
         /* content */
         /* filter  */
         /* animation */
@@ -238,25 +244,13 @@
     }
     .icon {
         padding: var(--general-padding);
-        width:  4.75em;
-        height: 4.25em;
+        width:  6.75em;
+        height: 6.25em;
         display: flex;
         flex-flow: column-reverse nowrap;
         justify-content: center;
         align-content: center;
         align-items: center;
-    }
-    .icons {
-        padding: var(--general-padding);
-        width:  7.5em;
-        height: 6.0em;
-        display: flex;
-        flex-flow: column-reverse nowrap;
-        justify-content: center;
-        align-content: center;
-        align-items: center;
-        overflow: hidden;
-        stroke: var(--forth-background-color);
     }
 
     .iconTest {
@@ -406,6 +400,7 @@
     /* color */
     /* display */
     display:flex;
+    justify-content: center;
     align-items: center;
     align-content: space-between;
     /* content */
@@ -423,7 +418,7 @@
     }
 
     .infoBar p {
-        font-size: 16px;
+        font-size: 12px;
     }
 
     .navItem:hover {
@@ -587,36 +582,31 @@
     /* content */
     }
     .controls {
-        position: sticky;
+        position: fixed;
         opacity: 1;
         top: 85%;
-        width: 100%;
         height: auto;
-        display: flex;
         flex-flow: row wrap;
         justify-content: space-between;
-        align-content: center;
-        align-items: center;
     }
     .controls > div {
         position: relative;
+        top: 250%;
         height: 6.5em;
         width: 6.5em;
     }
     .navBtn {
         position: relative;
-        bottom: 300%;
         transform: rotateZ(45deg);
     }
     .nextBtn {
-        left: 70%;
+        transform: translateX(1000%);
     }
     .prevBtn {
-        right: 70%;
+        transform: translateX(-1000%);
     }
     .downBtn {
-        bottom: 100%;
-        z-index: var(--control-order);
+        transform: translateY(275%);
     }
 
     /* ----ABILITIES BANNER-----*/
@@ -637,7 +627,7 @@
         height: auto;
         /* position */
         /* distance */
-        gap: var(--general-gap);
+        gap: calc(var(--general-gap)*2);
         /* geometry */
         /* style */
         /* color */
@@ -650,6 +640,10 @@
         /* filter */
         /* animation */
     }
+    .expDetails > div {
+        width: auto;
+
+    }
     .expDetails > div:nth-child(even):not(:last-child)  {
         /* box */
         /* size */
@@ -660,6 +654,7 @@
         /* color */
         /* display */
         align-self: flex-start;
+        
     }
     .expDetails > div:nth-child(odd):not(:last-child)   {
         /* box */
@@ -677,7 +672,7 @@
         left: 15%;
     }
     .expDetails > div:nth-child(odd)    .geometry-up    {
-        left: 35%
+        left: 35%;
     }
     .expDetails > div:nth-child(even)   .geometry-down  {
         left: 35%;
@@ -763,17 +758,20 @@
     } */
     .expDescription {
         /* box */
+        padding: calc(var(--general-padding)/2);
         /* size */
-        width: auto;
+        width: 100%;
+        height: auto;
         /* position */
         /* distance */
         /* geometry */
         /* style */
         /* color */
         /* display */
-        display: flex;
+        display: none;
         flex-flow: column wrap;
         justify-content: center;
+        align-content: center;
         /* content */
     }
 
@@ -959,7 +957,7 @@
     .lineBreak {
     /* box */
     /* size */
-    width: 2em;
+    width: .5em;
     height: 15em;
     /* position */
     position: relative;
@@ -969,7 +967,7 @@
     border-radius: var(--general-border-radius);
     /* style */
     /* color */
-    background-color: var(--third-background-color);
+    background-color: var(--first-color);
     /* display */
     /* content */
     }
@@ -977,6 +975,9 @@
     /* ----CONTACTS-----*/
     .contactDetails {
         display:none;
+    }
+    .contact > a {
+        text-decoration: none;
     }
 
     @media (max-width: 1024px) and (min-width: 256px) and (orientation: portrait){
@@ -1008,20 +1009,39 @@
             height: 100%; 
         }
         .icon {
-            width:  6.5em;
-            height: 6.5em;
+            width:  6.0em;
+            height: 6.0em;
         }
         .aboutMe {
+            height: 35%;
+        }
+        .text2D{
+            position: fixed;
+            font-size: 12px;
+            left: 6%;
+            top: 4%;
+        }
+        .navBar {
+            height: 100%;
+            width: auto;
+        }
+        .infoBar {
+            padding-left: var(--general-padding);
+            width: 30em;           
+            height: 100%;
+            overflow: hidden;
         }
         .navItem {
+            padding: 0%;
             width: 100%;
-            flex-flow: column;
-            justify-content: space-around;
+            flex-flow: row-reverse wrap;
         }
         .navItem > icon {
-            width: 100%;
-            height: 100%;
+            justify-self: flex-start;
         }
+        /* .navItem > a {
+            display: none;
+        } */
         .viewport2 {
             pointer-events: none;
         }
@@ -1045,16 +1065,32 @@
 
     @media (max-width: 1280px) and (min-width: 256px) and (orientation: landscape){
         .aboutMe {
-            top: 15%;
+            height: 70%;
         }
         .navBar {
-            height: 125%;
+            height: 100%;
+            left: -2%;
+            width: auto;
         }
         .infoBar {
-            height: 125%;
+            width: 30em;            
+            height: 100%;
+            white-space: normal;
+            overflow-wrap: break-word;
+        }
+        .navItem > icon {
+            width: 3.5em;
+            height: 3.5em;
+            justify-self: flex-start;
         }
         .navItem {
-            flex-flow: row-reverse;
-            font-size: 8px;
+            padding: 0%;
+            padding-left: var(--general-padding);
+            width: 100%;
+            height: auto;
+            flex-flow: row-reverse wrap;
+        }
+        .timeline {
+            display: none;
         }
     }
