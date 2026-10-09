@@ -197,60 +197,61 @@
         };
 
     function createLoadingPage      () {
-        const loading = document.createElement('div');
-        loading.id = 'loading-page';
-        loading.style.cssText = `
-            position: fixed;
-            inset: 0;
-            background: ${styles.color1};
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            z-index: 9999;
-            transition: opacity .6s ease;
-        `;
-    
-        // LOGO
-        const logo = document.createElement('img');
-        logo.src = './assets/images/firmLogoAnimated.gif';
-        logo.style.cssText = `
-            width: 120px;
-            opacity: .95;
-            transition: transform 1s ease;
-            margin-bottom: 20px;
-        `;
-    
-        // LOADING BAR
-        const barContainer = document.createElement('div');
-        barContainer.style.cssText = `
-            width: 200px;
-            height: 6px;
-            background: rgba(255,255,255,0.3);
-            border-radius: 3px;
-            overflow: hidden;
-        `;
-    
-        const barFill = document.createElement('div');
-        barFill.id = "loading-bar-fill";
-        barFill.style.cssText = `
-            width: 0%;
-            height: 100%;
-            background: white;
-            transition: width .3s ease;
-        `;
-    
-        barContainer.appendChild(barFill);
-        loading.appendChild(logo);
-        loading.appendChild(barContainer);
-        document.body.appendChild(loading);
-    
-        // Rotate logo
-        setInterval(() => {
-            logo.style.transform = `rotate(360deg)`;
-        }, 1500);
+            const loading = document.createElement('div');
+            loading.id = 'loading-page';
+            loading.style.cssText = `
+                position: fixed;
+                inset: 0;
+                background: ${styles.color1};
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                z-index: 9999;
+                transition: opacity .6s ease;
+            `;
+        
+            // LOGO
+            const logo = document.createElement('img');
+            logo.src = './assets/images/firmLogoAnimated.gif';
+            logo.style.cssText = `
+                width: 120px;
+                opacity: .95;
+                transition: transform 1s ease;
+                margin-bottom: 10px;   /* smaller gap */
+            `;
+        
+            // LOADING BAR (closer to logo)
+            const barContainer = document.createElement('div');
+            barContainer.style.cssText = `
+                width: 72px;
+                height: 8px;
+                background: rgba(255,255,255,0.3);
+                border-radius: 6px;
+                overflow: hidden;
+                margin-top: -20px;     /* ← moves bar closer to logo */
+            `;
+        
+            const barFill = document.createElement('div');
+            barFill.id = "loading-bar-fill";
+            barFill.style.cssText = `
+                width: 0%;
+                height: 100%;
+                background: white;
+                transition: width .3s ease;
+            `;
+        
+            barContainer.appendChild(barFill);
+            loading.appendChild(logo);
+            loading.appendChild(barContainer);
+            document.body.appendChild(loading);
+        
+            // Rotate logo
+            setInterval(() => {
+                logo.style.transform = `rotate(360deg)`;
+            }, 1500);
         };
-    
+           
     function hideLoadingPage        () {
         const loading = document.getElementById('loading-page');
         if (!loading) return;
