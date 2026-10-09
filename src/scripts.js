@@ -76,31 +76,31 @@
 
             window.addEventListener("resize", changeCameraZoom);
             // Section 0
-            const camPosA = new THREE.Vector3(15, 15, 10.5);
-            const lookA = new THREE.Vector3(-5.5, 15, -10.5);
+            const camPosA = new THREE.Vector3(15, 7.5, 10.5);
+            const lookA = new THREE.Vector3(-5.5, 12.5, -10.5);
             const zoomA = perspCameraZoom * 1;
             // Section 1
-            const camPosB = new THREE.Vector3(15, 10, 10.5);
-            const lookB = new THREE.Vector3(-5.5, 7.5, -10.5);
+            const camPosB = new THREE.Vector3(35, 7.5, 10.5);
+            const lookB = new THREE.Vector3(-5.5, 12.5, -10.5);
             const zoomB = perspCameraZoom * 2;
             // Section 2
             const camPosC = new THREE.Vector3(15, 20, 10.5);
-            const lookC = new THREE.Vector3(-5.5, 1.5, -10.5);
+            const lookC = new THREE.Vector3(-7.75, 1.5, -12.5);
             const zoomC = perspCameraZoom * 3.5;
             // Section 3
-            const camPosD = new THREE.Vector3(15, 0, -10.5);
+            const camPosD = new THREE.Vector3(15, 10, -10.5);
             const lookD = new THREE.Vector3(-5.5, 1.5, -10.5);
             const zoomD = perspCameraZoom * 3.5;
             // Section 4
-            const camPosE = new THREE.Vector3(15, 0, -10.5);
+            const camPosE = new THREE.Vector3(12.5, 0, -10.5);
             const lookE = new THREE.Vector3(-5.5, 0, -10.5);
             const zoomE = perspCameraZoom * 4.5;
             // Section 5
-            const camPosF = new THREE.Vector3(15, -10.5, -10.5);
+            const camPosF = new THREE.Vector3(12.5, -10.5, -10.5);
             const lookF = new THREE.Vector3(-5.5, -10.5, -10.5);
             const zoomF = perspCameraZoom * 5.5;
             // Section 6
-            const camPosG = new THREE.Vector3(15, -10.5, -10.5);
+            const camPosG = new THREE.Vector3(12.5, -10.5, -10.5);
             const lookG = new THREE.Vector3(-5.5, -10.5, -10.5);
             const zoomG = perspCameraZoom * 5.5;
             
@@ -998,7 +998,7 @@
                         break;
     
                     case 'navAboutMe':
-                        loaders.loadScroll(sectionHeight * 1.6);
+                        loaders.loadScroll(sectionHeight * 1.75);
                         loaders.loadPress(projectsBanner);
                         break;
                     
