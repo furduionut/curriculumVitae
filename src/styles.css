@@ -1013,7 +1013,7 @@
             height: 6.0em;
         }
         .aboutMe {
-            height: 35%;
+            height: 45%;
         }
         .text2D{
             position: fixed;
@@ -1034,7 +1034,9 @@
         .navItem {
             padding: 0%;
             width: 100%;
+            height: auto;
             flex-flow: row-reverse wrap;
+            align-content: center;
         }
         .navItem > icon {
             justify-self: flex-start;
@@ -1065,10 +1067,10 @@
 
     @media (max-width: 1280px) and (min-width: 256px) and (orientation: landscape){
         .aboutMe {
-            height: 70%;
+            height: auto;
         }
         .navBar {
-            height: 100%;
+            height: auto;
             left: -2%;
             width: auto;
         }
