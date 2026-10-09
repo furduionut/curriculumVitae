@@ -34,6 +34,7 @@
         import { controls }     from "./modules/controls.js";
         import { materials }    from "./modules/materials.js";
 
+    /* PRELOAD */
 
     /* ELEMENTS */
         let dom                 = domain;
@@ -210,6 +211,7 @@
         let filterIntensity  = 1;
         let filterBlendMode  = 5;
         
+    /* GUI PANEL
         // The GUI panel
         const gui = new GUI();
         const blendModes = {
@@ -310,6 +312,7 @@
                 console.log("filterBlendMode =", filterBlendMode);
                 reloadScene(renderer, scene);
             });
+    */
 
     /* CAMERA FOCUS */
         const focusPoint        = new THREE.Vector3(-5, 0, -10);
@@ -522,14 +525,43 @@
 
         function viewportAnimation      () {
             let viewportTimeline = gsap.timeline({
-                defaults: { duration: 6, ease: "power2.out" }});
+                defaults: { duration: 6, ease: "power2.out" }})
                     
             viewportTimeline
                 .to(".viewport2", {scale: 0.15})
                 .to(".viewport2", {y: '-50%'}, "-=1")
-                
+                .to(".viewport2", {x: '-7.5%'}, ">")
 
             return viewportTimeline;
+            };
+
+        function showTextOn             () {
+            const element = dom.text2D;
+            const characters = Array.from(text);
+            
+            element.replaceChildren();
+            element.style.whiteSpace = "pre-wrap";
+            
+            const spans = characters.map((character) => {
+                const span = document.createElement("span");
+                span.textContent = character;
+                element.appendChild(span);
+                return span;
+            });
+            
+            const textTimeline = gsap.timeline({
+                defaults: { ease: "power2.out" }
+            });
+            
+            textTimeline
+                .set(element, { opacity: 1 })
+                .from(spans, {
+                opacity: 0,
+                duration: 2,
+                stagger: 0.25
+                });
+            
+            return textTimeline;
             };
 
         function infoBarShowOn          () {
@@ -570,25 +602,26 @@
             });
         
             tl.to(".nextBtn", {
-                left: "50%",
+                x: "1000%",
+                y: "-350%",
                 rotateZ: "720deg",
                 duration: 6,
                 ease: "power2.out",
                 delay: 1
             })
             .to(".nextBtn", {
-                left: "0%",
+                x: "100%",
                 rotateZ: "45deg",
                 duration: 6,
                 ease: "power2.out",
                 delay: 1
             })
             .to(".nextBtn", {
-                bottom: "0%",
-                duration: 6,
-                delay: 3
+                opacity: 0,
+                duration: 2,
+                delay: 1
             });
-
+        
             return tl;
             };
 
@@ -596,27 +629,28 @@
             let tl = gsap.timeline({
                 defaults: { duration: 0.5, ease: "power2.out" }
             });
-    
+        
             tl.to(".prevBtn", {
-                right: "50%",
+                x: "-1000%",
+                y: "-350%",
                 rotateZ: "720deg",
                 duration: 6,
                 ease: "power2.out",
                 delay: 1
             })
             .to(".prevBtn", {
-                right: "0%",
+                x: "-100%",
                 rotateZ: "45deg",
                 duration: 6,
                 ease: "power2.out",
                 delay: 1
             })
             .to(".prevBtn", {
-                bottom: "0%",
-                duration: 6,
-                delay: 3
+                opacity: 0,
+                duration: 2,
+                delay: 1
             });
-
+        
             return tl;
             };
 
@@ -624,16 +658,16 @@
             let tl = gsap.timeline({
                 defaults: { duration: 0.5, ease: "power2.out" }
             });
- 
+        
             tl.to(".downBtn", {
-                bottom: "-275%",
+                y: "275%",
                 rotateZ: "180deg",
                 duration: 6,
                 ease: "power2.out",
                 delay: 1
             })
             .to(".downBtn", {
-                bottom: "65%",
+                y: "0%",
                 rotateZ: "45deg",
                 duration: 6,
                 ease: "power2.out",
@@ -644,7 +678,7 @@
                 duration: 2,
                 delay: 1
             });
-
+        
             return tl;
             };
 
@@ -669,18 +703,18 @@
             })
         
         mainTimeline
-            .add(orthoCameraAnimation(), 1)
-            .add(viewportAnimation(), 1)
-            .add(infoBarShowOn(), 2.5)
-            .add(controlNextBtn(), 3.5)
-            .add(controlPrevBtn(), 3.5)
-            .add(controlDownBtn(), 3.5)
-            .add(infoBarShowOff(), ">")
-            .add(controlBtnsOff(), ">-1")
+            .add(orthoCameraAnimation(),    1)
+            .add(viewportAnimation(),       1)
+            .add(showTextOn(),          "-=2.5")
+            .add(infoBarShowOn(),       2.5)
+            .add(controlNextBtn(),  2.5)
+            .add(controlPrevBtn(),  2.5)
+            .add(controlDownBtn(),  2.5)
+            .add(infoBarShowOff(),  ">")
+            .add(controlBtnsOff(),  ">-1")
             
 
     // EVENTS
-        // STOP SCROLLING AT TOP AND RELOAD TRIGGER
         window.addEventListener("scroll", () => {
             if (window.scrollY < 1) {
             window.scrollTo({
@@ -712,53 +746,180 @@
             });
         });
 
- 
-
-        const changeDescription = (name, about, type, style) => {
+        const changeDescription = () => {
+            const name = info.names[buildingIndex];
+            const about = info.abouts[buildingIndex];
+            const type = info.types[buildingIndex];
+            const style = info.styles[buildingIndex];
             const scroll = window.scrollY;
-
-            if (scroll >= aboutMePos*2 && scroll <= abilitiesPos) {
-                dom.infoBar.innerHTML = 
-                `<div>
-                    <h1>Salut!</h1>
-                    <h2>Mă numesc Mihael-Ionuț FURDU</h2>
-                    <p>Sunt arhitect cu drept de semnătură și cu această ocazie vă învit să parcurgeți cu curiozitate acest site personal</p>
-
-                </div>`;
-                return;
-            }
-            if (scroll >= abilitiesPos && scroll <= experiencePos) {
-               dom.infoBar.innerHTML = `
+          
+            if (scroll >= aboutMePos && scroll < abilitiesPos-750) {
+              dom.infoBar.innerHTML = `
                 <div>
-                    <h1>${name}</h1>
-                    <h2>${type}</h2>
-                    <h3>${style}</h3>
-                    <p>${about}</p>
-                </div>`
-                return; 
+                  <h1>Salut!</h1>
+                  <h2>Mă numesc Mihael-Ionuț FURDU</h2>
+                  <p>Sunt arhitect cu drept de semnătură și cu această ocazie vă învit să parcurgeți cu curiozitate acest site personal</p>
+                </div>`;
+              return;
             }
-            
+          
+            if (scroll >= abilitiesPos-750 && scroll <= experiencePos) {
+              dom.infoBar.innerHTML = `
+                <div>
+                  <h1>${name ?? ""}</h1>
+                  <h2>${type ?? ""}</h2>
+                  <h3>${style ?? ""}</h3>
+                  <p>${about ?? ""}</p>
+                </div>`;
+              return;
+            }
+          
             dom.infoBar.innerHTML = "";
-        }
+          };
 
         window.addEventListener("scroll", changeDescription);
 
-        const originalDisplay = getComputedStyle(expDetails).display;
-        function toggleExpDetails(domBtn, data) {
-            if (expDetails.style.display === 'none') {
-                expDetails.style.display = originalDisplay;
-                loadingExperience(domBtn, data);
-            } 
-            else {
-                expDetails.style.display = 'none';
+
+    /* EXPERIENCES */
+        let cleanupExperienceDescriptions = () => {};
+        function setupExperienceDescriptions(experiencesDes) {
+            cleanupExperienceDescriptions();
+          
+            let activeItem = null;
+            let isPinned = false;
+            const items = [];
+            const cleanups = [];
+          
+            Array.from(experiencesDes).forEach((element) => {
+              const parent = element.parentElement;
+              const children = Array.from(element.children);
+          
+              if (!parent || children.length === 0) return;
+          
+              element.style.display = "none";
+              gsap.set(children, { height: 0, overflow: "hidden" });
+          
+              const item = {
+                element,
+                parent,
+                isOpen: false,
+                animation: gsap.to(children, {
+                  height: "auto",
+                  duration: 0.5,
+                  stagger: 0.1,
+                  ease: "power2.out",
+                  paused: true,
+                  onReverseComplete() {
+                    if (!item.isOpen) {
+                      element.style.display = "none";
+                    }
+                  }
+                })
+              };
+          
+              items.push(item);
+          
+              function openItem() {
+                item.isOpen = true;
+                element.style.display = "flex";
+                item.animation.play();
+              }
+          
+              function closeItem() {
+                item.isOpen = false;
+                item.animation.reverse();
+              }
+          
+              function onMouseEnter() {
+                if (activeItem !== item) {
+                  if (activeItem) {
+                    activeItem.isOpen = false;
+                    activeItem.animation.reverse();
+                  }
+          
+                  activeItem = item;
+                  isPinned = false;
+                }
+          
+                openItem();
+              }
+          
+              function onMouseLeave() {
+                if (activeItem === item && !isPinned) {
+                  closeItem();
+                  activeItem = null;
+                }
+              }
+          
+              function onClick() {
+                if (activeItem === item && isPinned) {
+                  closeItem();
+                  activeItem = null;
+                  isPinned = false;
+                  return;
+                }
+          
+                if (activeItem && activeItem !== item) {
+                  activeItem.isOpen = false;
+                  activeItem.animation.reverse();
+                }
+          
+                activeItem = item;
+                isPinned = true;
+                openItem();
+              }
+          
+              parent.addEventListener("mouseenter", onMouseEnter);
+              parent.addEventListener("mouseleave", onMouseLeave);
+              parent.addEventListener("click", onClick);
+          
+              cleanups.push(() => {
+                parent.removeEventListener("mouseenter", onMouseEnter);
+                parent.removeEventListener("mouseleave", onMouseLeave);
+                parent.removeEventListener("click", onClick);
+                item.animation.kill();
+              });
+            });
+          
+            function onDocumentClick(event) {
+              if (activeItem && !items.some(({ parent }) => parent.contains(event.target))) {
+                activeItem.isOpen = false;
+                activeItem.animation.reverse();
+                activeItem = null;
+                isPinned = false;
+              }
             }
-        }
+          
+            document.addEventListener("click", onDocumentClick);
+          
+            cleanupExperienceDescriptions = () => {
+              document.removeEventListener("click", onDocumentClick);
+              cleanups.forEach((cleanup) => cleanup());
+            };
+          }
+        const experienceData = {
+          architecture: experiences.architecture,
+          programmer: experiences.programmer,
+          artist: experiences.artist
+        };
+        function showExpDetails(domBtn, type) {
+          const data = experienceData[type];
+          if (!data) throw new Error(`Unknown experience type: ${type}`);
+        
+          expDetails.style.display = "flex";
+          loaders.loadExperience(domBtn, data);
+        
+          // Initialize descriptions after the content has been loaded.
+          setupExperienceDescriptions(
+            expDetails.querySelectorAll(".expDescription")
+          );
+        };
+        setupExperienceDescriptions         (expDetails.querySelectorAll(".expDescription"));
+        
+        dom.architectBtn.addEventListener   ("click",   () => showExpDetails(dom.architectBtn, "architecture"));
+        dom.programmerBtn.addEventListener  ("click",   () => showExpDetails(dom.programmerBtn, "programmer"));
+        dom.artistBtn.addEventListener      ("click",   () => showExpDetails(dom.artistBtn, "artist"));
 
-        const expBanner = document.getElementById('experience banner');
-        const expBannerChildren = Array.from(expBanner.children);
-        expBannerChildren.forEach((btn)=>{btn.addEventListener("click", toggleExpDetails)})
-
-        dom.experiencesBtn.addEventListener('click', toggleExpDetails);
 
         const sectionsNavBar        = document.getElementById("navBar");
         const sectionsBtns          = Array.from(sectionsNavBar.children);
@@ -862,19 +1023,19 @@
                         break;
             }
         })});
-            
+    /* TESTING */
+
     /* COMMITS */
         updateRefs();
         updateSectionsPos();
-        // loaders.loadPage();
-        loaders.loadText        (secondScene, text);
+        loaders.loadPage        ();
+        console.log             (name, about, type, style)
+        changeDescription       (name, about, type, style);
         loaders.loadIndicator   (dom);
         loaders.loadPush        (dom.experience, "Vezi mai mult");
         loaders.loadLogo        (secondScene, light, logo3D, materials, logoAnimation);
         loaders.loadNeighboar   (scene, light, neighbor, materials);
         loaders.loadBuilding    (scene, light, building, material);
-        // loaders.loadInfo        (name, about, type, style);
-        
 
     // RENDERING
         function animate() {
