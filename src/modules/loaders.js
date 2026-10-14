@@ -41,6 +41,15 @@
     let currentModel
     let currentLogo
 
+    function calcSizes              () {
+        let deviceHeight    = window.innerHeight;
+        let totalChapters   = document.querySelectorAll('chapter').length;
+        let totalHeight     = deviceHeight * totalChapters;
+    }
+
+    function updateSizes            () {
+        };
+
     function changeLanguage         (language) {
         };
 
@@ -915,7 +924,7 @@
         };
 
     function loadingExperience      (domBtn, data) {
-        const expDetails = document.querySelector('#expDetails');
+        const expDetails = document.querySelector('.expDetails');
         if (!expDetails) return;
     
         // 1. Curăță containerul
