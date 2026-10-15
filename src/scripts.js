@@ -954,7 +954,7 @@
             );
         }
         let heightFactor;
-        const updateheightFactor = () => {heightFactor = window.innerHeight > 700 ? 1 : .5}
+        const updateheightFactor = () => {heightFactor = window.innerHeight > 700 ? 1.5 : .5}
         let startAnimation = 20;
         updateheightFactor();
 
@@ -965,7 +965,7 @@
             const style = info.styles[buildingIndex];
             const scroll = window.scrollY;
           
-            if (scroll >= 1000 && scroll <= aboutMePos+1000) {
+            if (scroll >= 1000*heightFactor && scroll <= aboutMePos+1000*heightFactor) {
               dom.infoBar.innerHTML = `
                 <div>
                   <h1>Salut!</h1>
@@ -975,7 +975,7 @@
               return;
             }
           
-            if (scroll >= projectsPos && scroll <= projectsPos+1000) {
+            if (scroll >= projectsPos*heightFactor && scroll <= projectsPos+1000*heightFactor) {
               dom.infoBar.innerHTML = `
                 <div>
                   <h1>${name ?? ""}</h1>
