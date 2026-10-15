@@ -141,18 +141,18 @@
     }
     .project-bar {
         position: fixed;
+        padding: var(--general-padding);
         top: 0%;
         left: 0;
         width: 100%;
-        height: 32px;
+        height: 16px;
         display: flex;
-        justify-content: space-between;
+        justify-content: flex-end;
         align-items: center;
-        padding: 0 14px;
         background: rgba(0,0,0,0.75);
         color: white;
         font-family: sans-serif;
-        font-size: 13px;
+        font-size: 6px;
         letter-spacing: 0.04em;
         z-index: 99999;
         backdrop-filter: blur(4px);
@@ -289,7 +289,7 @@
         width: 2em;
         height: 2em;
         border-radius: 50%;
-        border: 5px solid orange;
+        border: 5px solid #c85356;
         opacity: 0.8;
     
         animation: pressPulse 1.5s infinite ease-out;
@@ -534,14 +534,14 @@
       }
       
       .highlight-outline {
-        outline: 3px solid orange;
+        outline: 3px solid #c85356;
         animation: flicker 0.6s infinite alternate;
     }
     
     @keyframes flicker {
-        0% { outline-color: orange; opacity: 1; }
-        50% { outline-color: orange; opacity: 0.6; }
-        100% { outline-color: orange; opacity: 1; }
+        0% { outline-color: #c85356; opacity: 1; }
+        50% { outline-color: #c85356; opacity: 0.6; }
+        100% { outline-color: #c85356; opacity: 1; }
     }
     
     /*-----PROJECTS-----*/
@@ -1048,12 +1048,41 @@
             height: 100%;
             overflow: hidden;
         }
+        .infoBar div {
+            display: flex;
+            flex-direction: column;
+            align-content: center;
+            text-align: justify;
+            text-justify: inter-word;
+            gap: var(--general-gap);
+        }
         .navItem {
             padding: 0%;
             width: 100%;
             height: auto;
             flex-flow: row-reverse wrap;
             align-content: center;
+            gap: 6px;
+
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: flex-grow 0.1s ease;
+
+            transform: translateX(50%);
+        }
+        .navItem a {
+            display: none;
+
+            opacity: 0;
+            transform: translateX(50%);
+            transition: opacity 0.25s ease, transform 0.3s ease;
+        }
+        .navItem.showText a {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
         }
         .navItem > icon {
             justify-self: flex-start;

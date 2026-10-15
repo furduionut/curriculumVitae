@@ -463,9 +463,9 @@
                     child.material          = material.model;
                     child.position.y        = belowY;
                     
-                    neighborTimeline.to(child.scale,    {x: 1, y: 1, z:1,   duration: 1,       ease: "back.out(1.7)",   }, 5.25);
-                    neighborTimeline.to(child.material, {opacity: 1,        duration: 1,        ease: "power2.out",      }, 5.25);
-                    neighborTimeline.to(child.position, {y: originalY,      duration: 1,      ease: "bounce.out",      }, 5.25);
+                    neighborTimeline.to(child.scale,    {x: 1, y: 1, z:1,   duration: 4, delay: -2,       ease: "back.out(1.7)",   }, 6.25);
+                    neighborTimeline.to(child.material, {opacity: 1,        duration: 4, delay: -3,        ease: "power2.out",      }, 6.25);
+                    neighborTimeline.to(child.position, {y: originalY,      duration: 4, delay: -2,      ease: "bounce.out",      }, 6.25);
                         
                     return;
                 };
@@ -477,21 +477,27 @@
         };
     
     function loadingPressIndicator  (dom) {
+        const elements = Array.isArray(dom) || dom instanceof NodeList ? dom : [dom];
         let on = false;
     
         const interval = setInterval(() => {
             on = !on;
-            dom.style.outline = on 
-                ? `3px solid orange` 
-                : "none";
-        }, 200); // bounce speed
+            elements.forEach(el => {
+                el.style.outline = on ? "3px solid #c85356" : "none";
+                el.style.borderRadius = "1.5em";
+            });
+        }, 200);
     
         setTimeout(() => {
             clearInterval(interval);
-            dom.style.outline = "none"; // reset
-        }, 2000); // total duration
+            elements.forEach(el => {
+                el.style.outline = "none";
+                el.style.borderRadius = "1.5em";
+                el.style.zIndex = '999';
+            });
+        }, 2000);
         };
-
+        
     function loadingVersion         (stage, version) {
         const bar = document.createElement("div");
         bar.className = "project-bar";
@@ -885,44 +891,41 @@
         } else {dom.style.display = "none";}
         };
 
-    function loadingPush            (element, message = "Tap here") {
-        // Create indicator
+    function loadingPush            (element) {
         const indicator = document.createElement("div");
         document.body.appendChild(indicator);
     
-        // Get direct children
         const children = Array.from(element.children);
     
-        // Highlight all except last
         children.slice(0, -1).forEach(child => {
             child.classList.add("highlight-outline");
+            child.style.outlineColor = "#c85356";
         });
     
-        // Highlight ONLY the children of the last child
         const lastChild = children[children.length - 1];
         if (lastChild) {
             Array.from(lastChild.children).forEach(grandchild => {
                 grandchild.classList.add("highlight-outline");
+                grandchild.style.outlineColor = "#c85356";
             });
         }
     
-        // Position indicator next to the element
-    
-        // Remove everything when user clicks the element
         element.addEventListener("click", () => {
             children.slice(0, -1).forEach(child => {
                 child.classList.remove("highlight-outline");
+                child.style.outline = "none";
             });
     
             if (lastChild) {
                 Array.from(lastChild.children).forEach(grandchild => {
                     grandchild.classList.remove("highlight-outline");
+                    grandchild.style.outline = "none";
                 });
             }
     
             indicator.remove();
         }, { once: true });
-        };
+    }
 
     function loadingExperience      (domBtn, data) {
         const expDetails = document.querySelector('#expDetails');

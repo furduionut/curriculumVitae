@@ -509,8 +509,8 @@
 
     // DISTANCES
         const infoSection = document.querySelector('.informations')
-        const distance1 = infoSection.getBoundingClientRect().top + window.scrollY;
-        console.log(distance1)
+        const distance = infoSection.getBoundingClientRect().top + window.scrollY;
+        console.log(distance)
 
         function createDashedLineAt(y) {
             const line = document.createElement('div');
@@ -529,14 +529,20 @@
             return line;
         }
         
+        const distance1 = distance;
         const distance2 = distance1/2;
         const distance3 = distance1/4;
 
-        createDashedLineAt(distance1);
+/*         createDashedLineAt(distance1);
         createDashedLineAt(distance2);
-        createDashedLineAt(distance3);
+        createDashedLineAt(distance3); */
+
+        const pageHeight = document.documentElement.scrollHeight;
+        const distToPage = `${parseInt(distance1 / pageHeight * 100)}%`;
+        console.log(distToPage);
 
     // ANIMATIONS
+    if (window.innerWidth >= 1024) {
         document.querySelectorAll(".navItem").forEach(item => {
             item.addEventListener("mouseenter", () => {
                 gsap.to(item, {
@@ -553,6 +559,52 @@
                 });
             });
         });
+    }
+        function setupNavHover() {
+            const items = document.querySelectorAll(".navItem");
+        
+            if (window.innerWidth >= 1024) {
+                items.forEach(item => {
+                    item.addEventListener("mouseenter", () => {
+                        gsap.to(item, {
+                            x: "50%",
+                            duration: 0.35,
+                            ease: "power2.out"
+                        });
+                    });
+                    item.addEventListener("mouseleave", () => {
+                        gsap.to(item, {
+                            x: "0%",
+                            duration: 0.35,
+                            ease: "power2.out"
+                        });
+                    });
+                });
+            } else {
+                items.forEach(item => {
+                    item.addEventListener("mouseenter", () => {
+                        gsap.to(item, {
+                            flexGrow: 2,
+                            duration: 0.35,
+                            ease: "power2.out"
+                        });
+                        item.classList.add("showText");
+                    });
+        
+                    item.addEventListener("mouseleave", () => {
+                        gsap.to(item, {
+                            flexGrow: 1,
+                            duration: 0.35,
+                            ease: "power2.out"
+                        });
+                        item.classList.remove("showText");
+                    });
+                });
+            }
+        }
+        
+        setupNavHover();
+        window.addEventListener("resize", setupNavHover);
 
         let logoAnimation = new LogoAnimation();
         gsap.registerPlugin(ScrollTrigger);
@@ -604,7 +656,9 @@
                 defaults: { duration: 6, ease: "power2.out" }});
 
             infoBarTimline
-                .to(".infoBar", {x: '0%'});
+                .to(".infoBar", {height: '100%'})
+                .to(".infoBar", {height: 'auto'})
+                .to(".infoBar", {x: '0%'})
                 
             return infoBarTimline;
             };
@@ -614,7 +668,8 @@
                 defaults: { duration: 6, ease: "power2.out" }});
 
             infoBarTimline
-                .to(".infoBar", {x: '90%'});
+                .to(".infoBar", {x: '77.5%'})
+                .to(".infoBar", {height: '100%'})
                 
             return infoBarTimline;
             };
@@ -653,8 +708,8 @@
             })
             .to(".nextBtn", {
                 opacity: 0,
-                duration: 9,
-                delay: 10
+                duration: 4,
+                delay: 12
             });
         
             return tl;
@@ -682,8 +737,8 @@
             })
             .to(".prevBtn", {
                 opacity: 0,
-                duration: 9,
-                delay: 10
+                duration: 4,
+                delay: 12
             });
         
             return tl;
@@ -710,8 +765,8 @@
             })
             .to(".downBtn", {
                 opacity: 0,
-                duration: 9,
-                delay: 10
+                duration: 4,
+                delay: 12
             });
         
             return tl;
@@ -729,9 +784,9 @@
         const mainTimeline = gsap.timeline({
             pause: true,
             scrollTrigger: {
-                trigger: '.viewport2',
-                start: `20% 25%`,
-                end: "800% 25%",
+                trigger: '.main',
+                start: `10% 25%`,
+                end: `${distToPage} 25%`,
                 markers: false,
                 scrub: 1, 
                 toggleActions: "play none reverse reverse"}
@@ -740,11 +795,11 @@
         mainTimeline
             .add(orthoCameraAnimation(),    1)
             .add(viewportAnimation(),       1)
-            .add(showTextOn(),          "-=2.5")
-            .add(infoBarShowOn(),           9.5)
-            .add(controlNextBtn(),          9.5)
-            .add(controlPrevBtn(),          9.5)
-            .add(controlDownBtn(),          9.5)
+            .add(showTextOn(),              2.0)
+            .add(infoBarShowOn(),           5.5)
+            .add(controlNextBtn(),          19.5)
+            .add(controlPrevBtn(),          19.5)
+            .add(controlDownBtn(),          19.5)
             .add(infoBarShowOff(),          ">")
             .add(controlBtnsOff(),          ">-1") 
             .add(infoBarShowOff(),           ">")
@@ -1006,8 +1061,6 @@
               dom.infoBar.innerHTML = `
                 <div>
                   <h1>${name ?? ""}</h1>
-                  <h2>${type ?? ""}</h2>
-                  <h3>${style ?? ""}</h3>
                   <p>${about ?? ""}</p>
                 </div>`;
               return;
@@ -1034,27 +1087,27 @@
                 switch (e.id) {
                     case 'navGreeting':
                         loaders.loadScroll(sectionHeight * 0);
-                        loaders.loadPress(projectsBanner);
+                        loaders.loadPress(document.getElementById('canvaso'));
                         break;
     
                     case 'navAboutMe':
                         loaders.loadScroll(sectionHeight * 1.75);
-                        loaders.loadPress(projectsBanner);
+                        loaders.loadPress(document.querySelector('.aboutMe'));
                         break;
                     
                     case 'navProjects':
                         loaders.loadScroll(sectionHeight * 2.35);
-                        loaders.loadPress(projectsBanner);
+                        loaders.loadPress(document.querySelectorAll('.navBtn'));
                         break;
     
                     case 'navAbilities':
                         loaders.loadScroll(abilityStartPos);
-                        loaders.loadPress(abilitiesBanner);
+                        loaders.loadPress(document.querySelector('.abilities'));
                         break;
                     
                     case 'navExperiences':
                         loaders.loadScroll(experienceStartPos);
-                        loaders.loadPress(experiencesBanner);
+                        loaders.loadPress(document.querySelector('.experiences'));
                         break;
     
                     case 'navContacts':
@@ -1066,7 +1119,7 @@
     /* TESTING */
 
     /* COMMITS */
-        loaders.loadVersion("beta", "1.2.14")
+        loaders.loadVersion("beta", " 1.0.02")
         updateRefs();
         updateSectionsPos();
         loaders.loadPage        ();
@@ -1074,6 +1127,7 @@
         changeDescription       (name, about, type, style);
         loaders.loadIndicator   (dom);
         loaders.loadPush        (dom.experience, "Vezi mai mult");
+        loaders.loadPush        (document.querySelector('#programmerBtn'), "Vezi mai mult");
         loaders.loadLogo        (secondScene, light, logo3D, materials, logoAnimation);
         loaders.loadNeighboar   (scene, light, neighbor, materials);
         loaders.loadBuilding    (scene, light, building, material);
