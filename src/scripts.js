@@ -287,7 +287,76 @@
             bannerHeight     = chapterHeight / 3;
             panelHeight      = chapterHeight - bannerHeight;
 
-            };        
+            };
+    
+        function setChaptersHeight() {
+            const chapters = document.querySelectorAll('.chapter');
+        
+            chapters.forEach(c => {
+                const banner = c.querySelector('.banner');
+                const panel  = c.querySelector('.panel');
+        
+                // Compute heights safely
+                const bannerHeight = banner ? parseFloat(getComputedStyle(banner).height) : 0;
+                const panelHeight  = panel  ? parseFloat(getComputedStyle(panel).height)  : 0;
+        
+                let totalHeight = bannerHeight + panelHeight;
+        
+                // If no height → use viewport height
+                if (!totalHeight || totalHeight === 0) {
+                    totalHeight = window.innerHeight;
+                }
+        
+                // Apply height
+                c.style.height = totalHeight + 'px';
+            });
+            };
+
+        function calcSectionHeights () {
+            const section1 = document.querySelector('.section.viewports');
+            const section2 = document.querySelector('.section.informations');
+            const chapters = document.querySelectorAll('.chapter');
+        
+            let section1Height = 0;
+            let section2Height = 0;
+            
+                chapters.forEach(c => {
+                    const banner = c.querySelector('.banner');
+                    const panel  = c.querySelector('.panel');
+            
+                    const bannerHeight = banner ? parseFloat(getComputedStyle(banner).height) : 0;
+                    const panelHeight  = panel  ? parseFloat(getComputedStyle(panel).height)  : 0;
+            
+                    const totalHeight = bannerHeight + panelHeight;
+            
+                    const parentSection = c.closest('.section');
+            
+                    if (parentSection === section1) {
+                        section1Height += totalHeight;
+                    }
+            
+                    if (parentSection === section2) {
+                        section2Height += totalHeight;
+                    }
+                });
+
+            console.log("Section1 height:", section1Height);
+            console.log("Section2 height:", section2Height);
+            };
+            
+        setChaptersHeight()
+        calcSectionHeights()
+
+        function calcHeights        () { 
+            deviceHeight     = window.innerHeight;
+
+            mainHeight       = sumOfSectionsHeights;
+            sectionHeight    = sumfOfChapterHeights;
+            chapterHeight    = sumfOfBannersHeights + sumfOfPanelsHeights;
+            bannerHeight     = computedHeight;
+            panelHeight      = computedHeight;   
+            };
+
         function changeHeightSizes  () {
             const main    = document.querySelector('.main');
             const section = document.querySelector('.section');
