@@ -63,6 +63,8 @@
         let sectionValue;
         let mainHeight;
         let sectionHeight;
+
+
         const changemainHeight = () => {
             mainHeight = main.scrollHeight;
             sectionHeight   = mainHeight / 5;
@@ -71,8 +73,11 @@
 
         function updateCam() {
             let perspCameraZoom;
+            let clientHeight;
             const changeCameraZoom = () => {perspCameraZoom = window.innerWidth < 1025 ? .65 : 1}
             changeCameraZoom();
+            const changeHeight = () => {clientHeight = window.innerHeight < 1000 ? .5 : -1.0};
+            changeHeight();
 
             window.addEventListener("resize", changeCameraZoom);
             // Section 0
@@ -85,11 +90,11 @@
             const zoomB = perspCameraZoom * 2;
             // Section 2
             const camPosC = new THREE.Vector3(15, 20, 10.5);
-            const lookC = new THREE.Vector3(-7.75, 1.5, -12.5);
+            const lookC = new THREE.Vector3(-7.75, clientHeight, -12.5);
             const zoomC = perspCameraZoom * 3.5;
             // Section 3
             const camPosD = new THREE.Vector3(15, 10, -10.5);
-            const lookD = new THREE.Vector3(-5.5, 1.5, -10.5);
+            const lookD = new THREE.Vector3(-5.5, 3, -10.5);
             const zoomD = perspCameraZoom * 3.5;
             // Section 4
             const camPosE = new THREE.Vector3(12.5, 0, -10.5);
@@ -605,21 +610,21 @@
                 x: "1000%",
                 y: "-350%",
                 rotateZ: "720deg",
-                duration: 6,
+                duration: 4,
                 ease: "power2.out",
                 delay: 1
             })
             .to(".nextBtn", {
                 x: "100%",
                 rotateZ: "45deg",
-                duration: 6,
+                duration: 4,
                 ease: "power2.out",
                 delay: 1
             })
             .to(".nextBtn", {
                 opacity: 0,
-                duration: 2,
-                delay: 1
+                duration: 6,
+                delay: 6
             });
         
             return tl;
@@ -634,21 +639,21 @@
                 x: "-1000%",
                 y: "-350%",
                 rotateZ: "720deg",
-                duration: 6,
+                duration: 4,
                 ease: "power2.out",
                 delay: 1
             })
             .to(".prevBtn", {
                 x: "-100%",
                 rotateZ: "45deg",
-                duration: 6,
+                duration: 4,
                 ease: "power2.out",
                 delay: 1
             })
             .to(".prevBtn", {
                 opacity: 0,
-                duration: 2,
-                delay: 1
+                duration: 6,
+                delay: 6
             });
         
             return tl;
@@ -662,21 +667,21 @@
             tl.to(".downBtn", {
                 y: "275%",
                 rotateZ: "180deg",
-                duration: 6,
+                duration: 4,
                 ease: "power2.out",
                 delay: 1
             })
             .to(".downBtn", {
                 y: "0%",
                 rotateZ: "45deg",
-                duration: 6,
+                duration: 4,
                 ease: "power2.out",
                 delay: 1
             })
             .to(".downBtn", {
                 opacity: 0,
-                duration: 2,
-                delay: 1
+                duration: 6,
+                delay: 6
             });
         
             return tl;
@@ -695,23 +700,26 @@
             pause: true,
             scrollTrigger: {
                 trigger: '.viewport2',
-                start: "20% 25%",
+                start: `20% 25%`,
                 end: "800% 25%",
                 markers: false,
                 scrub: 1, 
                 toggleActions: "play none reverse reverse"}
             })
-        
+     
         mainTimeline
             .add(orthoCameraAnimation(),    1)
             .add(viewportAnimation(),       1)
             .add(showTextOn(),          "-=2.5")
-            .add(infoBarShowOn(),       2.5)
-            .add(controlNextBtn(),  2.5)
-            .add(controlPrevBtn(),  2.5)
-            .add(controlDownBtn(),  2.5)
-            .add(infoBarShowOff(),  ">")
-            .add(controlBtnsOff(),  ">-1")
+            .add(infoBarShowOn(),           2.5)
+            .add(controlNextBtn(),          2.5)
+            .add(controlPrevBtn(),          2.5)
+            .add(controlDownBtn(),          2.5)
+            .add(infoBarShowOff(),          ">")
+            .add(controlBtnsOff(),          ">-1") 
+            .add(infoBarShowOff(),           ">")
+        
+
             
 
     // EVENTS
@@ -745,39 +753,6 @@
               ScrollTrigger.refresh();
             });
         });
-
-        const changeDescription = () => {
-            const name = info.names[buildingIndex];
-            const about = info.abouts[buildingIndex];
-            const type = info.types[buildingIndex];
-            const style = info.styles[buildingIndex];
-            const scroll = window.scrollY;
-          
-            if (scroll >= aboutMePos && scroll < abilitiesPos-750) {
-              dom.infoBar.innerHTML = `
-                <div>
-                  <h1>Salut!</h1>
-                  <h2>Mă numesc Mihael-Ionuț FURDU</h2>
-                  <p>Sunt arhitect cu drept de semnătură și cu această ocazie vă învit să parcurgeți cu curiozitate acest site personal</p>
-                </div>`;
-              return;
-            }
-          
-            if (scroll >= abilitiesPos-750 && scroll <= experiencePos) {
-              dom.infoBar.innerHTML = `
-                <div>
-                  <h1>${name ?? ""}</h1>
-                  <h2>${type ?? ""}</h2>
-                  <h3>${style ?? ""}</h3>
-                  <p>${about ?? ""}</p>
-                </div>`;
-              return;
-            }
-          
-            dom.infoBar.innerHTML = "";
-          };
-
-        window.addEventListener("scroll", changeDescription);
 
 
     /* EXPERIENCES */
@@ -978,7 +953,45 @@
                 totalHeight
             );
         }
-        
+        let heightFactor;
+        const updateheightFactor = () => {heightFactor = window.innerHeight > 700 ? 1 : .5}
+        let startAnimation = 20;
+        updateheightFactor();
+
+        const changeDescription = () => {
+            const name = info.names[buildingIndex];
+            const about = info.abouts[buildingIndex];
+            const type = info.types[buildingIndex];
+            const style = info.styles[buildingIndex];
+            const scroll = window.scrollY;
+          
+            if (scroll >= 1000 && scroll <= aboutMePos+1000) {
+              dom.infoBar.innerHTML = `
+                <div>
+                  <h1>Salut!</h1>
+                  <h2>Mă numesc Mihael-Ionuț FURDU</h2>
+                  <p>Sunt arhitect cu drept de semnătură și cu această ocazie vă învit să parcurgeți cu curiozitate acest site personal</p>
+                </div>`;
+              return;
+            }
+          
+            if (scroll >= projectsPos && scroll <= projectsPos+1000) {
+              dom.infoBar.innerHTML = `
+                <div>
+                  <h1>${name ?? ""}</h1>
+                  <h2>${type ?? ""}</h2>
+                  <h3>${style ?? ""}</h3>
+                  <p>${about ?? ""}</p>
+                </div>`;
+              return;
+            } 
+          
+            dom.infoBar.innerHTML = "";
+          };
+
+        window.addEventListener("scroll", changeDescription);
+
+
         // IMPORTANT: call this once after DOM loads
         // updateSectionsPos();
         const section1 = document.getElementById("section viewports")
@@ -1026,6 +1039,7 @@
     /* TESTING */
 
     /* COMMITS */
+        loaders.loadVersion("beta", "1.2.14")
         updateRefs();
         updateSectionsPos();
         loaders.loadPage        ();

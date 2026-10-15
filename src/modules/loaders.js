@@ -422,8 +422,8 @@
                     child.scale.set(.55,.55,.55);
 
                     neighborTimeline
-                        .to(child.material, {opacity: 1, duration: 5, ease: "power2.out"}, 2)
-                        .to(child.material, {opacity: 0, duration: 8, ease: "power2.out"}, 4);
+                        .to(child.material, {opacity: 1, duration: 5, ease: "power2.out"}, 1)
+                        .to(child.material, {opacity: 0, duration: 8, delay: 2, ease: "power2.out"}, 4);
                     return;
                 };
 
@@ -492,6 +492,16 @@
         }, 2000); // total duration
         };
 
+    function loadingVersion         (stage, version) {
+        const bar = document.createElement("div");
+        bar.className = "project-bar";
+        bar.innerHTML = `
+            <span class="project-stage">${stage}</span>
+            <span class="project-version">#${version}</span>
+        `;
+        document.body.appendChild(bar);
+        };
+        
     function loadingScroll          (scrollY) {
         window.scrollTo({ top: scrollY, behavior: "smooth" });
         };
@@ -1014,6 +1024,7 @@
         loadDisplay:        loadingDisplay,
         loadScroll:         loadingScroll,
         loadPush:           loadingPush,
+        loadVersion:        loadingVersion,
         loadExperience:     loadingExperience
     };
 
