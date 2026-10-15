@@ -507,6 +507,35 @@
 
         composer.addPass(bloomPass)
 
+    // DISTANCES
+        const infoSection = document.querySelector('.informations')
+        const distance1 = infoSection.getBoundingClientRect().top + window.scrollY;
+        console.log(distance1)
+
+        function createDashedLineAt(y) {
+            const line = document.createElement('div');
+        
+            line.style.position = 'absolute';
+            line.style.left = '0';
+            line.style.width = '100%';
+            line.style.top = y + 'px';
+        
+            line.style.borderTop = '2px dashed #555';
+            line.style.pointerEvents = 'none';
+            line.style.zIndex = '9999';
+        
+            document.body.appendChild(line);
+        
+            return line;
+        }
+        
+        const distance2 = distance1/2;
+        const distance3 = distance1/4;
+
+        createDashedLineAt(distance1);
+        createDashedLineAt(distance2);
+        createDashedLineAt(distance3);
+
     // ANIMATIONS
         document.querySelectorAll(".navItem").forEach(item => {
             item.addEventListener("mouseenter", () => {
@@ -527,6 +556,7 @@
 
         let logoAnimation = new LogoAnimation();
         gsap.registerPlugin(ScrollTrigger);
+        
 
         function viewportAnimation      () {
             let viewportTimeline = gsap.timeline({
@@ -623,8 +653,8 @@
             })
             .to(".nextBtn", {
                 opacity: 0,
-                duration: 6,
-                delay: 6
+                duration: 9,
+                delay: 10
             });
         
             return tl;
@@ -652,8 +682,8 @@
             })
             .to(".prevBtn", {
                 opacity: 0,
-                duration: 6,
-                delay: 6
+                duration: 9,
+                delay: 10
             });
         
             return tl;
@@ -680,8 +710,8 @@
             })
             .to(".downBtn", {
                 opacity: 0,
-                duration: 6,
-                delay: 6
+                duration: 9,
+                delay: 10
             });
         
             return tl;
@@ -706,22 +736,19 @@
                 scrub: 1, 
                 toggleActions: "play none reverse reverse"}
             })
-     
+        
         mainTimeline
             .add(orthoCameraAnimation(),    1)
             .add(viewportAnimation(),       1)
             .add(showTextOn(),          "-=2.5")
-            .add(infoBarShowOn(),           2.5)
-            .add(controlNextBtn(),          2.5)
-            .add(controlPrevBtn(),          2.5)
-            .add(controlDownBtn(),          2.5)
+            .add(infoBarShowOn(),           9.5)
+            .add(controlNextBtn(),          9.5)
+            .add(controlPrevBtn(),          9.5)
+            .add(controlDownBtn(),          9.5)
             .add(infoBarShowOff(),          ">")
             .add(controlBtnsOff(),          ">-1") 
             .add(infoBarShowOff(),           ">")
         
-
-            
-
     // EVENTS
         window.addEventListener("scroll", () => {
             if (window.scrollY < 1) {
@@ -965,7 +992,7 @@
             const style = info.styles[buildingIndex];
             const scroll = window.scrollY;
           
-            if (scroll >= 1000*heightFactor && scroll <= aboutMePos+1000*heightFactor) {
+            if (scroll >= distance3 && scroll < distance2) {
               dom.infoBar.innerHTML = `
                 <div>
                   <h1>Salut!</h1>
@@ -975,7 +1002,7 @@
               return;
             }
           
-            if (scroll >= projectsPos*heightFactor && scroll <= projectsPos+1000*heightFactor) {
+            if (scroll >= distance2 && scroll < distance1-1000) {
               dom.infoBar.innerHTML = `
                 <div>
                   <h1>${name ?? ""}</h1>
