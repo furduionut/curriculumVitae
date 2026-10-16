@@ -758,49 +758,30 @@
         });
         };
 
-    function loadingBuilding        (scene, light, building, material, color, intensity, blendMode) {
-        let scale = .1;
-        let pivot = new THREE.Vector3(0,1,0);
-        let bbCenter = new THREE.Vector3();
-
-        gltfLoader.load(building, (gltf) => {
-            scene.children.slice().forEach(obj => {
-                if (obj.name !== "pageLayout") scene.remove(obj);
-            });
-    
+    function loadingBuilding        (scene, light, building, material){ 
+        let scale  = .1;
+        let scaleX = scale;
+        let scaleY = scale;
+        let scaleZ = scale;
+        
+        gltfLoader.load( building, (gltf) => 
+            {
             if (currentModel || currentBuilding && currentBuilding.name !== 'pageLayout') {
-                scene.remove(currentModel, currentBuilding);
+                scene.remove(currentModel, currentBuilding)
                 currentBuilding = null;
-                currentModel = null;
-            }
-    
+                currentModel = null;};
             currentBuilding = gltf.scene;
-    
-            currentBuilding.position.set(-50 * scale, 0, -100 * scale);
-            currentBuilding.scale.set(scale, scale, scale);
-    
-            currentBuilding.traverse(child => {
-                if (!child.isMesh) return;
-    
-                const tex =
-                    material.map ||
-                    child.material.map ||
-                    child.material.uniforms?.map?.value;
-    
-                if (!tex) return;
-    
-                child.material = applyFilter(
-                    tex,
-                    color,
-                    intensity,
-                    blendMode
-                );
-            });
-
+            console.log(currentBuilding);
             
-    
+            console.log(`Changed building to ${building}`);
+            currentBuilding.position.set(-50 * scale , 0 * scale, -100 * scale);
+            currentBuilding.scale.set(scaleX, scaleY, scaleZ);
+            currentBuilding.traverse((child) => {
+                if (child.isMesh) {child.material = material;}
+            console.log(`Changed material to ${child.material}`)
+            });
             scene.add(currentBuilding);
-        });
+            })
         };
 
     function loadingModel           (scene, light, model, material, color, intensity, blendMode) {
