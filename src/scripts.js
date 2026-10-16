@@ -824,6 +824,7 @@
         });
 
         window.addEventListener('resize', ()=>{
+            window.location.reload();
             updateCanvas();
             updateCanvaso();
             setupNavHover();
