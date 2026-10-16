@@ -998,7 +998,7 @@
         text-decoration: none;
     }
 
-    @media (max-width: 1024px) and (min-width: 256px) and (orientation: portrait){
+    @media (max-width: 1024px) and (min-width: 513px) and (orientation: portrait){
         .main {
             /* box */
             /* size */
