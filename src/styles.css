@@ -1002,6 +1002,7 @@
         .main {
             /* box */
             /* size */
+            width: 100%;
             min-width: 320px;
             /* position */
             /* distance */
@@ -1106,7 +1107,7 @@
         }
     }
 
-    @media (width < 512px) and (orientation: portrait){
+    @media (max-width: 512px) and (orientation: portrait){
         .main {
             /* box */
             /* size */
@@ -1216,6 +1217,7 @@
     }
 
     @media (max-width: 1280px) and (min-width: 256px) and (orientation: landscape){
+        
         .aboutMe {
             height: auto;
         }
