@@ -831,7 +831,7 @@
         });
 
         window.addEventListener('scroll', () => {
-            if (window.scrollY >= 2500) {
+            if (window.scrollY >= 1500) {
                 const scrollIndicator = document.getElementById('scroll-indicator');
                 if (scrollIndicator) {
                     scrollIndicator.innerHTML = '';
