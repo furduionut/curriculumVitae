@@ -830,7 +830,7 @@
         });
 
         window.addEventListener('scroll', () => {
-            if (window.scrollY >= 1000) {
+            if (window.scrollY >= 2500) {
                 const scrollIndicator = document.getElementById('scroll-indicator');
                 if (scrollIndicator) {
                     scrollIndicator.innerHTML = '';
@@ -838,12 +838,16 @@
             }
         });
         
-        window.addEventListener("load", () => {
+        window.addEventListener("reload", () => {
+            const scrollIndicator = document.getElementById('scroll-indicator');
+            
+            scrollIndicator.style.display = 'flex';
             ScrollTrigger.refresh();
             requestAnimationFrame(() => {
-              window.scrollTo(0, 0);
+              window.scrollTo(10, 10);
               ScrollTrigger.refresh();
             });
+            
         });
 
         document.querySelectorAll('.btn').forEach(btn => {
@@ -1144,16 +1148,16 @@
                         break;
             }
         })});
+
     /* TESTING */
 
     /* COMMITS */
-        loaders.loadVersion("beta", " 1.0.02")
+        loaders.loadVersion     ("beta", " 1.0.02")
+        loaders.loadIndicator   (dom);
         updateRefs();
         updateSectionsPos();
         loaders.loadPage        ();
-        console.log             (name, about, type, style)
         changeDescription       (name, about, type, style);
-        loaders.loadIndicator   (dom);
         loaders.loadPush        (dom.experience, "Vezi mai mult");
         loaders.loadPush        (document.querySelector('.experience.banner'));
         loaders.loadLogo        (secondScene, light, logo3D, materials, logoAnimation);

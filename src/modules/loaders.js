@@ -278,7 +278,7 @@
         };
 
     function loadingIndicators      (dom){
-        const aboutMe               = dom.aboutMe
+        const main                  = document.querySelector('.main');
         const scrollIndicator       = document.createElement('div');
         const scrollArrow           = document.createElement('div');
         const scrollText            = document.createElement('div');
@@ -297,7 +297,7 @@
 
         scrollIndicator.appendChild(scrollText);
         scrollIndicator.appendChild(scrollArrow);
-        aboutMe.appendChild(scrollIndicator);
+        main.appendChild(scrollIndicator);
         };
 
     function loading3DText          (scene, text) {
