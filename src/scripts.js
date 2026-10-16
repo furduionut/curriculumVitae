@@ -700,7 +700,7 @@
         
             tl.to(".nextBtn", {
                 x: "1000%",
-                y: "-350%",
+                y: "-275%",
                 rotateZ: "720deg",
                 duration: 4,
                 ease: "power2.out",
@@ -729,7 +729,7 @@
         
             tl.to(".prevBtn", {
                 x: "-1000%",
-                y: "-350%",
+                y: "-275%",
                 rotateZ: "720deg",
                 duration: 4,
                 ease: "power2.out",
@@ -799,14 +799,16 @@
                 toggleActions: "play none reverse reverse"}
             })
         
+        const screenHeightAdjust = window.innerHeight > 1024 ? 1 : 1.25;
+
         mainTimeline
             .add(orthoCameraAnimation(),    1)
             .add(viewportAnimation(),       1)
             .add(showTextOn(),              ">")
             .add(infoBarShowOn(),           5.5)
-            .add(controlNextBtn(),          19.5)
-            .add(controlPrevBtn(),          19.5)
-            .add(controlDownBtn(),          19.5)
+            .add(controlNextBtn(),          19.5*screenHeightAdjust)
+            .add(controlPrevBtn(),          19.5*screenHeightAdjust)
+            .add(controlDownBtn(),          19.5*screenHeightAdjust)
             .add(infoBarShowOff(),          ">")
             .add(controlBtnsOff(),          ">-1") 
             .add(infoBarShowOff(),           ">")
