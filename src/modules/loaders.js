@@ -784,46 +784,28 @@
             })
         };
 
-    function loadingModel           (scene, light, model, material, color, intensity, blendMode) {
-        let scale = .1;
-    
-        gltfLoader.load(model, (gltf) => {
-    
-            // Remove everything except pageLayout
-            scene.children.slice().forEach(obj => {
-                if (obj.name !== "pageLayout") {
-                    scene.remove(obj);
-                }
-            });
-    
-            currentModel = null;
-            currentBuilding = null;
-    
+    function loadingModel           (scene, light, model, material){ 
+        let scale  = .1;
+        let scaleX = scale;
+        let scaleY = scale;
+        let scaleZ = scale; 
+        gltfLoader.load( model, (gltf) => 
+            {
+            if (currentModel || currentBuilding) {
+                scene.remove(currentModel, currentBuilding);
+                currentBuilding = null;
+                currentModel = null;};
             currentModel = gltf.scene;
-    
-            currentModel.position.set(-50 * scale, 0, -100 * scale);
-            currentModel.scale.set(scale, scale, scale);
-    
-            currentModel.traverse(child => {
-                if (!child.isMesh) return;
-    
-                const tex =
-                    material.map ||
-                    child.material.map ||
-                    child.material.uniforms?.map?.value;
-    
-                if (!tex) return;
-    
-                child.material = applyFilter(
-                    tex,
-                    color,
-                    intensity,
-                    blendMode
-                );
-            });
-    
+            
+            console.log(`Changed model to ${model}`);
+            currentModel.position.set(-50 * scale , 0 * scale, -100 * scale);
+            currentModel.scale.set(scaleX, scaleY, scaleZ);
+            currentModel.traverse((child) => {  
+                if (child.isMesh) {child.material = material;}
+            console.log(`Changed material to ${child.material}`)
+            }); 
             scene.add(currentModel);
-        });
+            })
         };
         
     function loadingLogo3D          (scene, light, model, material, animationModel){
@@ -978,21 +960,21 @@
         expDetails.appendChild(timeline);
         };
 
-        function loadingAnimation(element) {
-            const initialRotation = gsap.getProperty(element, "rotation");
-        
-            gsap.to(element, {
-                rotation: initialRotation + 5,
-                duration: 0.08,
-                ease: "power2.inOut",
-                yoyo: true,
-                repeat: 5,
-                transformOrigin: "50% 50%",
-                onComplete() {
-                    gsap.set(element, { rotation: initialRotation });
-                }
-            });
-        }
+    function loadingAnimation(element) {
+        const initialRotation = gsap.getProperty(element, "rotation");
+    
+        gsap.to(element, {
+            rotation: initialRotation + 5,
+            duration: 0.08,
+            ease: "power2.inOut",
+            yoyo: true,
+            repeat: 5,
+            transformOrigin: "50% 50%",
+            onComplete() {
+                gsap.set(element, { rotation: initialRotation });
+            }
+        });
+        };
         
 
     const loaders = {
