@@ -476,6 +476,22 @@
         });
         };
     
+    function preventReload          () {
+        if (window.scrollY < 1) {
+        window.scrollTo({
+            top: 1,
+            behavior: "instant"
+        });
+        }};
+    
+    function hideScollIndicator     () {
+        if (window.scrollY >= 1500) {
+        const scrollIndicator = document.getElementById('scroll-indicator');
+        if (scrollIndicator) {
+            scrollIndicator.innerHTML = '';
+            scrollIndicator.style.display = 'none';}
+        }};
+
     function loadingPressIndicator  (dom) {
         const elements = Array.isArray(dom) || dom instanceof NodeList ? dom : [dom];
         let on = false;
@@ -1002,7 +1018,9 @@
         loadPush:           loadingPush,
         loadVersion:        loadingVersion,
         loadExperience:     loadingExperience,
-        loadAnimation:      loadingAnimation
+        loadAnimation:      loadingAnimation,
+        preventReload:      preventReload,
+        hideScollIndicator: hideScollIndicator
     };
 
     export { loaders }

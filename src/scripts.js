@@ -815,20 +815,16 @@
         
     // EVENTS
 
+
+        window.addEventListener("scroll", () => {
+            loaders.preventReload();
+            loaders.hideScollIndicator();
+        });
+
         window.addEventListener('resize', ()=>{
-            window.location.reload();
             updateCanvas();
             updateCanvaso();
             setupNavHover();
-        });
-
-        window.addEventListener('scroll', () => {
-            if (window.scrollY >= 1500) {
-                const scrollIndicator = document.getElementById('scroll-indicator');
-                if (scrollIndicator) {
-                    scrollIndicator.innerHTML = '';
-                    scrollIndicator.style.display = 'none';}
-            }
         });
         
         window.addEventListener("reload", () => {
