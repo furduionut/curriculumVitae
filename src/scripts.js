@@ -622,31 +622,35 @@
             };
 
         function showTextOn             () {
-                const element = dom.text2D;
-                const text = element.textContent.trim();
+            const element = dom.text2D;
+            const characters = Array.from(text);
             
-                element.replaceChildren();        // clear existing text
-                element.style.whiteSpace = "pre"; // preserve spacing
+            element.replaceChildren();
+            element.style.whiteSpace = "pre-wrap";
             
-                // Create spans for each character
-                const spans = [...text].map(char => {
-                    const span = document.createElement("span");
-                    span.textContent = char;
-                    span.style.opacity = 0;
-                    element.appendChild(span);
-                    return span;
+            const spans = characters.map((character) => {
+                const span = document.createElement("span");
+                span.textContent = character;
+                element.appendChild(span);
+                return span;
+            });
+            
+            const textTimeline = gsap.timeline({
+                defaults: { ease: "power2.out" }
+            });
+            
+            textTimeline
+                .set(element, { opacity: 1 })
+                .from(spans, {
+                opacity: 0,
+                duration: 2,
+                stagger: 0.25
                 });
             
-                // Animate each letter
-                return gsap.to(spans, {
-                    opacity: 1,
-                    duration: 0.2,
-                    stagger: 0.05,
-                    ease: "power2.out"
-                });
+            return textTimeline;
             };
 
-        function showTextOff             () {
+        function showTextOff            () {
             const element = dom.text2D;
             element.style.opacity = 1;
         
