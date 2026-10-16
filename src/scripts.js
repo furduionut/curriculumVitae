@@ -542,24 +542,24 @@
         console.log(distToPage);
 
     // ANIMATIONS
-    if (window.innerWidth >= 1024) {
-        document.querySelectorAll(".navItem").forEach(item => {
-            item.addEventListener("mouseenter", () => {
-                gsap.to(item, {
-                    x: "50%",
-                    duration: 0.35,
-                    ease: "power2.out"
+        if (window.innerWidth >= 1024) {
+            document.querySelectorAll(".navItem").forEach(item => {
+                item.addEventListener("mouseenter", () => {
+                    gsap.to(item, {
+                        x: "50%",
+                        duration: 0.35,
+                        ease: "power2.out"
+                    });
+                });
+                item.addEventListener("mouseleave", () => {
+                    gsap.to(item, {
+                        x: "0%",
+                        duration: 0.35,
+                        ease: "power2.out"
+                    });
                 });
             });
-            item.addEventListener("mouseleave", () => {
-                gsap.to(item, {
-                    x: "0%",
-                    duration: 0.35,
-                    ease: "power2.out"
-                });
-            });
-        });
-    }
+        }
         function setupNavHover() {
             const items = document.querySelectorAll(".navItem");
         
@@ -604,7 +604,6 @@
         }
         
         setupNavHover();
-        window.addEventListener("resize", setupNavHover);
 
         let logoAnimation = new LogoAnimation();
         gsap.registerPlugin(ScrollTrigger);
@@ -623,32 +622,39 @@
             };
 
         function showTextOn             () {
-            const element = dom.text2D;
-            const characters = Array.from(text);
+                const element = dom.text2D;
+                const text = element.textContent.trim();
             
-            element.replaceChildren();
-            element.style.whiteSpace = "pre-wrap";
+                element.replaceChildren();        // clear existing text
+                element.style.whiteSpace = "pre"; // preserve spacing
             
-            const spans = characters.map((character) => {
-                const span = document.createElement("span");
-                span.textContent = character;
-                element.appendChild(span);
-                return span;
-            });
-            
-            const textTimeline = gsap.timeline({
-                defaults: { ease: "power2.out" }
-            });
-            
-            textTimeline
-                .set(element, { opacity: 1 })
-                .from(spans, {
-                opacity: 0,
-                duration: 2,
-                stagger: 0.25
+                // Create spans for each character
+                const spans = [...text].map(char => {
+                    const span = document.createElement("span");
+                    span.textContent = char;
+                    span.style.opacity = 0;
+                    element.appendChild(span);
+                    return span;
                 });
             
-            return textTimeline;
+                // Animate each letter
+                return gsap.to(spans, {
+                    opacity: 1,
+                    duration: 0.2,
+                    stagger: 0.05,
+                    ease: "power2.out"
+                });
+            };
+
+        function showTextOff             () {
+            const element = dom.text2D;
+            element.style.opacity = 1;
+        
+            return gsap.to(element, {
+                opacity: 0,
+                duration: 1,
+                ease: "power2.out"
+            });
             };
 
         function infoBarShowOn          () {
@@ -656,8 +662,7 @@
                 defaults: { duration: 6, ease: "power2.out" }});
 
             infoBarTimline
-                .to(".infoBar", {height: '100%'})
-                .to(".infoBar", {height: 'auto'})
+                .to(".infoBar", {height: '50%'})
                 .to(".infoBar", {x: '0%'})
                 
             return infoBarTimline;
@@ -795,7 +800,7 @@
         mainTimeline
             .add(orthoCameraAnimation(),    1)
             .add(viewportAnimation(),       1)
-            .add(showTextOn(),              2.0)
+            .add(showTextOn(),              ">")
             .add(infoBarShowOn(),           5.5)
             .add(controlNextBtn(),          19.5)
             .add(controlPrevBtn(),          19.5)
@@ -817,6 +822,7 @@
         window.addEventListener('resize', ()=>{
             updateCanvas();
             updateCanvaso();
+            setupNavHover();
         });
 
         window.addEventListener('scroll', () => {
@@ -836,6 +842,14 @@
             });
         });
 
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                setTimeout(() => {
+                    const url = btn.getAttribute("href");
+                    if (url) window.location.href = url;
+                }, 600);
+            });
+        });
 
     /* EXPERIENCES */
         let cleanupExperienceDescriptions = () => {};
@@ -1127,7 +1141,7 @@
         changeDescription       (name, about, type, style);
         loaders.loadIndicator   (dom);
         loaders.loadPush        (dom.experience, "Vezi mai mult");
-        loaders.loadPush        (document.querySelector('#programmerBtn'), "Vezi mai mult");
+        loaders.loadPush        (document.querySelector('.experience.banner'));
         loaders.loadLogo        (secondScene, light, logo3D, materials, logoAnimation);
         loaders.loadNeighboar   (scene, light, neighbor, materials);
         loaders.loadBuilding    (scene, light, building, material);

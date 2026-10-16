@@ -897,35 +897,20 @@
     
         const children = Array.from(element.children);
     
-        children.slice(0, -1).forEach(child => {
+        children.forEach(child => {
             child.classList.add("highlight-outline");
             child.style.outlineColor = "#c85356";
         });
     
-        const lastChild = children[children.length - 1];
-        if (lastChild) {
-            Array.from(lastChild.children).forEach(grandchild => {
-                grandchild.classList.add("highlight-outline");
-                grandchild.style.outlineColor = "#c85356";
-            });
-        }
-    
         element.addEventListener("click", () => {
-            children.slice(0, -1).forEach(child => {
+            children.forEach(child => {
                 child.classList.remove("highlight-outline");
                 child.style.outline = "none";
             });
     
-            if (lastChild) {
-                Array.from(lastChild.children).forEach(grandchild => {
-                    grandchild.classList.remove("highlight-outline");
-                    grandchild.style.outline = "none";
-                });
-            }
-    
             indicator.remove();
         }, { once: true });
-    }
+        };
 
     function loadingExperience      (domBtn, data) {
         const expDetails = document.querySelector('#expDetails');
@@ -1011,7 +996,24 @@
         // 4. Timeline este MEREU ultimul copil
         expDetails.appendChild(timeline);
         };
-    
+
+        function loadingAnimation(element) {
+            const initialRotation = gsap.getProperty(element, "rotation");
+        
+            gsap.to(element, {
+                rotation: initialRotation + 5,
+                duration: 0.08,
+                ease: "power2.inOut",
+                yoyo: true,
+                repeat: 5,
+                transformOrigin: "50% 50%",
+                onComplete() {
+                    gsap.set(element, { rotation: initialRotation });
+                }
+            });
+        }
+        
+
     const loaders = {
         loadLogo:           loadingLogo3D,
         loadPage:           createLoadingPage,
@@ -1028,7 +1030,8 @@
         loadScroll:         loadingScroll,
         loadPush:           loadingPush,
         loadVersion:        loadingVersion,
-        loadExperience:     loadingExperience
+        loadExperience:     loadingExperience,
+        loadAnimation:      loadingAnimation
     };
 
     export { loaders }
