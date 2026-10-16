@@ -1150,7 +1150,7 @@
             top: 4%;
         }
         .navBar {
-            height: 100%;
+            height: auto;
             width: auto;
         }
         .infoBar {
@@ -1173,7 +1173,7 @@
             height: auto;
             flex-flow: row-reverse wrap;
             align-content: center;
-            gap: 6px;
+            gap: 0px;
             display: flex;
             flex-direction: column;
             align-items: center;

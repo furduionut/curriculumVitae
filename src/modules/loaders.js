@@ -10,7 +10,14 @@
     import { styles } from "./styles.js";
     import { domain as dom } from "./domain.js";
     import { materials } from "./materials.js";
-
+    
+    const infoSection = document.querySelector('.informations')
+    const distance = infoSection.getBoundingClientRect().top + window.scrollY;
+    const distance1 = distance;
+    const distance2 = distance1/2;
+    const distance3 = distance1/4;
+    const pageHeight = document.documentElement.scrollHeight;
+    const distToPage = `${parseInt(distance1 / pageHeight * 100)}%`;
 
     const manager = new THREE.LoadingManager();
           manager.onStart = () => {
@@ -395,9 +402,9 @@
         
             let neighborTimeline = gsap.timeline({
                 scrollTrigger: {
-                    trigger: '.projects',
-                    start: "5% 0%",
-                    end: "120% 100%",
+                    trigger: '.main',
+                    start: `10% 25%`,
+                    end: `${distToPage} 25%`,
                     scrub: 1,
                     markers: false
                 }
@@ -452,7 +459,7 @@
                     child.material.opacity = 1;
                     child.material.depthWrite = true;
                     
-                    neighborTimeline.to(child.material, {opacity: 0,        duration: 1,        ease: "power2.out",      }, 7.5);
+                    neighborTimeline.to(child.material, {opacity: 0,        duration: 2,     ease: "power2.out",      }, 9.5);
                     return;
                 };
 
@@ -463,9 +470,9 @@
                     child.material          = material.model;
                     child.position.y        = belowY;
                     
-                    neighborTimeline.to(child.scale,    {x: 1, y: 1, z:1,   duration: 4, delay: -2,       ease: "back.out(1.7)",   }, 6.25);
-                    neighborTimeline.to(child.material, {opacity: 1,        duration: 4, delay: -3,        ease: "power2.out",      }, 6.25);
-                    neighborTimeline.to(child.position, {y: originalY,      duration: 4, delay: -2,      ease: "bounce.out",      }, 6.25);
+                    neighborTimeline.to(child.scale,    {x: 1, y: 1, z:1,   duration: 4, delay: -2,       ease: "back.out(1.7)",   }, 8.25);
+                    neighborTimeline.to(child.material, {opacity: 1,        duration: 4, delay: -3,        ease: "power2.out",      }, 8.25);
+                    neighborTimeline.to(child.position, {y: originalY,      duration: 4, delay: -2,      ease: "bounce.out",      }, 8.25);
                         
                     return;
                 };
