@@ -666,7 +666,6 @@
                 defaults: { duration: 6, ease: "power2.out" }});
 
             infoBarTimline
-                .to(".infoBar", {height: '50%'})
                 .to(".infoBar", {x: '0%'})
                 
             return infoBarTimline;
@@ -678,7 +677,6 @@
 
             infoBarTimline
                 .to(".infoBar", {x: '77.5%'})
-                .to(".infoBar", {height: '100%'})
                 
             return infoBarTimline;
             };
