@@ -163,7 +163,7 @@
         /* padding: calc(var(--main-padding)*1); */
         /* size */
         height: auto;
-        width: 100vw;
+        width: 100%;
         min-width: 360px;
         /* position */
         position: static;
@@ -1110,6 +1110,7 @@
         .main {
             /* box */
             /* size */
+            width: 100%;
             min-width: 320px;
             /* position */
             /* distance */
