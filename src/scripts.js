@@ -814,14 +814,6 @@
             .add(infoBarShowOff(),           ">")
         
     // EVENTS
-        window.addEventListener("scroll", () => {
-            if (window.scrollY < 1) {
-            window.scrollTo({
-                top: 1,
-                behavior: "instant"
-            });
-            }
-        });
 
         window.addEventListener('resize', ()=>{
             window.location.reload();
