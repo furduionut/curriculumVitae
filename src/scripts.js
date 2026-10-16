@@ -844,9 +844,19 @@
 
         document.querySelectorAll('.btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
+                e.preventDefault();  
+                loaders.loadAnimation(btn);
                 setTimeout(() => {
                     const url = btn.getAttribute("href");
-                    if (url) window.location.href = url;
+                    const target = btn.getAttribute("target");
+        
+                    if (!url) return;
+        
+                    if (target === "_blank") {
+                        window.open(url, "_blank");
+                    } else {
+                        window.location.href = url;
+                    }
                 }, 600);
             });
         });

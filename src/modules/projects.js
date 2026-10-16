@@ -1,5 +1,7 @@
 import { Project } from "../constructors/constructors";
 
+const urlBase = './assets/textures/';
+
 const projects = 
 {
     casaBacau:  new Project(
@@ -27,10 +29,10 @@ const projects =
 
                     textures:
                         {               
-                        diffuse:      './assets/textures/casaBacau/casaBacau_diffuseMap_1k.jpg',
-                        roughness:    './assets/textures/casaBacau/casaBacau_roughnessMap_1k.jpg',
-                        normal:       './assets/textures/casaBacau/casaBacau_normalMap_1k.jpg',
-                        transmission: './assets/textures/casaBacau/casaBacau_transmitionMap_1k.jpg'
+                        diffuse:      './assets/textures/casaBacau/casaBacau_filtered/casaBacau_diffuseMap_1k.jpg',
+                        roughness:    './assets/textures/casaBacau/casaBacau_filtered/casaBacau_roughnessMap_1k.jpg',
+                        normal:       './assets/textures/casaBacau/casaBacau_filtered/casaBacau_normalMap_1k.jpg',
+                        transmission: './assets/textures/casaBacau/casaBacau_filtered/casaBacau_transmitionMap_1k.jpg'
                         }
                     },
                 str: {},
@@ -61,10 +63,10 @@ const projects =
 
                     textures:
                         {
-                        diffuse:       './assets/textures/casaClim/casaClim_diffuseMap_1k.jpg',
-                        roughness:     './assets/textures/casaClim/casaClim_roughnessMap_1k.jpg',
-                        normal:        './assets/textures/casaClim/casaClim_normalMap_1k.jpg',
-                        transmission:  './assets/textures/casaClim/casaClim_transmitionMap_1k.jpg'
+                        diffuse:       './assets/textures/casaClim/casaClim_filtered/casaClim_diffuseMap_1k.jpg',
+                        roughness:     './assets/textures/casaClim/casaClim_filtered/casaClim_roughnessMap_1k.jpg',
+                        normal:        './assets/textures/casaClim/casaClim_filtered/casaClim_normalMap_1k.jpg',
+                        transmission:  './assets/textures/casaClim/casaClim_filtered/casaClim_transmitionMap_1k.jpg'
                         }
                     },
                 str: {},
@@ -96,10 +98,10 @@ const projects =
                             ],
                         textures:
                             {
-                            diffuse: './assets/textures/casaStolnicu/casaStolnicu_diffuseMap_1k.jpg',
-                            roughness: './assets/textures/casaStolnicu/casaStolnicu_roughnessMap_1k.jpg',
-                            normal: './assets/textures/casaStolnicu/casaStolnicu_normalMap_1k.jpg',
-                            transmission: './assets/textures/casaStolnicu/casaStolnicu_transmissionMap_1k.jpg'
+                            diffuse: './assets/textures/casaStolnicu/casaStolnicu_filtered/casaStolnicu_diffuseMap_1k.jpg',
+                            roughness: './assets/textures/casaStolnicu/casaStolnicu_filtered/casaStolnicu_roughnessMap_1k.jpg',
+                            normal: './assets/textures/casaStolnicu/casaStolnicu_filtered/casaStolnicu_normalMap_1k.jpg',
+                            transmission: './assets/textures/casaStolnicu/casaStolnicu_filtered/casaStolnicu_transmissionMap_1k.jpg'
                             }
                         },
                     str: {},

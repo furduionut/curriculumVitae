@@ -766,12 +766,17 @@
         
         gltfLoader.load( building, (gltf) => 
             {
+            scene.children.slice().forEach(obj => {
+                if (obj.name !== "pageLayout") scene.remove(obj);
+            });
+    
             if (currentModel || currentBuilding && currentBuilding.name !== 'pageLayout') {
-                scene.remove(currentModel, currentBuilding)
+                scene.remove(currentModel, currentBuilding);
                 currentBuilding = null;
-                currentModel = null;};
-            currentBuilding = gltf.scene;
-            console.log(currentBuilding);
+                currentModel = null;
+            }
+        
+                currentBuilding = gltf.scene;
             
             console.log(`Changed building to ${building}`);
             currentBuilding.position.set(-50 * scale , 0 * scale, -100 * scale);
@@ -791,11 +796,14 @@
         let scaleZ = scale; 
         gltfLoader.load( model, (gltf) => 
             {
-            if (currentModel || currentBuilding) {
-                scene.remove(currentModel, currentBuilding);
+                scene.children.slice().forEach(obj => {
+                    if (obj.name !== "pageLayout") {
+                        scene.remove(obj);
+                    }
+                });
+                currentModel = null;
                 currentBuilding = null;
-                currentModel = null;};
-            currentModel = gltf.scene;
+                currentModel = gltf.scene;
             
             console.log(`Changed model to ${model}`);
             currentModel.position.set(-50 * scale , 0 * scale, -100 * scale);
@@ -960,7 +968,7 @@
         expDetails.appendChild(timeline);
         };
 
-    function loadingAnimation(element) {
+    function loadingAnimation       (element) {
         const initialRotation = gsap.getProperty(element, "rotation");
     
         gsap.to(element, {
