@@ -813,6 +813,41 @@
             .add(controlBtnsOff(),          ">-1") 
             .add(infoBarShowOff(),           ">")
         
+            
+            // LOGO INTERACTION LOCK
+
+
+            const logoLockTime = 7;
+            const logoUnlockTime = 2;
+
+            let isLogoLocked = false;
+
+            function syncLogoInteraction() {
+                const time = mainTimeline.time();
+
+                // Lock when scrolling forward into the 2D state
+                if (time >= logoLockTime) {
+                    isLogoLocked = true;
+                }
+
+                // Unlock only when the reverse camera
+                // transition has finished
+                else if (time <= logoUnlockTime) {
+                    isLogoLocked = false;
+                }
+
+                control.setInteractionLocked(isLogoLocked);
+            }
+
+            mainTimeline.eventCallback("onUpdate", syncLogoInteraction);
+
+            // Initialize interaction state
+            syncLogoInteraction();
+
+
+
+
+
     // EVENTS
 
 
