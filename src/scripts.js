@@ -614,41 +614,40 @@
                 defaults: { duration: 6, ease: "power2.out" }})
                     
             viewportTimeline
-                .to(".viewport2", {scale: 0.15})
+                .to(".viewport2", {scale: 0.20}) /////// here you can scale logo 2D form
                 .to(".viewport2", {y: '-50%'}, "-=1")
-                .to(".viewport2", {x: '-7.5%'}, ">")
+                .to(".viewport2", {x: '-4%'}, ">") // pozitie logo cand se misca la stanga
 
             return viewportTimeline;
             };
 
-        function showTextOn             () {
+
+
+        function showTextOn() {
             const element = dom.text2D;
-            const characters = Array.from(text);
-            
-            element.replaceChildren();
-            element.style.whiteSpace = "pre-wrap";
-            
-            const spans = characters.map((character) => {
-                const span = document.createElement("span");
-                span.textContent = character;
-                element.appendChild(span);
-                return span;
-            });
-            
-            const textTimeline = gsap.timeline({
-                defaults: { ease: "power2.out" }
-            });
-            
-            textTimeline
-                .set(element, { opacity: 1 })
-                .from(spans, {
-                opacity: 0,
-                duration: 2,
-                stagger: 0.25
-                });
-            
+            element.textContent = text;
+
+            const textTimeline = gsap.timeline();
+
+            // Start at viewport center and slide slightly right
+            textTimeline.fromTo(
+                element,
+                {
+                    x: 5,
+                    autoAlpha: 0
+                },
+                {
+                    x: 2, // pozitie text cand se misca la dreapta
+                    autoAlpha: 1,
+                    duration: 6,
+                    ease: "power2.out"
+                }
+            );
+
             return textTimeline;
-            };
+        }
+
+
 
         function showTextOff            () {
             const element = dom.text2D;
@@ -804,7 +803,7 @@
         mainTimeline
             .add(orthoCameraAnimation(),    1)
             .add(viewportAnimation(),       1)
-            .add(showTextOn(),              ">")
+            .add(showTextOn(),              ">-6")
             .add(infoBarShowOn(),           5.5)
             .add(controlNextBtn(),          19.5*screenHeightAdjust)
             .add(controlPrevBtn(),          19.5*screenHeightAdjust)

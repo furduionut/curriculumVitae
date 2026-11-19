@@ -351,16 +351,22 @@
     }
     .text2D {
         position: fixed;
-        width: 100%;
+        width: max-content;
         height: auto;
+
         opacity: 0;
-        font-size: 24px;
+        font-size: 27px;
         color: white;
-        left: 2.5%;
-        top: 3.5%;
+
+        left: 50%;
+        top: 3.7%;
+
         display: flex;
         justify-content: center;
+        white-space: nowrap;
+        pointer-events: none;
     }
+    
     /* ----NAVIGATION-----*/
     .navBar {
         /* box */
