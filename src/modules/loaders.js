@@ -95,7 +95,7 @@
 
     function applyLogoMaterials     (model) {
         const purple = materials.lightBulbDiffuse;
-        const glassPurple = materials.tube;
+        const glassPurple = materials.glassPurple;
 
         model.traverse((child) => {
             if (!child.isMesh) return;
@@ -106,100 +106,53 @@
                 name.startsWith("archmov");
 
             const isArchSegment2 =
-                name.startsWith('archMesh');
+                name.startsWith('archmesh');
 
             const isItizerSegment2 =
-                name.startsWith('itizerMesh')
+                name.startsWith('itizermesh')
 
             const isItizerSegment =
                 name.startsWith("itizermov");
 
             if (isArchSegment || isItizerSegment) {
-                child.material =
-                    new THREE.MeshBasicMaterial({
-                        color: glassPurple.clone(),
-
-                        color: 0x8e93f8,
-                        transparent: true,
-                        opacity: 1,
-                        depthWrite: false,
-                        depthTest: true,
-                        fog: false
-                    });
+                child.material = glassPurple.clone();
                 child.castShadow = false;
                 child.receiveShadow = false;
                 child.renderOrder = 3;
                 child.material.needsUpdate = true;
-
-                
-                // console.log(
-                //     "Prepared independent segment:",
-                //     child.name,
-                //     child.material.id
-                // );
-
                 return;
             }
 
             if (isArchSegment2 || isItizerSegment2) {
-                child.material =
-                    new THREE.MeshBasicMaterial({
-                        color: glassPurple.clone(),
-
-                        color: 0x8e93f8,
-                        transparent: true,
-                        opacity: 1,
-                        depthWrite: false,
-                        depthTest: true,
-                        fog: false
-                    });
+                child.material = glassPurple.clone();
                 child.castShadow = false;
                 child.receiveShadow = false;
                 child.renderOrder = 3;
                 child.material.needsUpdate = true;
 
-                
-                // console.log(
-                //     "Prepared independent segment:",
-                //     child.name,
-                //     child.material.id
-                // );
-
                 return;
             }
 
-            if (name === "bec" || name === 'lightBulbMesh.001') {
-                const brightPurple = purple
-                    .clone()
-                    .multiplyScalar(6);
-
-                child.material =
-                    new THREE.MeshBasicMaterial({
-                        color: brightPurple,
-
-                        transparent: true,
-                        blending:
-                            THREE.AdditiveBlending,
-
-                        depthWrite: false,
-                        depthTest: true,
-
-                        toneMapped: false,
-                        side: THREE.DoubleSide
-                    });
-
-                child.renderOrder = 6;
+            if (name === "bec" || name === 'lightbulbmesh.001') {
+                child.material = materials.glassEmmisive.clone();
+                child.renderOrder = 1;
                 child.frustumCulled = false;
                 child.material.needsUpdate = true;
 
                 return;
             }
 
-            if (name === "traseu" || name === 'bodyMesh.001') {
-                child.material = materials.tube;
-                child.renderOrder = 1;
-                child.material.needsUpdate = true;
-            }
+
+                if (name === "traseu" || name === "bodymesh.001") {
+
+                    // Smooth lighting across existing vertices
+                    child.geometry.computeVertexNormals();
+
+                    child.material = materials.tube;
+                    child.renderOrder = 1;
+                    child.material.needsUpdate = true;
+                }
+
         });
         };
 

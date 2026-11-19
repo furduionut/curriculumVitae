@@ -411,15 +411,68 @@
 
     /* ENVIRONMENT */
         const   hdrLoader       = new HDRLoader();
-            hdrLoader.load('./assets/textures/environment/cloisterPassage/cloisterPassage_1k.hdr', 
+
+
+            hdrLoader.load(
+                './assets/textures/environment/cloisterPassage/studio_small_08_2k.hdr',
                 (texture) => {
+
+
                     texture.mapping = THREE.EquirectangularReflectionMapping;
+
+                    // Existing building scene
                     scene.environment = texture;
+
+                    // Separate 3D logo scene
+                    secondScene.environment = texture;
+
+
+
+
+                    const hdriRotation = secondScene.environmentRotation;
+
+                    // Tilt the HDRI diagonally
+                    hdriRotation.set(
+                        THREE.MathUtils.degToRad(25),  // X — vertical tilt
+                        0,                             // Y — horizontal rotation
+                        THREE.MathUtils.degToRad(45)   // Z — diagonal tilt
+                    );
+
+                    // Slowly rotate the reflections
+                    gsap.to(hdriRotation, {
+                        y: Math.PI * 2,
+                        duration: 10,
+                        ease: "none",
+                        repeat: -1
+                    });
+
+
+
+
+
+
+
+
+
+                    // HDRI reflection intensity
+                    secondScene.environmentIntensity = 1.5;
+
+                    console.log("HDRI applied to logo scene");
+
+
+                    // Logo 3D scene
+                    secondScene.environment = texture;
+
+                    // Reflection lighting strength for logo
+                    secondScene.environmentIntensity = 0.45;
+
+                    console.log("HDRI loaded for both scenes");
                 },
                 undefined,
                 (err) => console.log('HDR load error', err)
             );
-    
+ 
+
     /* RENDERER */
         let renderer = renders(
             rendererWidth, 

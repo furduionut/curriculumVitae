@@ -2,6 +2,8 @@ import * as THREE               from "three";
 import { styles }               from "./styles.js";
 
     const lavenderColor = new THREE.Color(0x6a76a6);
+    const LogoPurpleColor = new THREE.Color(0x8e93f8);
+    const LogoEmmisiveColor = new THREE.Color(0xffffff);
     const lightBlueColor = new THREE.Color(0xc9b8ff);
     const brightPurple = new THREE.Color(0x9b00ff);
 
@@ -32,25 +34,63 @@ import { styles }               from "./styles.js";
         color: 'white',
     });
 
+
+
     const clearGlass = new THREE.MeshPhysicalMaterial({
-        color: 0xffffff,
+        // Very subtle cool glass tint
+        color: 0xe8eeff,
+
+        // Transparency
         transparent: true,
-        opacity: 0.05,
-        transmission: 0.85,
-        roughness: 0.08,
-        metalness: 0,
-        thickness: 0.35,
-        ior: 1.45,
-        attenuationColor:
-            new THREE.Color(0xffffff),
-        attenuationDistance: 2,
-        clearcoat: 1,
-        clearcoatRoughness: 0.03,
-        envMapIntensity: 1.5,
-        side: THREE.DoubleSide,
+        opacity: 0.5,
+        transmission: 0.35,
+
+        // Surface properties
+        roughness: 0.1,
+        metalness: 0.1,
+
+        // Soft glossy reflections
+        clearcoat: 0.45,
+        clearcoatRoughness: 0.2,
+
+        // HDRI reflections
+        envMapIntensity: 1.35,
+
+        // Geometry rendering
+        side: THREE.FrontSide,
         depthWrite: false,
         depthTest: true
     });
+
+    const glassPurple = new THREE.MeshBasicMaterial({
+        color: LogoPurpleColor,
+
+        // Uniform flat color — unaffected by HDRI
+        transparent: true,
+        opacity: 1,
+
+        depthWrite: false,
+        depthTest: true,
+        fog: false,
+
+        toneMapped: false
+    });
+
+    const glassEmmisive = new THREE.MeshBasicMaterial({
+        // Bright white bulb
+        color: 0xffffff,
+
+        transparent: true,
+        opacity: 1,
+
+        depthWrite: false,
+        depthTest: true,
+        fog: false,
+
+        toneMapped: false,
+        side: THREE.DoubleSide
+    });
+
 
 const materials = {
     cloudDiffuse: whiteColor,
@@ -59,6 +99,9 @@ const materials = {
     support: papper, 
     model: glass, 
     desk: wood,
-    tube: clearGlass};
+    tube: clearGlass,
+    glassPurple: glassPurple,
+    glassEmmisive: glassEmmisive,
+};
 
 export { materials }
