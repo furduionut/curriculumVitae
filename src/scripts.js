@@ -531,6 +531,35 @@
     /* CONTROL */
     const control = controls(orthoCamera, renderero.domElement);
 
+
+        control.enablePan = false;
+
+        // Both mouse buttons rotate instead of panning
+        control.mouseButtons = {
+            LEFT: THREE.MOUSE.ROTATE,
+            MIDDLE: THREE.MOUSE.DOLLY,
+            RIGHT: THREE.MOUSE.ROTATE
+        };
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+
+
+
+        
+
+
     // COMPOSER
         const composer   = new EffectComposer(renderer);
         const composero  = new EffectComposer(renderero);
