@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { materials, logoColors, logoEffects } from "./materials.js";
 
 export class LogoAnimation {
     constructor() {
@@ -29,8 +30,8 @@ export class LogoAnimation {
 
         this.fadeOutSpeed = 1.8;
         this.fadeInSpeed = 12;
-        this.litPurpleColor = new THREE.Color(0xffffff);
-        this.purpleColor = new THREE.Color(0xb57cff);
+        this.litPurpleColor = logoColors.segmentLit.clone();
+        this.purpleColor = logoColors.segmentFallback.clone();
     }
 
     computeDelta() {
@@ -97,10 +98,6 @@ export class LogoAnimation {
 
             const name = child.name.trim().toLowerCase();
 
-
-
-
-
             if (
                 name === "bec" ||
                 name.startsWith("bec.") ||
@@ -108,28 +105,13 @@ export class LogoAnimation {
             ) {
                 this.bec = child;
 
-                // White outer glow — always visible
-                this.bulbGlow = this.createOuterGlow(
-                    child,
-                    0xffffff,
-                    1
-                );
-                // Enlarge only the bulb's outer glow
-                this.bulbGlow.scale.multiplyScalar(3);
-                this.bulbGlow.renderOrder = 3;
-                this.bulbGlow.material.depthTest = false;
-                this.bulbGlow.material.depthWrite = false;
-
-                // White bulb glow should visually cover purple glow
-                this.bulbGlow.material.blending = THREE.NormalBlending;
-                this.bulbGlow.material.needsUpdate = true;
+                // White bulb halo, with material and color from materials.js.
+                this.bulbGlow = this.createOuterGlow(child, "bulb", 1);
+                this.bulbGlow.scale.multiplyScalar(logoEffects.bulbGlow.scaleMultiplier);
+                this.bulbGlow.renderOrder = logoEffects.bulbGlow.renderOrder;
 
                 return;
             }
-
-
-
-
 
             const isArchSegment = name.startsWith("archmov");
             const isItizerSegment = name.startsWith("itizermov");
@@ -145,16 +127,16 @@ export class LogoAnimation {
             this.prepareSegmentMaterials(child);
 
             // Purple geometry renders above all glows
-            child.renderOrder = 10;
+            child.renderOrder = logoEffects.segmentGlow.geometryRenderOrder;
             // Individual, distributed halos instead of one family-wide sprite.
             // Keep the original logo glow color.
-            const glows = this.createSegmentGlows(child, 0x8e93f8);
+            const glows = this.createSegmentGlows(child);
 
             const reflectionLight = new THREE.PointLight(
-                0x8e93f8, // Purple light
-                0,        // Initially OFF
-                2.5,      // Distance the light reaches
-                2         // Light falloff
+                logoColors.glassReflection,
+                0,
+                logoEffects.reflectionLight.distance,
+                logoEffects.reflectionLight.decay
             );
 
             // Position light at the center of the segment
@@ -168,24 +150,7 @@ export class LogoAnimation {
 
             child.add(reflectionLight);
 
-
-
             const groupName = isArchSegment ? "archmov" : "itizermov";
-
-            // this.lightSegments.push({
-            //     mesh: child,
-            //     groupName,
-
-            //     isActive: false,
-            //     isFlickering: false,
-            //     hasBeenTriggered: false,
-
-            //     flickerStartTime: 0,
-            //     holdUntil: 0,
-
-            //     currentIntensity: 0,
-            //     distanceToBec: Infinity
-            // });
 
             this.lightSegments.push({
                 mesh: child,
@@ -204,11 +169,6 @@ export class LogoAnimation {
                 reflectionLight: reflectionLight,
             });
 
-
-
-
-
-            // console.log("Light segment found:", child.name, "| group:", groupName);
         });
 
         if (!this.bec) {
@@ -219,15 +179,6 @@ export class LogoAnimation {
             console.warn("ModelAnimationController: no archmovXX or itizermovXX meshes were found.");
         }
 
-        // console.table(
-        //     this.lightSegments.map(segment => ({
-        //         name: segment.mesh.name,
-        //         group: segment.groupName,
-        //         materialId: Array.isArray(segment.mesh.material)
-        //             ? segment.mesh.material.map(m => m.id).join(", ")
-        //             : segment.mesh.material?.id
-        //     }))
-        // );
     }
 
     prepareSegmentMaterials(mesh) {
@@ -248,239 +199,194 @@ export class LogoAnimation {
         mesh.receiveShadow = false;
     }
 
+    createOuterGlow(mesh, type, opacity = 0) {
+        const isBulb = type === "bulb";
+        const effect = isBulb ? logoEffects.bulbGlow : logoEffects.segmentGlow;
+        const textureKey = isBulb ? "bulbGlowTexture" : "segmentGlowTexture";
 
-
-    createOuterGlow(mesh, color, opacity = 0) {
-
-        const isBulb = mesh === this.bec;
-
-        const textureKey = isBulb
-            ? "bulbGlowTexture"
-            : "segmentGlowTexture";
-
-        // Create a separate glow texture for bulb and segments
+        // Gradient stops and tint are now defined in materials.js.
         if (!this[textureKey]) {
             const canvas = document.createElement("canvas");
             canvas.width = 128;
             canvas.height = 128;
 
             const ctx = canvas.getContext("2d");
+            const gradient = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
 
-            const gradient = ctx.createRadialGradient(
-                64, 64, 0,
-                64, 64, 64
-            );
-
-            if (isBulb) {
-                // Strong white bulb glow
-                gradient.addColorStop(0, "rgba(255,255,255,0.65)");
-                gradient.addColorStop(0.1, "rgba(255,255,255,0.45)");
-                gradient.addColorStop(0.4, "rgba(255,255,255,0.15)");
-                gradient.addColorStop(1, "rgba(255,255,255,0)");
-            } else {
-                // Soft, diffused purple segment glow
-                gradient.addColorStop(0, "rgba(255,255,255,0.18)");
-                gradient.addColorStop(0.1, "rgba(255,255,255,0.14)");
-                gradient.addColorStop(0.4, "rgba(255,255,255,0.09)");
-                gradient.addColorStop(1, "rgba(255,255,255,0)");
+            for (const [position, rgba] of effect.gradient) {
+                gradient.addColorStop(position, rgba);
             }
 
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, 128, 128);
-
             this[textureKey] = new THREE.CanvasTexture(canvas);
         }
 
-        // Create the glow sprite
-        const glow = new THREE.Sprite(
-            new THREE.SpriteMaterial({
-                map: this[textureKey],
-                color: color,
-                transparent: true,
-                opacity: opacity,
-                blending: THREE.AdditiveBlending,
-                depthWrite: false,
-                depthTest: true,
-                toneMapped: false
-            })
-        );
+        // Clone a preset instead of creating a new material here.
+        const glowMaterial = (isBulb
+            ? materials.logoBulbGlow
+            : materials.logoSegmentGlow).clone();
+        glowMaterial.map = this[textureKey];
+        glowMaterial.opacity = opacity;
+        glowMaterial.needsUpdate = true;
 
-        // Center the glow on the geometry
+        const glow = new THREE.Sprite(glowMaterial);
+
         mesh.geometry.computeBoundingBox();
-
         const box = mesh.geometry.boundingBox;
         const center = box.getCenter(new THREE.Vector3());
         const size = box.getSize(new THREE.Vector3());
-
         const diameter = Math.max(size.x, size.y, size.z);
 
         glow.position.copy(center);
-
-        // Initial glow size
-        glow.scale.set(
-            diameter * 2,
-            diameter * 2,
-            1
-        );
-
+        glow.scale.set(diameter * 2, diameter * 2, 1);
         mesh.add(glow);
-
         return glow;
     }
 
+    createSegmentGlows(mesh) {
+        const geometry = mesh.geometry;
+        const positions = geometry.getAttribute("position");
+        const indices = geometry.getIndex();
 
+        if (!positions) return [];
 
-createSegmentGlows(mesh, color = 0x8e93f8) {
-    const geometry = mesh.geometry;
-    const positions = geometry.getAttribute("position");
-    const indices = geometry.getIndex();
+        geometry.computeBoundingBox();
 
-    if (!positions) return [];
-
-    geometry.computeBoundingBox();
-
-    const size = geometry.boundingBox.getSize(
-        new THREE.Vector3()
-    );
-
-    const longest = Math.max(size.x, size.y, size.z);
-
-    // GLOW CONTROLS
-    const spacing = Math.max(longest / 36, 0.0001);
-    const glowDiameter = 7.5;
-    const maxGlows = 90;
-
-    // Use the two main axes of the segment
-    const axes = ["x", "y", "z"].sort(
-        (a, b) => size[b] - size[a]
-    );
-
-    const axisA = axes[0];
-    const axisB = axes[1];
-
-    const cells = new Map();
-
-    const a = new THREE.Vector3();
-    const b = new THREE.Vector3();
-    const c = new THREE.Vector3();
-    const edge1 = new THREE.Vector3();
-    const edge2 = new THREE.Vector3();
-
-    const triangleCount = indices
-        ? Math.floor(indices.count / 3)
-        : Math.floor(positions.count / 3);
-
-    // Sample points INSIDE the triangles,
-    // not only at geometry vertices.
-    for (let i = 0; i < triangleCount; i++) {
-        const ia = indices ? indices.getX(i * 3) : i * 3;
-        const ib = indices ? indices.getX(i * 3 + 1) : i * 3 + 1;
-        const ic = indices ? indices.getX(i * 3 + 2) : i * 3 + 2;
-
-        a.fromBufferAttribute(positions, ia);
-        b.fromBufferAttribute(positions, ib);
-        c.fromBufferAttribute(positions, ic);
-
-        edge1.subVectors(b, a);
-        edge2.subVectors(c, a);
-
-        const area = edge1.clone()
-            .cross(edge2)
-            .length() * 0.5;
-
-        if (area < 0.00000001) continue;
-
-        // Larger triangles get more interior samples
-        const samples = Math.min(
-            100,
-            Math.max(
-                1,
-                Math.ceil(area / (spacing * spacing) * 3)
-            )
+        const size = geometry.boundingBox.getSize(
+            new THREE.Vector3()
         );
 
-        for (let j = 0; j < samples; j++) {
-            // Evenly distributed triangle sampling
-            const r1 = (j + 0.5) / samples;
-            const r2 = (j * 0.61803398875) % 1;
+        const longest = Math.max(size.x, size.y, size.z);
 
-            const sr = Math.sqrt(r1);
+        // GLOW CONTROLS
+        const spacing = Math.max(longest / logoEffects.segmentGlow.spacingDivisor, 0.0001);
+        const glowDiameter = logoEffects.segmentGlow.diameter;
+        const maxGlows = logoEffects.segmentGlow.maxSprites;
 
-            const wa = 1 - sr;
-            const wb = sr * (1 - r2);
-            const wc = sr * r2;
+        // Use the two main axes of the segment
+        const axes = ["x", "y", "z"].sort(
+            (a, b) => size[b] - size[a]
+        );
 
-            const point = new THREE.Vector3(
-                a.x * wa + b.x * wb + c.x * wc,
-                a.y * wa + b.y * wb + c.y * wc,
-                a.z * wa + b.z * wb + c.z * wc
+        const axisA = axes[0];
+        const axisB = axes[1];
+
+        const cells = new Map();
+
+        const a = new THREE.Vector3();
+        const b = new THREE.Vector3();
+        const c = new THREE.Vector3();
+        const edge1 = new THREE.Vector3();
+        const edge2 = new THREE.Vector3();
+
+        const triangleCount = indices
+            ? Math.floor(indices.count / 3)
+            : Math.floor(positions.count / 3);
+
+        // Sample points INSIDE the triangles,
+        // not only at geometry vertices.
+        for (let i = 0; i < triangleCount; i++) {
+            const ia = indices ? indices.getX(i * 3) : i * 3;
+            const ib = indices ? indices.getX(i * 3 + 1) : i * 3 + 1;
+            const ic = indices ? indices.getX(i * 3 + 2) : i * 3 + 2;
+
+            a.fromBufferAttribute(positions, ia);
+            b.fromBufferAttribute(positions, ib);
+            c.fromBufferAttribute(positions, ic);
+
+            edge1.subVectors(b, a);
+            edge2.subVectors(c, a);
+
+            const area = edge1.clone()
+                .cross(edge2)
+                .length() * 0.5;
+
+            if (area < 0.00000001) continue;
+
+            // Larger triangles get more interior samples
+            const samples = Math.min(
+                100,
+                Math.max(
+                    1,
+                    Math.ceil(area / (spacing * spacing) * 3)
+                )
             );
 
-            const key =
-                Math.floor(point[axisA] / spacing) + "," +
-                Math.floor(point[axisB] / spacing);
+            for (let j = 0; j < samples; j++) {
+                // Evenly distributed triangle sampling
+                const r1 = (j + 0.5) / samples;
+                const r2 = (j * 0.61803398875) % 1;
 
-            if (!cells.has(key)) {
-                cells.set(key, {
-                    position: new THREE.Vector3(),
-                    count: 0
-                });
+                const sr = Math.sqrt(r1);
+
+                const wa = 1 - sr;
+                const wb = sr * (1 - r2);
+                const wc = sr * r2;
+
+                const point = new THREE.Vector3(
+                    a.x * wa + b.x * wb + c.x * wc,
+                    a.y * wa + b.y * wb + c.y * wc,
+                    a.z * wa + b.z * wb + c.z * wc
+                );
+
+                const key =
+                    Math.floor(point[axisA] / spacing) + "," +
+                    Math.floor(point[axisB] / spacing);
+
+                if (!cells.has(key)) {
+                    cells.set(key, {
+                        position: new THREE.Vector3(),
+                        count: 0
+                    });
+                }
+
+                const cell = cells.get(key);
+                cell.position.add(point);
+                cell.count++;
             }
-
-            const cell = cells.get(key);
-            cell.position.add(point);
-            cell.count++;
         }
+
+        // Average the samples inside each cell
+        const centers = Array.from(cells.values()).map(
+            cell => cell.position.divideScalar(cell.count)
+        );
+
+        // Spread selected points across the entire segment
+        centers.sort((p, q) =>
+            p[axisA] - q[axisA] ||
+            p[axisB] - q[axisB]
+        );
+
+        const glows = [];
+        const count = Math.min(maxGlows, centers.length);
+
+        for (let i = 0; i < count; i++) {
+            const index = Math.floor(
+                (i + 0.5) * centers.length / count
+            );
+
+            const center = centers[index];
+
+            const glow = this.createOuterGlow(mesh, "segment", 0);
+
+            glow.position.copy(center);
+
+            glow.scale.set(
+                glowDiameter,
+                glowDiameter,
+                1
+            );
+
+            // Prevent extreme overlapping brightness
+            // Render properties come from materials.logoSegmentGlow.
+            glow.renderOrder = logoEffects.segmentGlow.renderOrder;
+
+            glows.push(glow);
+        }
+
+        return glows;
     }
-
-    // Average the samples inside each cell
-    const centers = Array.from(cells.values()).map(
-        cell => cell.position.divideScalar(cell.count)
-    );
-
-    // Spread selected points across the entire segment
-    centers.sort((p, q) =>
-        p[axisA] - q[axisA] ||
-        p[axisB] - q[axisB]
-    );
-
-    const glows = [];
-    const count = Math.min(maxGlows, centers.length);
-
-    for (let i = 0; i < count; i++) {
-        const index = Math.floor(
-            (i + 0.5) * centers.length / count
-        );
-
-        const center = centers[index];
-
-        const glow = this.createOuterGlow(
-            mesh,
-            color,
-            0
-        );
-
-        glow.position.copy(center);
-
-        glow.scale.set(
-            glowDiameter,
-            glowDiameter,
-            1
-        );
-
-        // Prevent extreme overlapping brightness
-        glow.material.blending = THREE.AdditiveBlending;
-        glow.material.depthTest = false;
-        glow.material.depthWrite = false;
-        glow.renderOrder = 6;
-
-        glows.push(glow);
-    }
-
-    return glows;
-}
-
-
 
     update() {
         const delta = this.computeDelta();
@@ -565,7 +471,6 @@ createSegmentGlows(mesh, color = 0x8e93f8) {
 
         this.extendGroupPattern(nearestSegment.groupName, elapsedTime);
 
-        // console.log("Activated:", nearestSegment.mesh.name, "| group:", nearestSegment.groupName);
     }
 
     extendGroupPattern(groupName, elapsedTime) {
@@ -619,17 +524,17 @@ createSegmentGlows(mesh, color = 0x8e93f8) {
                 THREE.MathUtils.clamp(
                     segment.currentIntensity / this.stableIntensity,
                     0,
-                    1.4
-                ) * 5;
+                    logoEffects.reflectionLight.maxIntensityRatio
+                ) * logoEffects.reflectionLight.intensityMultiplier;
         }
 
         // Every small halo follows this exact segment's existing flicker
         // and fades back to invisible when the purple segment is off.
         if (segment.glows) {
             const opacity = THREE.MathUtils.clamp(
-                segment.currentIntensity / this.stableIntensity * 0.6,
+                segment.currentIntensity / this.stableIntensity * logoEffects.segmentGlow.opacityMultiplier,
                 0,
-                0.08
+                logoEffects.segmentGlow.maxOpacity
             );
             for (const glow of segment.glows) {
                 glow.material.opacity = opacity;
@@ -708,8 +613,6 @@ createSegmentGlows(mesh, color = 0x8e93f8) {
                 .lerp(this.litPurpleColor, glowStrength * 2);
         }
     }
-
-
 
     turnOffAllSegments() {
         for (const segment of this.lightSegments) {

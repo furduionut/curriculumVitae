@@ -70,6 +70,7 @@
     --outline-style:            .2em solid;
 
     /* colors */
+    --background-color:         #d2dbf0;
     --general-color:            #465b7b;
     --title-color:              #1c3166;
     --subtitle-color:           #1c3166;
@@ -90,22 +91,136 @@
     --profile-image: url("./public/assets/images/profilePicture.jpg");
     }
 
-    /* MATERIALS */
+/* MATERIALS */
+
+
+/* Apple-inspired Liquid Glass */
     .glass {
-    background: linear-gradient(
-    to bottom right,
-    var (--second-background-color),
-    var (--forth-background-color));
+        position: relative;
+        isolation: isolate;
 
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+        /* Transparent glass surface */
+        background:
+            linear-gradient(
+                145deg,
+                rgba(255, 255, 255, 0.30) 0%,
+                rgba(255, 255, 255, 0.14) 35%,
+                rgba(255, 255, 255, 0.06) 70%,
+                rgba(255, 255, 255, 0.18) 100%
+            );
 
-    border: var(--glass-style) var(--third-background-color);
-    border-radius: var(--general-border-radius);
+        /* Frosted glass effect */
+        backdrop-filter: blur(18px) saturate(160%);
+        -webkit-backdrop-filter: blur(18px) saturate(180%);
 
-    box-shadow:
-    inset var(--glow-style) var(--third-background-color);
+        /* Glass edges */
+        border: 1px solid rgba(255, 255, 255, 0.45);
+        border-radius: var(--general-border-radius);
+
+        /* Inner reflections and soft depth */
+        box-shadow:
+            0 6px 24px rgba(70, 91, 123, 0.09),
+            inset 0 1px 1px rgba(255, 255, 255, 0.75),
+            inset 1px 0 1px rgba(255, 255, 255, 0.30),
+            inset 0 -1px 1px rgba(255, 255, 255, 0.20);
+
+        transition:
+            background 0.35s ease,
+            box-shadow 0.35s ease,
+            border-color 0.35s ease;
     }
+
+    /* Soft curved light reflection */
+    .glass::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        pointer-events: none;
+
+        background:
+            radial-gradient(
+                ellipse 100% 65% at 20% 0%,
+                rgba(255, 255, 255, 0.38) 0%,
+                rgba(255, 255, 255, 0.10) 45%,
+                transparent 75%
+            ),
+            linear-gradient(
+                180deg,
+                rgba(255, 255, 255, 0.24) 0%,
+                transparent 38%,
+                transparent 85%,
+                rgba(255, 255, 255, 0.08) 100%
+            );
+
+        opacity: 0.75;
+    }
+
+    /* Subtle luminous edge */
+    .glass::after {
+        content: "";
+        position: absolute;
+        inset: 1px;
+        border-radius: inherit;
+        pointer-events: none;
+
+        box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.45),
+            inset 0 0 12px rgba(255, 255, 255, 0.10);
+    }
+
+
+
+
+    /* LEFT NAVIGATION — LIQUID GLASS */
+
+    .navItem.glass {
+        /* Keep original layout and edge shape */
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+
+    .navItem.glass:hover {
+        outline: 1px solid rgba(255, 255, 255, 0.65);
+
+        box-shadow:
+            0 8px 26px rgba(70, 91, 123, 0.12),
+            inset 0 1px 1px rgba(255, 255, 255, 0.85),
+            inset 0 0 16px rgba(255, 255, 255, 0.18);
+    }
+
+    /* RIGHT INFORMATION PANEL — LIQUID GLASS */
+
+    .infoBar.glass {
+        /* Keep original layout and edge shape */
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    /* GLASS BUTTONS */
+
+    .btn.glass {
+        background-color: transparent;
+
+        box-shadow:
+            0 6px 24px rgba(70, 91, 123, 0.09),
+            inset 0 1px 1px rgba(255, 255, 255, 0.75);
+    }
+
+    .btn.glass:hover {
+        outline: 1px solid rgba(255, 255, 255, 0.65);
+    }
+
+
+
+
+
+
+
+
+
+
+
 
     /* ELEMENTS */
     * {
@@ -657,6 +772,7 @@
         /* size */
         width: 100%;
         height: auto;
+        max-width: 1100px;
         /* position */
         /* distance */
         gap: calc(var(--general-gap)*2);
@@ -1254,3 +1370,197 @@
             display: none;
         }
     }
+
+
+/* SVG CUTOUT — LIQUID GLASS */
+/* SVG CUTOUT — NAVIGATION + ABILITIES */
+
+
+
+/* FIX — ABILITIES GLASS CUTOUT */
+
+#abilities .btn.glass-cutout-ready {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+/* Keep the glass layer inside each individual button */
+#abilities .btn.glass-cutout-ready::before {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    z-index: 0;
+}
+
+/* Keep labels above the glass */
+#abilities .btn.glass-cutout-ready > * {
+    position: relative;
+    z-index: 1;
+}
+
+
+
+/* Move glass appearance to a separate layer */
+:is(.navItem.glass, #abilities .btn).glass-cutout-ready {
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-color: transparent;
+    box-shadow: none;
+    isolation: isolate;
+}
+
+/* Glass surface with SVG cutout */
+:is(.navItem.glass, #abilities .btn).glass-cutout-ready::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 1;
+
+    background: linear-gradient(
+        145deg,
+        rgba(255,255,255,0.29) 0%,
+        rgba(255,255,255,0.14) 35%,
+        rgba(255,255,255,0.06) 70%,
+        rgba(255,255,255,0.18) 100%
+    );
+
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+
+    border: 1px solid rgba(255,255,255,0.45);
+
+    box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.75),
+        inset 0 0 12px rgba(255,255,255,0.10);
+
+    -webkit-mask-image:
+        linear-gradient(white, white),
+        var(--icon-cutout);
+
+    mask-image:
+        linear-gradient(white, white),
+        var(--icon-cutout);
+
+    -webkit-mask-size:
+        100% 100%,
+        var(--cutout-width) var(--cutout-height);
+
+    mask-size:
+        100% 100%,
+        var(--cutout-width) var(--cutout-height);
+
+    -webkit-mask-position:
+        0 0,
+        var(--cutout-x) var(--cutout-y);
+
+    mask-position:
+        0 0,
+        var(--cutout-x) var(--cutout-y);
+
+    -webkit-mask-repeat: no-repeat, no-repeat;
+    mask-repeat: no-repeat, no-repeat;
+
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+}
+
+/* Remove the old highlight covering the hole */
+:is(.navItem.glass, #abilities .btn).glass-cutout-ready::after {
+    display: none;
+}
+
+/* Keep labels above glass */
+:is(.navItem.glass, #abilities .btn).glass-cutout-ready > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Hide original icon without removing its space */
+:is(.navItem.glass, #abilities .btn).glass-cutout-ready svg,
+:is(.navItem.glass, #abilities .btn).glass-cutout-ready img[src*=".svg"] {
+    opacity: 0;
+}
+
+/* ============================================================
+   CHAPTER NAVIGATION — TEXT FADE + SVG CUTOUT EDGE LIGHT
+   Added separately to preserve the existing layout and effects.
+   Only affects the LEFT navigation menu (#navBar).
+   ============================================================ */
+
+/* Original cutout remains transparent: the highlight is drawn
+   only on the surrounding glass, never inside the icon hole. */
+
+
+/* The existing mobile navigation uses .showText / its own layout.
+   Restrict the new hover interaction to pointer/hover devices. */
+@media (hover: hover) and (pointer: fine) {
+    /* Preserve card dimensions, transforms and GSAP interactions. */
+    #navBar .navItem {
+        position: relative;
+    }
+
+    /* The SVG itself stays invisible when glass-cutout-ready is set;
+       only the icon wrapper is positioned beside the label. */
+    #navBar .navItem > .icon {
+        position: absolute;
+        top: 50%;
+        right: 0;
+        left: auto;
+        /* Keep the original .icon dimensions and padding. */
+        transform: translateY(-50%);
+        z-index: 3;
+    }
+
+    #navBar .navItem > a {
+        display: block !important;
+        position: absolute;
+        top: 50%;
+        right: 92px;
+        left: auto;
+        max-width: calc(100% - 98px);
+        margin: 0;
+
+        font-family: "URW Gothic RO", "URW Gothic", "Century Gothic", sans-serif;
+        font-size: 15px;
+        font-weight: 500;
+        line-height: 1.2;
+        text-align: right;
+        white-space: nowrap;
+        color: #ffffff;
+
+        opacity: 0 !important;
+        visibility: hidden;
+        transform: translate(8px, -50%) !important;
+        transition:
+            opacity 0.3s ease,
+            transform 0.3s ease,
+            visibility 0s linear 0.3s;
+        pointer-events: none;
+        z-index: 3;
+    }
+
+    #navBar .navItem:hover > a,
+    #navBar .navItem:focus-within > a {
+        opacity: 1 !important;
+        visibility: visible;
+        transform: translate(0, -50%) !important;
+        transition:
+            opacity 0.3s ease,
+            transform 0.3s ease,
+            visibility 0s;
+    }
+}
+
+
+#experiences,
+#abilities,
+#contacts {
+    max-width: 1100px;
+}

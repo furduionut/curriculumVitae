@@ -33,8 +33,15 @@
         import { rendero }      from "./modules/render.js";
         import { controls }     from "./modules/controls.js";
         import { materials }    from "./modules/materials.js";
-
+        import { updateGlassCutouts } from "./modules/styles.js";
     /* PRELOAD */
+
+
+    // SVG LIQUID GLASS CUTOUTS
+        window.addEventListener("load", updateGlassCutouts);
+        window.addEventListener("resize", updateGlassCutouts);
+
+
 
     /* ELEMENTS */
         let dom                 = domain;
@@ -543,21 +550,6 @@
 
 
 
-
-
-        
-
-
-
-
-
-
-
-
-
-
-
-        
 
 
     // COMPOSER
