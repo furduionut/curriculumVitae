@@ -34,6 +34,7 @@
         import { controls }     from "./modules/controls.js";
         import { materials }    from "./modules/materials.js";
         import { updateGlassCutouts } from "./modules/styles.js";
+        import { installUnifiedScrollTimelineEditor } from "./scroll-timeline-editor.js";
     /* PRELOAD */
 
 
@@ -79,6 +80,32 @@
             };
         changemainHeight();
 
+        // POZIȚII DEFINITIVE DIN EXPORTUL GUI (viewport-referință: 2560 × 1302).
+        // Toate valorile sunt px de scroll, raportate la maximul original de 8413px.
+        // La alte dimensiuni se păstrează proporția în scrollbar, nu pixelii ficși.
+        const REFERENCE_SCROLL = 8413;
+        const GSAP_PX_PER_SECOND = 110.352;
+        const getMaxScroll = () => Math.max(1,
+            (document.scrollingElement || document.documentElement).scrollHeight - window.innerHeight);
+        const toReferenceScroll = () => window.scrollY / getMaxScroll() * REFERENCE_SCROLL;
+        const gsapTimeAt = scrollPx => scrollPx / GSAP_PX_PER_SECOND;
+
+        const cameraScrollPoints = [0, 1098, 1922, 5815, 7753, 9691, 11629];
+        const cameraAnimationStart = { px: 0 };  // CAM 0
+        const getCameraPhase = scrollY => {
+            // Pana la CAM 0 ramanem in pozitia A (fara miscarea camerei).
+            if (scrollY <= cameraAnimationStart.px) return 0;
+            for (let i = 0; i < cameraScrollPoints.length - 1; i++) {
+                if (scrollY < cameraScrollPoints[i + 1]) {
+                    const segmentStart = i === 0 ? cameraAnimationStart.px : cameraScrollPoints[i];
+                    return i + Math.max(0, Math.min(.999999,
+                        (scrollY - segmentStart) /
+                        Math.max(1, cameraScrollPoints[i + 1] - segmentStart)));
+                }
+            }
+            return 5.999999;
+        };
+
         function updateCam() {
             let perspCameraZoom;
             let clientHeight;
@@ -117,7 +144,7 @@
             const lookG = new THREE.Vector3(-5.5, -10.5, -10.5);
             const zoomG = perspCameraZoom * 5.5;
             
-            let scroll = window.scrollY / sectionHeight;
+            let scroll = getCameraPhase(toReferenceScroll());
             let section = Math.floor(scroll);
             let t = scroll % 1;
             let sectionName;
@@ -607,6 +634,8 @@
         const distance1 = distance;
         const distance2 = distance1/2;
         const distance3 = distance1/4;
+        // Praguri text; mutate live din timeline-ul unificat.
+        const textScrollPoints = { salut: 1103, proiect: 3948, gol: 6884 };
 
 /*         createDashedLineAt(distance1);
         createDashedLineAt(distance2);
@@ -692,8 +721,8 @@
                 .to(".viewport2", {scale: 0.20}) /////// here you can scale logo 2D form
                 .to(".viewport2", {y: '-50%'}, "-=1")
                 .to(".viewport2", {
-                     x: () => -Math.min(70, Math.max(35, window.innerWidth * 0.02))
-                    }, ">")
+                    x: () => -Math.max(35, Math.min(70, window.innerWidth * 0.04))
+                }, ">")
 
             return viewportTimeline;
             };
@@ -752,7 +781,12 @@
                 defaults: { duration: 6, ease: "power2.out" }});
 
             infoBarTimline
-                .to(".infoBar", {x: '77.5%'})
+                .to(".infoBar", {
+                    x: "105%",
+                    opacity: 0,
+                    duration: 6,
+                    ease: "power2.out"
+                })
                 
             return infoBarTimline;
             };
@@ -864,37 +898,49 @@
             return tl;
             };
 
+        // ScrollTrigger folosește ÎNTREGUL scroll real; reperele sunt cele exportate.
         const mainTimeline = gsap.timeline({
-            pause: true,
             scrollTrigger: {
                 trigger: '.main',
-                start: `10% 25%`,
-                end: `${distToPage} 25%`,
+                start: 0,
+                end: () => getMaxScroll(),
+                invalidateOnRefresh: true,
                 markers: false,
-                scrub: 1, 
-                toggleActions: "play none reverse reverse"}
-            })
-        
-        const screenHeightAdjust = window.innerHeight > 1024 ? 1 : 1.25;
+                scrub: 1
+            }
+        });
 
+        // Timpii de intrare provin din PRINT / COPY (px / 110.352 px/sec).
+        // Păstrăm tween-urile GSAP originale, doar mutăm începutul lor.
         mainTimeline
-            .add(orthoCameraAnimation(),    1)
-            .add(viewportAnimation(),       1)
-            .add(showTextOn(),              ">-6")
-            .add(infoBarShowOn(),           5.5)
-            .add(controlNextBtn(),          19.5*screenHeightAdjust)
-            .add(controlPrevBtn(),          19.5*screenHeightAdjust)
-            .add(controlDownBtn(),          19.5*screenHeightAdjust)
-            .add(infoBarShowOff(),          ">")
-            .add(controlBtnsOff(),          ">-1") 
-            .add(infoBarShowOff(),           ">")
-        
-            
+            .add(orthoCameraAnimation(), gsapTimeAt(546))
+            .add(viewportAnimation(), gsapTimeAt(679))
+            .add(showTextOn(), gsapTimeAt(2142))
+            .to('.infoBar', {
+                x: '0%',
+                opacity: 1,
+                duration: 6,
+                ease: 'power2.out'
+            }, gsapTimeAt(1103))
+            .add(controlNextBtn(), gsapTimeAt(2798))
+            .add(controlPrevBtn(), gsapTimeAt(2798))
+            .add(controlDownBtn(), gsapTimeAt(2798))
+            .add(infoBarShowOff(), gsapTimeAt(5667))
+            .add(controlBtnsOff(), gsapTimeAt(6219))
+            .add(infoBarShowOff(), gsapTimeAt(6881));
+
+        // Ancoră invizibilă: durata totală a timeline-ului = 100% din scroll.
+        mainTimeline.to({ _scrollAnchor: 0 }, {
+            _scrollAnchor: 0, duration: 0.001, ease: 'none'
+        }, gsapTimeAt(REFERENCE_SCROLL) - 0.001);
+
             // LOGO INTERACTION LOCK
 
 
-            const logoLockTime = 7;
-            const logoUnlockTime = 2;
+            // Valorile originale 7/2 + deplasarea aplicată de editor în preview.
+            const logoPreviewShift = 646 / GSAP_PX_PER_SECOND;
+            const logoLockTime = 7 + logoPreviewShift;
+            const logoUnlockTime = 2 + logoPreviewShift;
 
             let isLogoLocked = false;
 
@@ -1186,19 +1232,19 @@
             const about = info.abouts[buildingIndex];
             const type = info.types[buildingIndex];
             const style = info.styles[buildingIndex];
-            const scroll = window.scrollY;
+            const scroll = toReferenceScroll();
           
-            if (scroll >= distance3 && scroll < distance2) {
+            if (scroll >= textScrollPoints.salut && scroll < textScrollPoints.proiect) {
               dom.infoBar.innerHTML = `
                 <div>
                   <h1>Salut!</h1>
-                  <h2>Mă numesc Mihael-Ionuț FURDU</h2>
-                  <p>Sunt arhitect cu drept de semnătură și cu această ocazie vă învit să parcurgeți cu curiozitate acest site personal</p>
+                  <h2>Mă numesc <strong>Mihael-Ionuț FURDU</strong></h2>
+                  <p>Sunt arhitect cu drept de semnătură și cu această ocazie vă învit să parcurgeți site-ul.</p>
                 </div>`;
               return;
             }
           
-            if (scroll >= distance2 && scroll < distance1-1000) {
+            if (scroll >= textScrollPoints.proiect && scroll < textScrollPoints.gol) {
               dom.infoBar.innerHTML = `
                 <div>
                   <h1>${name ?? ""}</h1>
@@ -1212,6 +1258,23 @@
 
         window.addEventListener("scroll", changeDescription);
 
+        // TEMPORARY UNIFIED SCROLL EDITOR — same layout and markers as v3 (CAM 0).
+        // It edits the underlying live camera points, text thresholds and GSAP tweens.
+        // The timeline uses the saved REFERENCE_SCROLL pixel system internally.
+        const startUnifiedScrollEditor = () => {
+            ScrollTrigger.refresh();
+            installUnifiedScrollTimelineEditor({
+                gsap,
+                mainTimeline,
+                cameraScrollPoints,
+                cameraAnimationStart,
+                textScrollPoints,
+                onTextChange: changeDescription,
+                referenceScroll: REFERENCE_SCROLL
+            });
+        };
+        if (document.readyState === "complete") startUnifiedScrollEditor();
+        else window.addEventListener("load", startUnifiedScrollEditor, { once: true });
 
         // IMPORTANT: call this once after DOM loads
         // updateSectionsPos();
@@ -1232,7 +1295,7 @@
                         break;
     
                     case 'navAboutMe':
-                        loaders.loadScroll(sectionHeight * 1.75);
+                        loaders.loadScroll(getMaxScroll() * (1765 / REFERENCE_SCROLL));
                         loaders.loadPress(document.querySelector('.aboutMe'));
                         break;
                     
@@ -1257,6 +1320,132 @@
                         break;
             }
         })});
+
+
+    /* SCENE SCROLL RESISTANCE — Navigation scene anchors
+       Applies only to user wheel/trackpad input. No changes to GSAP timings,
+       camera keyframes, text triggers or navigation button destinations.
+       Resistance gently fades in and out across each anchor zone.
+    */
+    const sceneScrollFeel = {
+        zoneHeightInViewports: 0.34, // radius on EACH side of an anchor, in viewport heights
+        speedAtAnchor: 0.18,        // 18% scroll speed at center (1.0 = no resistance)
+        glide: 0.23                 // 0..1, higher = follows scroll more immediately
+    };
+
+    const scrollClamp = (value, min, max) => Math.min(max, Math.max(min, value));
+    const smoothFade = value => {
+        const t = scrollClamp(value, 0, 1);
+        return t * t * (3 - 2 * t);
+    };
+
+    // Same destinations as the existing navGreeting ... navContacts click handlers.
+    function getSceneStops() {
+        const limit = getMaxScroll();
+        return [
+            0,                                  // navGreeting
+            limit * (2459 / REFERENCE_SCROLL),   // navAboutMe
+            sectionHeight * 2.35,               // navProjects
+            abilityStartPos,                    // navAbilities
+            experienceStartPos,                 // navExperiences
+            section12                           // navContacts
+        ].map(value => scrollClamp(value, 0, limit));
+    }
+
+    function getScrollGain(atY, stops, radius) {
+        const nearest = Math.min(...stops.map(stop => Math.abs(stop - atY)));
+        // 0 at the anchor, 1 outside the fade zone; smoothstep joins with zero slope.
+        const fadedDistance = smoothFade(nearest / radius);
+        return sceneScrollFeel.speedAtAnchor +
+            (1 - sceneScrollFeel.speedAtAnchor) * fadedDistance;
+    }
+
+    let sceneWheelTarget = window.scrollY;
+    let sceneWheelFrame = null;
+    let sceneWheelAnimating = false;
+
+    function stopSceneWheelGlide() {
+        if (sceneWheelFrame !== null) cancelAnimationFrame(sceneWheelFrame);
+        sceneWheelFrame = null;
+        sceneWheelAnimating = false;
+        sceneWheelTarget = window.scrollY;
+    }
+
+    function sceneWheelGlide() {
+        const current = window.scrollY;
+        const difference = sceneWheelTarget - current;
+
+        if (Math.abs(difference) < 0.5) {
+            window.scrollTo({ top: sceneWheelTarget, behavior: 'instant' });
+            sceneWheelAnimating = false;
+            sceneWheelFrame = null;
+            return;
+        }
+
+        window.scrollTo({
+            top: current + difference * sceneScrollFeel.glide,
+            behavior: 'instant'
+        });
+        sceneWheelFrame = requestAnimationFrame(sceneWheelGlide);
+    }
+
+    function hasIndependentVerticalScroll(element, direction) {
+        for (let node = element; node instanceof Element && node !== document.documentElement; node = node.parentElement) {
+            const style = getComputedStyle(node);
+            if (!/(auto|scroll)/.test(style.overflowY)) continue;
+            if (node.scrollHeight <= node.clientHeight + 1) continue;
+            if (direction > 0 && node.scrollTop + node.clientHeight < node.scrollHeight - 1) return true;
+            if (direction < 0 && node.scrollTop > 1) return true;
+        }
+        return false;
+    }
+
+    window.addEventListener('wheel', event => {
+        if (event.defaultPrevented || event.ctrlKey || event.metaKey ||
+            Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
+
+        // Don't take control of controls or separately scrollable panels.
+        if (event.target instanceof Element && (
+            event.target.closest('input, textarea, select, [contenteditable], [data-native-scroll], .dg, #unified-scroll-editor') ||
+            hasIndependentVerticalScroll(event.target, event.deltaY)
+        )) return;
+
+        // Normalize mouse wheel / line / page delta modes to CSS pixels.
+        const inputDelta = event.deltaY *
+            (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? window.innerHeight : 1);
+        if (!inputDelta) return;
+        event.preventDefault();
+
+        if (!sceneWheelAnimating) sceneWheelTarget = window.scrollY;
+
+        // Integrate in small steps so a fast wheel tick cannot skip a slowdown zone.
+        const direction = Math.sign(inputDelta);
+        const scrollLimit = getMaxScroll();
+        const sceneStops = getSceneStops();
+        const radius = Math.max(140, window.innerHeight * sceneScrollFeel.zoneHeightInViewports);
+        let remaining = Math.min(2000, Math.abs(inputDelta));
+        while (remaining > 0) {
+            const step = Math.min(18, remaining);
+            sceneWheelTarget = scrollClamp(
+                sceneWheelTarget + direction * step * getScrollGain(sceneWheelTarget, sceneStops, radius),
+                0, scrollLimit
+            );
+            remaining -= step;
+        }
+
+        if (!sceneWheelAnimating) {
+            sceneWheelAnimating = true;
+            sceneWheelFrame = requestAnimationFrame(sceneWheelGlide);
+        }
+    }, { passive: false });
+
+    // Manual scrollbar dragging, keyboard navigation and nav button clicks
+    // interrupt the glide; these navigation methods retain their native behavior.
+    window.addEventListener('pointerdown', stopSceneWheelGlide, { passive: true });
+    window.addEventListener('keydown', stopSceneWheelGlide, { passive: true });
+    window.addEventListener('scroll', () => {
+        if (!sceneWheelAnimating) sceneWheelTarget = window.scrollY;
+    }, { passive: true });
 
     /* TESTING */
 

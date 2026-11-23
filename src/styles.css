@@ -187,17 +187,13 @@ svg {
 .navItem.glass {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
-
     --symbol-blur: 14px;
     --symbol-saturation: 170%;
-    --symbol-edge-size: 0.5px;
+    --symbol-edge-size: 1px;
     --symbol-edge-offset: 1.7px;
-}
+    }
 
-.infoBar.glass {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-}
+
 
 .btn.glass {
     background-color: transparent;
@@ -481,10 +477,14 @@ svg {
 .infoBar {
     padding: calc(var(--general-padding)*2);
     width: 30%;
-    height: 100%;
+    height: auto;
+    interpolate-size: allow-keywords;
+    transition: height 0.5s ease, opacity 0.4s ease;
+
     position: absolute;
     right: 0%;
-    transform: translateX(77.5%);
+    transform: translateX(105%);
+    opacity: 0;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
     display: flex;
