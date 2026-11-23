@@ -18,7 +18,7 @@ const styles = {
 export function updateGlassCutouts() {
 
     const cards = document.querySelectorAll(
-        ".navItem.glass, #abilities .btn"
+        ".navItem , #abilities .btn,  #contacts .btn, #projects .btn, #skills .btn"
     );
 
     cards.forEach(item => {

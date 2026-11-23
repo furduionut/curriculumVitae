@@ -59,6 +59,7 @@
 
     /* SCENES */
         let scene               = scenes.mainScene;
+        
         let secondScene         = scenes.secondScene;
 
     /* CAMERAS */
@@ -690,7 +691,9 @@
             viewportTimeline
                 .to(".viewport2", {scale: 0.20}) /////// here you can scale logo 2D form
                 .to(".viewport2", {y: '-50%'}, "-=1")
-                .to(".viewport2", {x: '-4%'}, ">") // pozitie logo cand se misca la stanga
+                .to(".viewport2", {
+                     x: () => -Math.min(70, Math.max(35, window.innerWidth * 0.02))
+                    }, ">")
 
             return viewportTimeline;
             };
@@ -950,7 +953,9 @@
         document.querySelectorAll('.btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();  
-                loaders.loadAnimation(btn);
+                if (!btn.closest("#abilities, #experiences")) {
+                    loaders.loadAnimation(btn);
+                    }
                 setTimeout(() => {
                     const url = btn.getAttribute("href");
                     const target = btn.getAttribute("target");
@@ -1092,6 +1097,13 @@
           const data = experienceData[type];
           if (!data) throw new Error(`Unknown experience type: ${type}`);
         
+            document.querySelectorAll("#experiences .experience.banner > .btn")
+                .forEach(button => {
+                    button.classList.toggle("is-selected", button === domBtn);
+                });
+
+
+
           expDetails.style.display = "flex";
           loaders.loadExperience(domBtn, data);
         
