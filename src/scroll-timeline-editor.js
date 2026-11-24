@@ -55,8 +55,14 @@ export function installUnifiedScrollTimelineEditor({
 
   const baseline = { camera: cameraScrollPoints.map(toPlot), cameraStart: toPlot(cameraAnimationStart.px),
     text: Object.fromEntries(Object.entries(textScrollPoints).map(([k,v]) => [k, toPlot(v)])), gsap: {} };
-  const cameraLabels = ['A — Salut (poziție inițială)', 'B — Portret', 'C — Proiecte', 'D — Abilități',
-    'E — Experiență', 'F — Contact', 'G — Final'];
+  const cameraLabels = ['A — Salut (poziție inițială)',
+    'B — Început tranziție',
+    'C — About Me',
+    'D — Abilități',
+    'E — Experiență',
+    'F — Contact',
+    'G — Final'
+    ];
   const markers = [];
   // Marker INDEPENDENT de CAM A: îl tragi pentru a decide când începe efectiv A -> B.
   // Camera rămâne în poziția A între 0px și acest reper.
@@ -292,8 +298,7 @@ export function installUnifiedScrollTimelineEditor({
     const relativeY = clamp((event.clientY - bounds.top - 6) / Math.max(1, bounds.height - 12), 0, 1);
     setMarkerPixel(marker, relativeY * maxScroll());
     // Te duce la noul reper, ca să vezi imediat scena în browser.
-    window.scrollTo({ top: clamp(marker.px + window.innerHeight * .12, 0, maxScroll()), behavior: 'instant' });
-    render();
+    window.scrollTo({ top: marker.px, behavior: 'instant' });    render();
   }
   plot.addEventListener('pointerdown', event => {
     if (event.target.closest('.ue-marker')) return;
@@ -412,7 +417,7 @@ export function installUnifiedScrollTimelineEditor({
     panel.querySelector('#ue-min').textContent = panel.classList.contains('ue-mini') ? '+' : '−';
   });
   panel.querySelector('#ue-current').addEventListener('click',() => {
-    if (selected.marker) window.scrollTo({top: clamp(selected.marker.px + window.innerHeight * .12,0,maxScroll()),behavior:'instant'});
+    if (selected.marker) window.scrollTo({ top: selected.marker.px, behavior: 'instant' });
   });
   window.addEventListener('scroll', () => { setTimelineAtActualScroll(); render(); }, {passive: true});
   window.addEventListener('resize',render);

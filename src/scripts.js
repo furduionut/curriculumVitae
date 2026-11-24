@@ -83,12 +83,19 @@
         // POZIȚII DEFINITIVE DIN EXPORTUL GUI (viewport-referință: 2560 × 1302).
         // Toate valorile sunt px de scroll, raportate la maximul original de 8413px.
         // La alte dimensiuni se păstrează proporția în scrollbar, nu pixelii ficși.
+
+        
         const REFERENCE_SCROLL = 8413;
         const GSAP_PX_PER_SECOND = 110.352;
         const getMaxScroll = () => Math.max(1,
             (document.scrollingElement || document.documentElement).scrollHeight - window.innerHeight);
         const toReferenceScroll = () => window.scrollY / getMaxScroll() * REFERENCE_SCROLL;
         const gsapTimeAt = scrollPx => scrollPx / GSAP_PX_PER_SECOND;
+
+
+
+
+        /////CAMERA 0 POSITION - PORTRET/////
 
         const cameraScrollPoints = [0, 1098, 1922, 5815, 7753, 9691, 11629];
         const cameraAnimationStart = { px: 0 };  // CAM 0
@@ -115,30 +122,42 @@
             changeHeight();
 
             window.addEventListener("resize", changeCameraZoom);
+
             // Section 0
             const camPosA = new THREE.Vector3(15, 7.5, 10.5);
             const lookA = new THREE.Vector3(-5.5, 12.5, -10.5);
             const zoomA = perspCameraZoom * 1;
+
             // Section 1
             const camPosB = new THREE.Vector3(35, 7.5, 10.5);
             const lookB = new THREE.Vector3(-5.5, 12.5, -10.5);
             const zoomB = perspCameraZoom * 2;
+
+            // Section 1.5 — PORTRET (nou keyframe intermediar)
+            const camPosPortrait = new THREE.Vector3(21.8953, 15.6904, 10.5);
+            const lookPortrait = new THREE.Vector3(-6.9743, 3.6543, -11.8105);
+            const zoomPortrait = perspCameraZoom * 2.98285;
+
             // Section 2
             const camPosC = new THREE.Vector3(15, 20, 10.5);
             const lookC = new THREE.Vector3(-7.75, clientHeight, -12.5);
             const zoomC = perspCameraZoom * 3.5;
+
             // Section 3
             const camPosD = new THREE.Vector3(15, 10, -10.5);
             const lookD = new THREE.Vector3(-5.5, 3, -10.5);
             const zoomD = perspCameraZoom * 3.5;
+
             // Section 4
             const camPosE = new THREE.Vector3(12.5, 0, -10.5);
             const lookE = new THREE.Vector3(-5.5, 0, -10.5);
             const zoomE = perspCameraZoom * 4.5;
+
             // Section 5
             const camPosF = new THREE.Vector3(12.5, -10.5, -10.5);
             const lookF = new THREE.Vector3(-5.5, -10.5, -10.5);
             const zoomF = perspCameraZoom * 5.5;
+
             // Section 6
             const camPosG = new THREE.Vector3(12.5, -10.5, -10.5);
             const lookG = new THREE.Vector3(-5.5, -10.5, -10.5);
@@ -231,9 +250,23 @@
                     break;
             }
             // console.log(`Window at zone ${section} at ${scroll} ${sectionName}`);
-            let easedT = t;
-            easedT = Math.pow(easedT, 2.0);
-            easedT = Math.min(easedT, 0.8);
+            let easedT = t * t;
+
+            // Păstrăm animația originală până aproape de final.
+            const finishFrom = 0.88;
+
+            if (t > finishFrom) {
+                const u = (t - finishFrom) / (1 - finishFrom);
+
+                const startValue = finishFrom * finishFrom;
+                const startSlope = 2 * finishFrom * (1 - finishFrom);
+
+                // Tranziție continuă, cu încetinire lină la final.
+                easedT =
+                    (2*u**3 - 3*u**2 + 1) * startValue +
+                    (u**3 - 2*u**2 + u) * startSlope +
+                    (-2*u**3 + 3*u**2);
+}
         
             const pos = posStart.clone().lerp(posEnd, easedT);
             perspCamera.position.copy(pos);
@@ -913,9 +946,9 @@
         // Timpii de intrare provin din PRINT / COPY (px / 110.352 px/sec).
         // Păstrăm tween-urile GSAP originale, doar mutăm începutul lor.
         mainTimeline
-            .add(orthoCameraAnimation(), gsapTimeAt(546))
-            .add(viewportAnimation(), gsapTimeAt(679))
-            .add(showTextOn(), gsapTimeAt(2142))
+            .add(orthoCameraAnimation(), gsapTimeAt(0))
+            .add(viewportAnimation(), gsapTimeAt(227))
+            .add(showTextOn(), gsapTimeAt(1380))
             .to('.infoBar', {
                 x: '0%',
                 opacity: 1,
@@ -1322,14 +1355,15 @@
 
 
     /* SCENE SCROLL RESISTANCE — Navigation scene anchors
-       Applies only to user wheel/trackpad input. No changes to GSAP timings,
-       camera keyframes, text triggers or navigation button destinations.
-       Resistance gently fades in and out across each anchor zone.
+
     */
     const sceneScrollFeel = {
-        zoneHeightInViewports: 0.34, // radius on EACH side of an anchor, in viewport heights
-        speedAtAnchor: 0.18,        // 18% scroll speed at center (1.0 = no resistance)
-        glide: 0.23                 // 0..1, higher = follows scroll more immediately
+        zoneHeightInViewports: 0.35,
+        speedAtAnchor: 0.09,
+        exponentialStrength: 2.5,
+        snapPx: 18,
+        holdMs: 1800,
+        glide: 0.14
     };
 
     const scrollClamp = (value, min, max) => Math.min(max, Math.max(min, value));
@@ -1341,33 +1375,42 @@
     // Same destinations as the existing navGreeting ... navContacts click handlers.
     function getSceneStops() {
         const limit = getMaxScroll();
+
         return [
-            0,                                  // navGreeting
-            limit * (2459 / REFERENCE_SCROLL),   // navAboutMe
-            sectionHeight * 2.35,               // navProjects
-            abilityStartPos,                    // navAbilities
-            experienceStartPos,                 // navExperiences
-            section12                           // navContacts
+            limit * (1765 / REFERENCE_SCROLL),                 // Portret
+            sectionHeight * 2.35,                              // Proiecte
+            abilityStartPos,                                   // Abilități
+            experienceStartPos,                                // Experiență
+            section12                                          // Contact
         ].map(value => scrollClamp(value, 0, limit));
     }
 
     function getScrollGain(atY, stops, radius) {
         const nearest = Math.min(...stops.map(stop => Math.abs(stop - atY)));
-        // 0 at the anchor, 1 outside the fade zone; smoothstep joins with zero slope.
-        const fadedDistance = smoothFade(nearest / radius);
+        const t = smoothFade(nearest / radius);
+        const k = sceneScrollFeel.exponentialStrength;
+
+        const exponential = (Math.exp(k * t) - 1) / (Math.exp(k) - 1);
+
         return sceneScrollFeel.speedAtAnchor +
-            (1 - sceneScrollFeel.speedAtAnchor) * fadedDistance;
+            (1 - sceneScrollFeel.speedAtAnchor) * exponential;
     }
 
     let sceneWheelTarget = window.scrollY;
     let sceneWheelFrame = null;
     let sceneWheelAnimating = false;
+    let magneticHoldUntil = 0;
+    const completedMagneticStops = new Set();
 
     function stopSceneWheelGlide() {
         if (sceneWheelFrame !== null) cancelAnimationFrame(sceneWheelFrame);
+
         sceneWheelFrame = null;
         sceneWheelAnimating = false;
         sceneWheelTarget = window.scrollY;
+
+        magneticHoldUntil = 0;
+        completedMagneticStops.clear();
     }
 
     function sceneWheelGlide() {
@@ -1399,45 +1442,7 @@
         return false;
     }
 
-    window.addEventListener('wheel', event => {
-        if (event.defaultPrevented || event.ctrlKey || event.metaKey ||
-            Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
-
-        // Don't take control of controls or separately scrollable panels.
-        if (event.target instanceof Element && (
-            event.target.closest('input, textarea, select, [contenteditable], [data-native-scroll], .dg, #unified-scroll-editor') ||
-            hasIndependentVerticalScroll(event.target, event.deltaY)
-        )) return;
-
-        // Normalize mouse wheel / line / page delta modes to CSS pixels.
-        const inputDelta = event.deltaY *
-            (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? window.innerHeight : 1);
-        if (!inputDelta) return;
-        event.preventDefault();
-
-        if (!sceneWheelAnimating) sceneWheelTarget = window.scrollY;
-
-        // Integrate in small steps so a fast wheel tick cannot skip a slowdown zone.
-        const direction = Math.sign(inputDelta);
-        const scrollLimit = getMaxScroll();
-        const sceneStops = getSceneStops();
-        const radius = Math.max(140, window.innerHeight * sceneScrollFeel.zoneHeightInViewports);
-        let remaining = Math.min(2000, Math.abs(inputDelta));
-        while (remaining > 0) {
-            const step = Math.min(18, remaining);
-            sceneWheelTarget = scrollClamp(
-                sceneWheelTarget + direction * step * getScrollGain(sceneWheelTarget, sceneStops, radius),
-                0, scrollLimit
-            );
-            remaining -= step;
-        }
-
-        if (!sceneWheelAnimating) {
-            sceneWheelAnimating = true;
-            sceneWheelFrame = requestAnimationFrame(sceneWheelGlide);
-        }
-    }, { passive: false });
-
+ 
     // Manual scrollbar dragging, keyboard navigation and nav button clicks
     // interrupt the glide; these navigation methods retain their native behavior.
     window.addEventListener('pointerdown', stopSceneWheelGlide, { passive: true });
@@ -1446,6 +1451,135 @@
         if (!sceneWheelAnimating) sceneWheelTarget = window.scrollY;
     }, { passive: true });
 
+
+
+    // MAGNETIC SCROLL — exponential slowdown + 3 second lock
+    window.addEventListener('wheel', event => {
+
+        if (
+            event.defaultPrevented ||
+            event.ctrlKey ||
+            event.metaKey ||
+            Math.abs(event.deltaX) > Math.abs(event.deltaY)
+        ) return;
+
+        // Allow normal scrolling inside the GUI and other scrollable panels
+        if (event.target instanceof Element && (
+            event.target.closest(
+                'input, textarea, select, [contenteditable], [data-native-scroll], .dg, #unified-scroll-editor'
+            ) ||
+            hasIndependentVerticalScroll(event.target, event.deltaY)
+        )) return;
+
+        const inputDelta = event.deltaY *
+            (event.deltaMode === 1 ? 16 :
+            event.deltaMode === 2 ? window.innerHeight : 1);
+
+        if (!inputDelta) return;
+
+        event.preventDefault();
+
+        // Ignore wheel input during the 3-second hold
+        if (performance.now() < magneticHoldUntil) return;
+
+        if (!sceneWheelAnimating) {
+            sceneWheelTarget = window.scrollY;
+        }
+
+        const direction = Math.sign(inputDelta);
+        const scrollLimit = getMaxScroll();
+        const sceneStops = getSceneStops();
+
+        const radius = Math.max(
+            140,
+            window.innerHeight * sceneScrollFeel.zoneHeightInViewports
+        );
+
+        // Allow a stop to activate again after leaving its zone
+        for (const stop of completedMagneticStops) {
+            if (Math.abs(sceneWheelTarget - stop) > radius) {
+                completedMagneticStops.delete(stop);
+            }
+        }
+
+        const activeStops = sceneStops.filter(stop =>
+            stop > 0 &&
+            stop < scrollLimit &&
+            !completedMagneticStops.has(stop)
+        );
+
+        let remaining = Math.min(2000, Math.abs(inputDelta));
+
+        while (remaining > 0) {
+            const step = Math.min(18, remaining);
+
+            // Exponential slowdown near magnetic points
+            const next = scrollClamp(
+                sceneWheelTarget +
+                direction * step *
+                getScrollGain(sceneWheelTarget, sceneStops, radius),
+                0,
+                scrollLimit
+            );
+
+            // Detect arrival at a magnetic point
+            const stop = activeStops.find(s =>
+                direction > 0
+                    ? sceneWheelTarget <= s &&
+                    next >= s - sceneScrollFeel.snapPx
+                    : sceneWheelTarget >= s &&
+                    next <= s + sceneScrollFeel.snapPx
+            );
+
+            if (stop !== undefined) {
+
+                // Cancel previous glide
+                if (sceneWheelFrame !== null) {
+                    cancelAnimationFrame(sceneWheelFrame);
+                }
+
+                sceneWheelFrame = null;
+                sceneWheelAnimating = false;
+
+                // Snap to the exact magnetic point
+                sceneWheelTarget = stop;
+
+                window.scrollTo({
+                    top: stop,
+                    behavior: 'instant'
+                });
+
+                completedMagneticStops.add(stop);
+
+                // Lock wheel scrolling for 3 seconds
+                magneticHoldUntil =
+                    performance.now() + sceneScrollFeel.holdMs;
+
+                console.log('MAGNETIC STOP', {
+                    stop: Math.round(stop),
+                    actualScroll: Math.round(window.scrollY)
+                });
+
+                return;
+            }
+
+            sceneWheelTarget = next;
+            remaining -= step;
+        }
+
+        // Smoothly move toward the calculated target
+        if (!sceneWheelAnimating) {
+            sceneWheelAnimating = true;
+            sceneWheelFrame = requestAnimationFrame(sceneWheelGlide);
+        }
+
+    }, { passive: false });
+
+
+
+
+
+    
     /* TESTING */
 
     /* COMMITS */
@@ -1473,7 +1607,7 @@
         animate()
 
     //SCROLL ANIMATION
-    
+
       const scrollCue = document.querySelector(".scroll-indicator");
         if (scrollCue) {
             let lastScrollY = window.scrollY;
