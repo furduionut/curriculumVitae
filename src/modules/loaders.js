@@ -240,23 +240,18 @@
     function loadingIndicators      (dom){
         const main                  = document.querySelector('.main');
         const scrollIndicator       = document.createElement('div');
-        const scrollArrow           = document.createElement('div');
         const scrollText            = document.createElement('div');
 
         scrollText.innerHTML        = 'scroll';
 
         scrollIndicator.className   = 'scroll-indicator';
-        scrollArrow.className       = 'scroll-arrow';
-        scrollText.className        = 'scroll-text, glass';
+        scrollText.className        = 'scroll-text';
 
         scrollText.style.fontSize   = '2em';
 
         scrollIndicator.id          = 'scroll-indicator';
-        scrollArrow.id              = 'scroll-arrow';
-        scrollText.id               = 'scroll-arrow';
 
         scrollIndicator.appendChild(scrollText);
-        scrollIndicator.appendChild(scrollArrow);
         main.appendChild(scrollIndicator);
         };
 

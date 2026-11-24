@@ -513,6 +513,10 @@ svg {
 
 .scroll-indicator {
     padding: var(--general-padding);
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    color: white;
     width: auto;
     height: auto;
     position: fixed;
@@ -524,25 +528,47 @@ svg {
     display: flex;
     flex-direction: column;
     align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.2s ease-in-out;
 }
+
+
+.scroll-indicator.is-visible {
+    opacity: 1;
+}
+
+
 
 .scroll-text {
-    font: var(--subject-font);
-    background: var(--forth-background-color);
-    opacity: 0.8;
+    color: white;
+    background: transparent;
+    animation: scrollPulse 2.5s ease-in-out infinite;
 }
 
-.scroll-arrow {
-    width: 55px;
-    height: 55px;
-    position: relative;
-    top: -2.5em;
-    transform: rotate(45deg);
-    border-radius: calc(var(--general-border-radius)/4);
-    border-right: 10px solid var(--forth-background-color);
-    border-bottom: 10px solid var(--forth-background-color);
-    animation: pulse 1.5s infinite ease-in-out;
+@keyframes scrollPulse {
+    0%, 100% {
+        opacity: 0.25;
+        text-shadow: 0 0 2px rgba(255, 255, 255, 0.2);
+    }
+
+    50% {
+        opacity: 1;
+        text-shadow:
+            0 0 5px rgba(255, 255, 255, 1),
+            0 0 12px rgba(255, 255, 255, 0.8),
+            0 0 25px rgba(180, 200, 255, 0.6);
+    }
 }
+
+
+
+
+
+
+
+
+
 
 @keyframes pulse {
     10% {

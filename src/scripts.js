@@ -975,7 +975,6 @@
 
         window.addEventListener("scroll", () => {
             loaders.preventReload();
-            loaders.hideScollIndicator();
         });
 
         window.addEventListener('resize', ()=>{
@@ -1472,3 +1471,37 @@
             composer.render         ();
         };
         animate()
+
+    //SCROLL ANIMATION
+    
+      const scrollCue = document.querySelector(".scroll-indicator");
+        if (scrollCue) {
+            let lastScrollY = window.scrollY;
+
+            // First appearance after 15 seconds
+            let cueTimer = setTimeout(() => {
+                scrollCue.classList.add("is-visible");
+            }, 15000);
+
+            window.addEventListener("scroll", () => {
+                const currentY = window.scrollY;
+                const scrollingUp = currentY < lastScrollY;
+
+                // Fade out when scrolling
+                scrollCue.classList.remove("is-visible");
+                clearTimeout(cueTimer);
+
+                // Reappear after inactivity, or sooner when returning to top
+                const delay = scrollingUp && currentY < 120 ? 1000 : 10000;
+
+                cueTimer = setTimeout(() => {
+                    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+
+                    if (window.scrollY < maxScroll - 50) {
+                        scrollCue.classList.add("is-visible");
+                    }
+                }, delay);
+
+                lastScrollY = currentY;
+            }, { passive: true });
+        }  
