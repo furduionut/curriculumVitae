@@ -1,7 +1,8 @@
 // EDITOR TEMPORAR — o singura axa pentru scrollul intregii pagini.
 // Fișierul nu folosește dat.GUI si nu necesita librarii noi.
 export function installUnifiedScrollTimelineEditor({
-  gsap, mainTimeline, cameraScrollPoints, cameraAnimationStart, textScrollPoints, onTextChange,
+  gsap, mainTimeline, cameraScrollPoints, cameraAnimationStart, sceneAnchors, textScrollPoints, onTextChange,
+  projectButtonEntrySeconds = 0,
   onTimelineShift = () => {}, referenceScroll = null
 }) {
   if (document.getElementById('unified-scroll-editor')) return;
@@ -54,31 +55,44 @@ export function installUnifiedScrollTimelineEditor({
   ];
 
   const baseline = { camera: cameraScrollPoints.map(toPlot), cameraStart: toPlot(cameraAnimationStart.px),
+    aboutMe: toPlot(sceneAnchors.aboutMe),
     text: Object.fromEntries(Object.entries(textScrollPoints).map(([k,v]) => [k, toPlot(v)])), gsap: {} };
-  const cameraLabels = ['A — Salut (poziție inițială)',
-    'B — Început tranziție',
-    'C — About Me',
-    'D — Abilități',
-    'E — Experiență',
-    'F — Contact',
-    'G — Final'
-    ];
+  // Abilities has no navigation marker, no magnetic stop and no GUI keyframe.
+  // Its historical camera control point remains internal to preserve the 3D camera trajectory.
+  const cameraLabels = {
+    0: 'A — Salut (poziție inițială)',
+    1: 'B — Început tranziție',
+    2: 'D — Projects',
+    4: 'E — Experiență',
+    5: 'F — Contact',
+    6: 'G — Final'
+  };
   const markers = [];
   // Marker INDEPENDENT de CAM A: îl tragi pentru a decide când începe efectiv A -> B.
   // Camera rămâne în poziția A între 0px și acest reper.
   markers.push({ id: 'cameraStart', label: 'CAM 0 — Start animație', kind: 'cameraStart',
     lane: 'left', px: toPlot(cameraAnimationStart.px) });
-  cameraScrollPoints.forEach((p, i) => markers.push({
-    id: 'camera' + i, label: 'CAM ' + cameraLabels[i], kind: 'camera',
-    lane: 'left', index: i, px: toPlot(p), locked: i === 0
-  }));
+  cameraScrollPoints.forEach((p, i) => {
+    if (!(i in cameraLabels)) return;
+    markers.push({
+      id: 'camera' + i, label: 'CAM ' + cameraLabels[i], kind: 'camera',
+      lane: 'left', index: i, px: toPlot(p), locked: i === 0
+    });
+  });
+  markers.push({ id: 'aboutMe', label: 'CAM C — About Me', kind: 'scene',
+    lane: 'left', px: toPlot(sceneAnchors.aboutMe) });
   const gsapMarkers = [];
+  const projectButtonIds = new Set(['next', 'prev', 'down']);
   for (const [id, label, node] of gsapDefinitions) {
     if (!node) continue;
     const originalTime = node.startTime();
-    const originalPx = Math.max(0, baseTriggerStart + originalTime * pixelsPerSecond);
+    // Cele trei markere arată momentul SOSIRII VIZIBILE; restul indică începutul tween-ului.
+    const arrivalOffsetSeconds = projectButtonIds.has(id) ? projectButtonEntrySeconds : 0;
+    const originalPx = Math.max(0, baseTriggerStart +
+      (originalTime + arrivalOffsetSeconds) * pixelsPerSecond);
     baseline.gsap[id] = { time: originalTime, px: originalPx };
-    const marker = { id, label, kind: 'gsap', lane: 'right', node, px: originalPx };
+    const marker = { id, label, kind: 'gsap', lane: 'right', node, px: originalPx,
+      arrivalOffsetSeconds };
     markers.push(marker);
     gsapMarkers.push(marker);
   }
@@ -150,7 +164,8 @@ export function installUnifiedScrollTimelineEditor({
   #unified-scroll-editor .ue-marker.ue-selected {z-index:5;}
   #unified-scroll-editor .ue-dot {position:absolute;left:-5px;top:-5px;border:2px solid #101d32;
     border-radius:100%;width:10px;height:10px;pointer-events:none;}
-  #unified-scroll-editor .ue-marker.camera .ue-dot {background:#68ccff;}
+  #unified-scroll-editor .ue-marker.camera .ue-dot,
+  #unified-scroll-editor .ue-marker.scene .ue-dot {background:#68ccff;}
   #unified-scroll-editor .ue-marker.cameraStart .ue-dot {background:#35f3bd;}
   #unified-scroll-editor .ue-marker.gsap .ue-dot {background:#b59aff;}
   #unified-scroll-editor .ue-marker.text .ue-dot {background:#ffd081;}
@@ -162,7 +177,8 @@ export function installUnifiedScrollTimelineEditor({
     border-radius:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
     background:rgba(41,48,76,.92);font-size:10px;line-height:14px;height:22px;
     cursor:ns-resize;}
-  #unified-scroll-editor .ue-marker.camera .ue-label {right:13px;text-align:right;
+  #unified-scroll-editor .ue-marker.camera .ue-label,
+  #unified-scroll-editor .ue-marker.scene .ue-label {right:13px;text-align:right;
     border-right:2px solid #68ccff;}
   #unified-scroll-editor .ue-marker.cameraStart .ue-label {right:13px;text-align:right;
     border-right:2px solid #35f3bd;}
@@ -211,7 +227,7 @@ export function installUnifiedScrollTimelineEditor({
     <div class="ue-footer">
       <button type="button" id="ue-current">↳ Vino la reper</button>
       <button type="button" class="ue-primary" id="ue-print">PRINT / COPY</button>
-      <div class="ue-note">Trage etichetele ↑↓. Click pe axă = scroll real. Verde = poziția din pagină.</div>
+      <div class="ue-note">CAM C = About Me. CAM D = Projects. Markerii Next/Prev/Down indică poziția la care butoanele AU AJUNS vizibile; animația intră puțin înainte.</div>
     </div>
     <div class="ue-output" id="ue-output"><strong>Pozițiile finale — trimite-mi acest text</strong>
       <textarea id="ue-report" readonly spellcheck="false"></textarea>
@@ -263,32 +279,60 @@ export function installUnifiedScrollTimelineEditor({
     });
   }
 
+  // Moving the Projects camera keyframe also moves its three buttons and project text.
+  // Individual GSAP/text markers remain adjustable afterward, retaining their relative offsets.
+  const projectControls = () => gsapMarkers.filter(m => projectButtonIds.has(m.id));
+  const projectTextMarker = () => markers.find(m => m.id === 'text_proiect');
+  // Marker GSAP = timp de sosire la butoanele Projects, dar timp de start pentru celelalte.
+  const setGsapTimeFromMarker = (marker, px) => {
+    const start = px / pixelsPerSecond - marker.arrivalOffsetSeconds;
+    marker.node.startTime(Math.max(0, start));
+  };
+
   function setMarkerPixel(marker, px) {
     px = clamp(px, 0, maxScroll());
     if (marker.kind === 'cameraStart') {
-      // CAM 0 poate fi oriunde intre inceputul paginii si CAM B.
       px = clamp(px, 0, toPlot(cameraScrollPoints[1]) - 20);
       cameraAnimationStart.px = fromPlot(px);
+    } else if (marker.kind === 'scene') {
+      // About Me is a scene stop on the ORIGINAL B -> Projects camera trajectory.
+      px = clamp(px, toPlot(cameraScrollPoints[1]) + 20, toPlot(cameraScrollPoints[2]) - 20);
+      sceneAnchors.aboutMe = fromPlot(px);
     } else if (marker.kind === 'camera') {
       const i = marker.index;
-      // CAM B nu poate trece deasupra noului CAM 0.
       const before = i === 1
         ? Math.max(toPlot(cameraScrollPoints[0]), toPlot(cameraAnimationStart.px))
         : (cameraScrollPoints[i - 1] === undefined ? -50 : toPlot(cameraScrollPoints[i - 1]));
       const after = cameraScrollPoints[i + 1] === undefined
         ? maxScroll() + 50 : toPlot(cameraScrollPoints[i + 1]);
-      px = clamp(px, before + 20, Math.max(before + 20, after - 20));
+      const lower = i === 2 ? Math.max(before, toPlot(sceneAnchors.aboutMe)) + 20 : before + 20;
+      const oldPx = toPlot(cameraScrollPoints[i]);
+      px = clamp(px, lower, Math.max(lower, after - 20));
       cameraScrollPoints[i] = fromPlot(px);
+
+      if (i === 2) {
+        const delta = px - oldPx;
+        for (const control of projectControls()) {
+          control.px = clamp(control.px + delta, 0, maxScroll());
+          setGsapTimeFromMarker(control, control.px);
+        }
+        const textMarker = projectTextMarker();
+        if (textMarker) {
+          textMarker.px = clamp(textMarker.px + delta,
+            toPlot(textScrollPoints.salut) + 20, toPlot(textScrollPoints.gol) - 20);
+          textScrollPoints.proiect = fromPlot(textMarker.px);
+          onTextChange();
+        }
+        setTimelineAtActualScroll();
+      }
     } else if (marker.kind === 'text') {
-      // Păstrăm cele trei condiții din changeDescription în ordine.
       if (marker.textKey === 'salut') px = Math.min(px, toPlot(textScrollPoints.proiect) - 20);
       if (marker.textKey === 'proiect') px = clamp(px, toPlot(textScrollPoints.salut) + 20, toPlot(textScrollPoints.gol) - 20);
       if (marker.textKey === 'gol') px = Math.max(px, toPlot(textScrollPoints.proiect) + 20);
       textScrollPoints[marker.textKey] = fromPlot(px);
       onTextChange();
     } else {
-      // Mută chiar tween-ul/subtimeline-ul original în timeline-ul GSAP.
-      marker.node.startTime(px / pixelsPerSecond);
+      setGsapTimeFromMarker(marker, px);
       setTimelineAtActualScroll();
     }
     marker.px = px;
@@ -363,6 +407,7 @@ export function installUnifiedScrollTimelineEditor({
       return `${marker.label.padEnd(23)} ${fmt(marker.px)}  |  delta ${diff >= 0 ? '+' : ''}${Math.round(diff)} px`;
     };
     const camera = sorted('camera');
+    const aboutMe = markers.find(x => x.id === 'aboutMe');
     const cam0 = markers.find(x => x.id === 'cameraStart');
     const timeline = sorted('gsap');
     const texts = sorted('text');
@@ -376,17 +421,24 @@ export function installUnifiedScrollTimelineEditor({
       `Scroll de referință în cod: ${Math.round(refMax())} px (valorile de mai jos sunt scalate corect)`,
       '', '--- CAMERA 3D: updateCam() ---',
       line(cam0, baseline.cameraStart),
-      ...camera.map(x => line(x, baseline.camera[x.index])),
+      ...camera.filter(x => x.index <= 1).map(x => line(x, baseline.camera[x.index])),
+      line(aboutMe, baseline.aboutMe),
+      ...camera.filter(x => x.index >= 2).map(x => line(x, baseline.camera[x.index])),
+      'CAMERA internă (fără marker Abilities): ' + Math.round(toPlot(cameraScrollPoints[3])) + ' px',
+      'Navigație + magnet: numai About Me și Projects',
+      'Buton Next/Prev/Down: marker = sosire vizibilă, intrare cu ' + projectButtonEntrySeconds + 's înainte', 
       '', '--- GSAP 2D: mainTimeline ---',
       ...timeline.map(x => line(x, baseline.gsap[x.id].px)),
       '', '--- CONȚINUT: changeDescription() ---',
       ...texts.map(x => line(x, baseline.text[x.textKey])),
       '', '--- VALORI PENTRU REINTRODUCERE ÎN COD ---',
       `cameraAnimationStart = ${Math.round(fromPlot(cam0.px))}; // CAM 0 — coordonată de referință (px)`,
-      `cameraScrollPoints = [${camera.map(x => Math.round(fromPlot(x.px))).join(', ')}]; // pixeli pe scroll-ul de referință`,
+      `cameraScrollPoints = [${cameraScrollPoints.map(v => Math.round(v)).join(', ')}]; // toate punctele de interpolare, inclusiv cel intern`,
+      `sceneAnchors = { aboutMe: ${Math.round(sceneAnchors.aboutMe)} }; // CAM C, navigație + magnet, referință`,
+      `Projects = cameraScrollPoints[2]; // CAM D, navigație + magnet + butoane Next/Prev/Down`,
       `textScrollPoints = ${JSON.stringify(Object.fromEntries(texts.map(x=>[x.textKey,Math.round(fromPlot(x.px))])))}; // scroll de referință`,
-      'GSAP startTime (secunde ale timeline-ului de preview):',
-      ...timeline.map(x => `  ${x.id.padEnd(15)} ${(x.px / pixelsPerSecond).toFixed(4)}s`),
+      'GSAP marker time (secunde ale timeline-ului de preview):',
+      ...timeline.map(x => `  ${x.id.padEnd(15)} ${(x.px / pixelsPerSecond).toFixed(4)}s${x.arrivalOffsetSeconds ? ' (sosire buton; intrare cu ' + x.arrivalOffsetSeconds + 's înainte)' : ''}`),
       '', 'NOTĂ: timpii GSAP de mai sus sunt pentru driver-ul de preview',
       'bazat pe întregul scroll. Trimite-mi raportul complet pentru a adapta',
       'definitiv mainTimeline și updateCam, fără editor.',
@@ -425,5 +477,5 @@ export function installUnifiedScrollTimelineEditor({
   setTimelineAtActualScroll();
   render();
   console.info('[Scroll Editor] Un singur timeline relativ la scrollY. PRINT / COPY = configurația pentru modificările definitive.');
-  window.unifiedScrollEditor = { markers, cameraAnimationStart, cameraScrollPoints, textScrollPoints, getReport };
+  window.unifiedScrollEditor = { markers, cameraAnimationStart, cameraScrollPoints, sceneAnchors, textScrollPoints, getReport };
 }

@@ -520,7 +520,7 @@ svg {
     width: auto;
     height: auto;
     position: fixed;
-    bottom: 10%;
+    bottom: 20vh;
     z-index: 999;
     left: 50%;
     gap: 0.5em;
@@ -615,37 +615,155 @@ svg {
     z-index: 1000;
 }
 
+/* PROJECT NAVIGATION — original Illustrator SVG artwork, no extra glass layer.
+   GSAP continues to animate .prevBtn, .downBtn and .nextBtn wrappers. */
 .controls {
     position: fixed;
-    opacity: 1;
-    top: 85%;
+    z-index: 2000; /* above both canvas viewports; below the timeline editor */
+    left: 50%;
+    top: auto;
+    bottom: 5%;
+    transform: translateX(-50%);
+    width: min(78%, 1080px);
     height: auto;
-    flex-flow: row wrap;
+    opacity: 1;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
     justify-content: space-between;
+    gap: clamp(12px, 3vw, 44px);
+    pointer-events: none;
 }
 
-.controls > div {
+
+.controls > .navBtn {
     position: relative;
-    top: 250%;
-    height: 6.5em;
-    width: 6.5em;
+    inset: auto;
+    top: auto;
+    display: block;
+    flex: 0 0 auto;
+    width: clamp(175px, 8vw, 175px);
+    height: auto;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    transform: none;
+    pointer-events: auto;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
 }
 
-.navBtn {
+
+/* LEFT + RIGHT — Previous & Next Project */
+.controls > .prevBtn,
+.controls > .nextBtn {
     position: relative;
-    transform: rotateZ(45deg);
+    bottom: 37vh;
+    left: auto;
+    right: auto;
 }
 
-.nextBtn {
-    transform: translateX(1000%);
+
+.controls > .project-nav-center {
+    width: clamp(175px, 9vw, 175px);
+    cursor: default;
 }
 
-.prevBtn {
-    transform: translateX(-1000%);
+
+.project-nav-art {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin: 0;
+    border: 0;
+    pointer-events: none;
+    user-select: none;
+    opacity: .88;
+    filter: drop-shadow(0 7px 9px rgba(12, 21, 57, .15));
+    animation: projectNavFloat 4.8s ease-in-out infinite;
+    transition: opacity .32s ease, filter .32s ease;
+    will-change: transform;
 }
 
-.downBtn {
-    transform: translateY(275%);
+/* Fade/glow on hover; the click does not permanently displace the SVG. */
+.controls > button.navBtn:hover .project-nav-art,
+.project-nav-center:has(.project-nav-region:hover) > .project-nav-art {
+    opacity: 1;
+    filter: brightness(1.09) drop-shadow(0 10px 12px rgba(171, 193, 255, .27));
+}
+
+.project-nav-center .project-nav-hitareas {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    display: grid;
+    /* The SVG overlaps its diamonds; these rows target the VISIBLE areas. */
+    grid-template-rows: 44% 25% 31%;
+}
+
+.project-nav-region {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+.project-nav-region::before {
+    content: '';
+    position: absolute;
+    inset: 13% 15%;
+    border-radius: 42%;
+    background: rgba(255,255,255,.10);
+    opacity: 0;
+    transform: scale(.88);
+    transition: opacity .24s ease, transform .24s ease;
+    pointer-events: none;
+}
+.project-nav-region:hover::before {
+    opacity: .5;
+    transform: scale(1);
+}
+
+.controls button:focus-visible {
+    outline: 2px solid rgba(225, 236, 255, .95);
+    outline-offset: 4px;
+    border-radius: 8px;
+}
+
+.project-nav-art.is-tapped { animation: projectNavTap .42s cubic-bezier(.22,1,.36,1) 1 both; }
+
+@keyframes projectNavFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+}
+
+@keyframes projectNavTap {
+    0% { transform: translateY(0) scale(1); opacity: .95; }
+    33% { transform: translateY(2px) scale(.955); opacity: .73; }
+    75% { transform: translateY(-2px) scale(1.018); opacity: 1; }
+    100% { transform: translateY(0) scale(1); opacity: .95; }
+}
+
+@media (max-width: 640px) {
+    .controls {
+        width: min(95%, 480px);
+        bottom: 3%;
+        gap: 12px;
+    }
+    .controls > .navBtn { width: clamp(70px, 22vw, 105px); }
+    .controls > .project-nav-center { width: clamp(80px, 25vw, 118px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .project-nav-art, .project-nav-art.is-tapped { animation: none; }
+    .project-nav-region::before, .project-nav-art { transition: none; }
 }
 
 
@@ -1466,5 +1584,92 @@ div[class^="geometry"] {
 
     .timeline {
         display: none;
+    }
+}
+
+
+/* =====================================================================
+   INDIVIDUAL SVG HOVER — APPEND AFTER EXISTING NAVIGATION CSS.
+   Deliberately does not change .controls / .prevBtn / .nextBtn positioning.
+   The ambient float runs on an inner span, leaving the img / SVG groups
+   free to animate their own transforms independently of GSAP.
+   ===================================================================== */
+.controls .project-nav-float {
+    display: block;
+    width: 100%;
+    animation: projectNavFloat 4.8s ease-in-out infinite;
+    will-change: transform;
+}
+
+.controls .project-nav-art {
+    display: block;
+    width: 100%;
+    height: auto;
+    animation: none;
+    opacity: .83;
+    transform: translateY(0) scale(1);
+    transform-origin: center;
+    filter: drop-shadow(0 7px 9px rgba(12, 21, 57, .15));
+    transition:
+        transform .42s cubic-bezier(.22, 1, .36, 1),
+        opacity .42s ease,
+        filter .42s ease;
+    will-change: transform, opacity;
+}
+
+/* Side buttons: hover only lifts/fades the artwork, never the GSAP wrapper. */
+.controls > button.prevBtn:hover .project-nav-art,
+.controls > button.nextBtn:hover .project-nav-art,
+.controls > button.prevBtn:focus-visible .project-nav-art,
+.controls > button.nextBtn:focus-visible .project-nav-art {
+    transform: translateY(-8px) scale(1.025);
+    opacity: 1;
+    filter: brightness(1.12) drop-shadow(0 12px 15px rgba(170, 192, 255, .28));
+}
+
+/* Central Illustrator SVG is inline so its layers can be targeted. */
+.controls .project-nav-center .project-nav-svg {
+    pointer-events: auto;
+    opacity: 1;
+    overflow: visible;
+}
+
+.controls .project-nav-center .project-nav-svg g[role="button"] {
+    cursor: pointer;
+    pointer-events: visiblePainted;
+    opacity: .84;
+    transform: translateY(0) scale(1);
+    transform-box: fill-box;
+    transform-origin: center;
+    transition:
+        transform .42s cubic-bezier(.22, 1, .36, 1),
+        opacity .42s ease,
+        filter .42s ease;
+    outline: none;
+}
+
+/* Hover only the UP / WHOLE / DOWN artwork under the pointer. */
+.controls .project-nav-center .project-nav-svg g[role="button"]:hover,
+.controls .project-nav-center .project-nav-svg g[role="button"]:focus-visible {
+    transform: translateY(-7px) scale(1.025);
+    opacity: 1;
+    filter: brightness(1.14) drop-shadow(0 9px 12px rgba(170, 192, 255, .28));
+}
+
+/* Short click feedback resets and hands control back to the hover state. */
+.controls .project-nav-art.is-tapped,
+.controls .project-nav-center .project-nav-svg g[role="button"].is-tapped {
+    animation: projectNavTap .42s cubic-bezier(.22, 1, .36, 1) 1 both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .controls .project-nav-float,
+    .controls .project-nav-art.is-tapped,
+    .controls .project-nav-center .project-nav-svg g[role="button"].is-tapped {
+        animation: none;
+    }
+    .controls .project-nav-art,
+    .controls .project-nav-center .project-nav-svg g[role="button"] {
+        transition: none;
     }
 }

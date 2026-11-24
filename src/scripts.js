@@ -87,6 +87,10 @@
         
         const REFERENCE_SCROLL = 8413;
         const GSAP_PX_PER_SECOND = 110.352;
+        // Durata intrării celor trei butoane; ele ajung în poziția vizibilă chiar la CAM D — Projects.
+        const PROJECT_BUTTON_ENTRY_SECONDS = 1.2;
+        // Menținem momentul vechi de dispariție: 1+4+1+4+12 = 22 s după Projects.
+        const PROJECT_BUTTON_FADE_DELAY_SECONDS = 22;
         const getMaxScroll = () => Math.max(1,
             (document.scrollingElement || document.documentElement).scrollHeight - window.innerHeight);
         const toReferenceScroll = () => window.scrollY / getMaxScroll() * REFERENCE_SCROLL;
@@ -97,8 +101,12 @@
 
         /////CAMERA 0 POSITION - PORTRET/////
 
+        // Camera's original interpolation points are unchanged (preserves the portrait framing).
+        // A visual About Me scene stop lives BETWEEN B and the existing 1922px camera keyframe.
         const cameraScrollPoints = [0, 1098, 1922, 5815, 7753, 9691, 11629];
         const cameraAnimationStart = { px: 0 };  // CAM 0
+        const sceneAnchors = { aboutMe: 1765 }; // CAM C — About Me; GUI can edit this live
+        // CAM D — Projects uses cameraScrollPoints[2] as its ONLY position source.
         const getCameraPhase = scrollY => {
             // Pana la CAM 0 ramanem in pozitia A (fara miscarea camerei).
             if (scrollY <= cameraAnimationStart.px) return 0;
@@ -121,8 +129,6 @@
             const changeHeight = () => {clientHeight = window.innerHeight < 1000 ? .5 : -1.0};
             changeHeight();
 
-            window.addEventListener("resize", changeCameraZoom);
-
             // Section 0
             const camPosA = new THREE.Vector3(15, 7.5, 10.5);
             const lookA = new THREE.Vector3(-5.5, 12.5, -10.5);
@@ -132,11 +138,6 @@
             const camPosB = new THREE.Vector3(35, 7.5, 10.5);
             const lookB = new THREE.Vector3(-5.5, 12.5, -10.5);
             const zoomB = perspCameraZoom * 2;
-
-            // Section 1.5 — PORTRET (nou keyframe intermediar)
-            const camPosPortrait = new THREE.Vector3(21.8953, 15.6904, 10.5);
-            const lookPortrait = new THREE.Vector3(-6.9743, 3.6543, -11.8105);
-            const zoomPortrait = perspCameraZoom * 2.98285;
 
             // Section 2
             const camPosC = new THREE.Vector3(15, 20, 10.5);
@@ -206,7 +207,7 @@
                     lookEnd = lookE;
                     zoomStart = zoomD; 
                     zoomEnd = zoomE;
-                    sectionName = 'Abilities';
+                    sectionName = 'Camera transition';
                     break;
 
                 case 4:
@@ -250,23 +251,19 @@
                     break;
             }
             // console.log(`Window at zone ${section} at ${scroll} ${sectionName}`);
+            // Keep the original t² framing through the portrait (t≈0.809).
+            // Hermite interpolation only near the end removes the old 80% -> 100% jump.
             let easedT = t * t;
-
-            // Păstrăm animația originală până aproape de final.
             const finishFrom = 0.88;
-
             if (t > finishFrom) {
                 const u = (t - finishFrom) / (1 - finishFrom);
-
                 const startValue = finishFrom * finishFrom;
                 const startSlope = 2 * finishFrom * (1 - finishFrom);
-
-                // Tranziție continuă, cu încetinire lină la final.
                 easedT =
-                    (2*u**3 - 3*u**2 + 1) * startValue +
-                    (u**3 - 2*u**2 + u) * startSlope +
-                    (-2*u**3 + 3*u**2);
-}
+                    (2 * u ** 3 - 3 * u ** 2 + 1) * startValue +
+                    (u ** 3 - 2 * u ** 2 + u) * startSlope +
+                    (-2 * u ** 3 + 3 * u ** 2);
+            }
         
             const pos = posStart.clone().lerp(posEnd, easedT);
             perspCamera.position.copy(pos);
@@ -436,18 +433,19 @@
             else    {buildingIndex = buildings.length - 1;}
             console.log(`Changed indexes ${buildingIndex+1} / ${buildings.length}`)
             };       
-        function prevModelIndex     () {
-            if (buildingModelIndex > 0) {buildingModelIndex--;} 
-            else {buildingModelIndex = models.length - 1;}
-            console.log(`Changed indexes are: 
-                model ${buildingModelIndex} / ${models.length} of building ${buildingIndex+1}`)
-            }; 
-        // function nextModelIndex     () {
-        //     if (buildingModelIndex < models.length - 1) {buildingModelIndex++;} 
-        //     else {buildingModelIndex = 0;}
-        //     console.log(`Changed indexes are: 
-        //         model ${buildingModelIndex} / ${models.length} of building ${buildingIndex+1}`);
-        //     };
+        // UP / DOWN move within the active project's model variants.
+        function nextModelIndex() {
+            const list = models[buildingIndex];
+            if (!Array.isArray(list) || list.length === 0) return false;
+            buildingModelIndex = (buildingModelIndex + 1) % list.length;
+            return true;
+        }
+        function prevModelIndex() {
+            const list = models[buildingIndex];
+            if (!Array.isArray(list) || list.length === 0) return false;
+            buildingModelIndex = (buildingModelIndex - 1 + list.length) % list.length;
+            return true;
+        }
 
     /* UPDATERS */
         function updateRefs         () {
@@ -554,40 +552,77 @@
             renderoCanvas
             );
 
-    /* ACTIONS */
-        dom.nextBtn.addEventListener    
-            ('click', ()=>{
-                nextBuildingIndex();
-                updateRefs();
-                loaders.loadBuilding(scene, light, building, material, filterColor, filterIntensity, filterBlendMode);
-                changeDescription(name, about, type, style);
-                console.log("nextBtn was pressed");
-            });
+    /* ACTIONS — SVG project controls (IDs kept for GSAP and the scroll GUI) */
+        dom.nextBtn.addEventListener('click', () => {
+            nextBuildingIndex();
+            buildingModelIndex = 0;
+            updateRefs();
+            loaders.loadBuilding(scene, light, building, material, filterColor, filterIntensity, filterBlendMode);
+            changeDescription(name, about, type, style);
+        });
 
-        dom.prevBtn.addEventListener    
-            ('click', ()=>{
-                prevBuildingIndex();
-                updateRefs();
-                loaders.loadBuilding(scene, light, building, material, filterColor, filterIntensity, filterBlendMode);
-                changeDescription(name, about, type, style);
-            });
+        dom.prevBtn.addEventListener('click', () => {
+            prevBuildingIndex();
+            buildingModelIndex = 0;
+            updateRefs();
+            loaders.loadBuilding(scene, light, building, material, filterColor, filterIntensity, filterBlendMode);
+            changeDescription(name, about, type, style);
+        });
 
-        // dom.upBtn.addEventListener      
-        //     ('click', ()=>{
-        //         nextModelIndex();
-        //         updateRefs()
-        //         loaders.loadModel(scene, light, model, material, filterColor, filterIntensity, filterBlendMode);
-        //         loaders.loadInfo(name, about, type, style);
-        //     });
+        function displayCurrentModel() {
+            updateRefs();
+            loaders.loadModel(scene, light, model, material, filterColor, filterIntensity, filterBlendMode);
+            loaders.loadInfo(name, about, type, style);
+        }
 
-        dom.downBtn.addEventListener    
-            ('click', ()=>{
-                prevModelIndex();
-                updateRefs();
-                loaders.loadModel(scene, light, model, material, filterColor, filterIntensity, filterBlendMode);
-                loaders.loadInfo(name, about, type, style);
+        document.getElementById('upModelBtn').addEventListener('click', () => {
+            if (nextModelIndex()) displayCurrentModel();
+        });
+
+        document.getElementById('downModelBtn').addEventListener('click', () => {
+            if (prevModelIndex()) displayCurrentModel();
+        });
+
+        document.getElementById('wholeModelBtn').addEventListener('click', () => {
+            buildingModelIndex = 0;
+            updateRefs();
+            loaders.loadBuilding(scene, light, building, material, filterColor, filterIntensity, filterBlendMode);
+            changeDescription(name, about, type, style);
+        });
+
+        // Side images and each Illustrator SVG group animate independently.
+        // The GSAP wrappers (.prevBtn / .downBtn / .nextBtn) are never transformed here.
+        const projectControls = document.getElementById('controls');
+        projectControls.addEventListener('click', event => {
+            const control = event.target.closest('button, g[role="button"]');
+            if (!control || !projectControls.contains(control)) return;
+
+            const artwork = control.matches('g[role="button"]')
+                ? control
+                : control.querySelector('.project-nav-art');
+            if (!artwork) return;
+
+            artwork.classList.remove('is-tapped');
+            void artwork.getBoundingClientRect(); // restart click animation
+            artwork.classList.add('is-tapped');
+        });
+
+        // Inline SVG <g> elements are focusable and should work with the keyboard.
+        projectControls.querySelectorAll('.project-nav-svg g[role="button"]').forEach(group => {
+            group.addEventListener('keydown', event => {
+                if (event.key !== 'Enter' && event.key !== ' ') return;
+                event.preventDefault();
+                group.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
             });
-    
+        });
+
+        projectControls.addEventListener('animationend', event => {
+            if (event.animationName === 'projectNavTap' &&
+                event.target.classList?.contains('is-tapped')) {
+                event.target.classList.remove('is-tapped');
+            }
+        });
+
         window.addEventListener
             ('resize', () => {
                 updateCanvas();
@@ -668,7 +703,8 @@
         const distance2 = distance1/2;
         const distance3 = distance1/4;
         // Praguri text; mutate live din timeline-ul unificat.
-        const textScrollPoints = { salut: 1103, proiect: 3948, gol: 6884 };
+        // Projects text enters at the same camera/navigation anchor as Projects.
+        const textScrollPoints = { salut: 1103, proiect: cameraScrollPoints[2], gol: 6884 };
 
 /*         createDashedLineAt(distance1);
         createDashedLineAt(distance2);
@@ -679,67 +715,34 @@
         console.log(distToPage);
 
     // ANIMATIONS
-        if (window.innerWidth >= 1024) {
-            document.querySelectorAll(".navItem").forEach(item => {
-                item.addEventListener("mouseenter", () => {
-                    gsap.to(item, {
-                        x: "50%",
-                        duration: 0.35,
-                        ease: "power2.out"
-                    });
+        // Only the Abilities NAV button is removed. #abilities and its hoverable row stay intact.
+        document.getElementById('navAbilities')?.remove();
+
+        // One set of listeners, safe to call again on resize (no duplicate hover animations).
+        function setupNavHover() {
+            document.querySelectorAll('.navItem').forEach(item => {
+                if (item.dataset.navHoverReady === 'true') return;
+                item.dataset.navHoverReady = 'true';
+
+                item.addEventListener('mouseenter', () => {
+                    if (window.innerWidth >= 1024) {
+                        gsap.to(item, { x: '50%', duration: 0.35, ease: 'power2.out' });
+                    } else {
+                        gsap.to(item, { flexGrow: 2, duration: 0.35, ease: 'power2.out' });
+                        item.classList.add('showText');
+                    }
                 });
-                item.addEventListener("mouseleave", () => {
-                    gsap.to(item, {
-                        x: "0%",
-                        duration: 0.35,
-                        ease: "power2.out"
-                    });
+                item.addEventListener('mouseleave', () => {
+                    if (window.innerWidth >= 1024) {
+                        gsap.to(item, { x: '0%', duration: 0.35, ease: 'power2.out' });
+                    } else {
+                        gsap.to(item, { flexGrow: 1, duration: 0.35, ease: 'power2.out' });
+                        item.classList.remove('showText');
+                    }
                 });
             });
         }
-        function setupNavHover() {
-            const items = document.querySelectorAll(".navItem");
-        
-            if (window.innerWidth >= 1024) {
-                items.forEach(item => {
-                    item.addEventListener("mouseenter", () => {
-                        gsap.to(item, {
-                            x: "50%",
-                            duration: 0.35,
-                            ease: "power2.out"
-                        });
-                    });
-                    item.addEventListener("mouseleave", () => {
-                        gsap.to(item, {
-                            x: "0%",
-                            duration: 0.35,
-                            ease: "power2.out"
-                        });
-                    });
-                });
-            } else {
-                items.forEach(item => {
-                    item.addEventListener("mouseenter", () => {
-                        gsap.to(item, {
-                            flexGrow: 2,
-                            duration: 0.35,
-                            ease: "power2.out"
-                        });
-                        item.classList.add("showText");
-                    });
-        
-                    item.addEventListener("mouseleave", () => {
-                        gsap.to(item, {
-                            flexGrow: 1,
-                            duration: 0.35,
-                            ease: "power2.out"
-                        });
-                        item.classList.remove("showText");
-                    });
-                });
-            }
-        }
-        
+
         setupNavHover();
 
         let logoAnimation = new LogoAnimation();
@@ -836,91 +839,52 @@
             return orthoCameraTimeline
             };
 
-        function controlNextBtn         () {
-            let tl = gsap.timeline({
-                defaults: { duration: 0.5, ease: "power2.out" }
-            });
-        
-            tl.to(".nextBtn", {
-                x: "1000%",
-                y: "-275%",
-                rotateZ: "720deg",
-                duration: 4,
-                ease: "power2.out",
-                delay: 1
-            })
-            .to(".nextBtn", {
-                x: "100%",
-                rotateZ: "45deg",
-                duration: 4,
-                ease: "power2.out",
-                delay: 1
-            })
-            .to(".nextBtn", {
-                opacity: 0,
-                duration: 4,
-                delay: 12
-            });
-        
-            return tl;
-            };
+        // Ascunde comenzile până când începe intrarea lor pe timeline.
+        gsap.set(['.nextBtn', '.prevBtn', '.downBtn'], { autoAlpha: 0 });
 
-        function controlPrevBtn         () {
-            let tl = gsap.timeline({
-                defaults: { duration: 0.5, ease: "power2.out" }
-            });
-        
-            tl.to(".prevBtn", {
-                x: "-1000%",
-                y: "-275%",
-                rotateZ: "720deg",
-                duration: 4,
-                ease: "power2.out",
-                delay: 1
-            })
-            .to(".prevBtn", {
-                x: "-100%",
-                rotateZ: "45deg",
-                duration: 4,
-                ease: "power2.out",
-                delay: 1
-            })
-            .to(".prevBtn", {
-                opacity: 0,
-                duration: 4,
-                delay: 12
-            });
-        
-            return tl;
-            };
+        // Un singur tip de animație pentru toate cele trei comenzi ale proiectelor.
+        // IMPORTANT: poziția din GUI indică FINALUL intrării (buton vizibil), nu începutul tween-ului.
+        function animateProjectControl(selector, from, to) {
+            return gsap.timeline()
+                .fromTo(selector,
+                    { ...from, autoAlpha: 0 },
+                    {
+                        ...to,
+                        autoAlpha: 1,
+                        duration: PROJECT_BUTTON_ENTRY_SECONDS,
+                        ease: 'power2.out',
+                        immediateRender: false
+                    }
+                )
+                .to(selector, {
+                    autoAlpha: 0,
+                    duration: 4,
+                    delay: PROJECT_BUTTON_FADE_DELAY_SECONDS,
+                    ease: 'power2.out'
+                });
+        }
 
-        function controlDownBtn         () {
-            let tl = gsap.timeline({
-                defaults: { duration: 0.5, ease: "power2.out" }
-            });
-        
-            tl.to(".downBtn", {
-                y: "275%",
-                rotateZ: "180deg",
-                duration: 4,
-                ease: "power2.out",
-                delay: 1
-            })
-            .to(".downBtn", {
-                y: "0%",
-                rotateZ: "45deg",
-                duration: 4,
-                ease: "power2.out",
-                delay: 1
-            })
-            .to(".downBtn", {
-                opacity: 0,
-                duration: 4,
-                delay: 12
-            });
-        
-            return tl;
-            };
+        function controlNextBtn() {
+            return animateProjectControl('.nextBtn',
+                { x: '45%', y: '12%', rotateZ: '6deg' },
+                { x: '0%', y: '0%', rotateZ: '0deg' }
+            );
+        }
+
+        function controlPrevBtn() {
+            return animateProjectControl('.prevBtn',
+                { x: '-45%', y: '12%', rotateZ: '-6deg' },
+                { x: '0%', y: '0%', rotateZ: '0deg' }
+            );
+        }
+
+        function controlDownBtn() {
+            // The entire middle UP / WHOLE / DOWN group enters together.
+            return animateProjectControl('.downBtn',
+                { y: '28%', rotateZ: '0deg' },
+                { y: '0%', rotateZ: '0deg' }
+            );
+        }
 
         function controlBtnsOff         () {
             let tl = gsap.timeline();
@@ -955,9 +919,10 @@
                 duration: 6,
                 ease: 'power2.out'
             }, gsapTimeAt(1103))
-            .add(controlNextBtn(), gsapTimeAt(2798))
-            .add(controlPrevBtn(), gsapTimeAt(2798))
-            .add(controlDownBtn(), gsapTimeAt(2798))
+            // Intrarea începe puțin mai devreme și se termină EXACT la markerul Projects.
+            .add(controlNextBtn(), gsapTimeAt(cameraScrollPoints[2]) - PROJECT_BUTTON_ENTRY_SECONDS)
+            .add(controlPrevBtn(), gsapTimeAt(cameraScrollPoints[2]) - PROJECT_BUTTON_ENTRY_SECONDS)
+            .add(controlDownBtn(), gsapTimeAt(cameraScrollPoints[2]) - PROJECT_BUTTON_ENTRY_SECONDS)
             .add(infoBarShowOff(), gsapTimeAt(5667))
             .add(controlBtnsOff(), gsapTimeAt(6219))
             .add(infoBarShowOff(), gsapTimeAt(6881));
@@ -1300,7 +1265,9 @@
                 mainTimeline,
                 cameraScrollPoints,
                 cameraAnimationStart,
+                sceneAnchors,
                 textScrollPoints,
+                projectButtonEntrySeconds: PROJECT_BUTTON_ENTRY_SECONDS,
                 onTextChange: changeDescription,
                 referenceScroll: REFERENCE_SCROLL
             });
@@ -1315,7 +1282,6 @@
         const section12 = parseInt(getComputedStyle(section1).height) + parseInt(getComputedStyle(section2).height)
         const section1startPos = parseInt(getComputedStyle(section1).height);
         const section2startPos = parseInt(getComputedStyle(section1).height) - parseInt(getComputedStyle(section2).height);
-        const abilityStartPos = section1startPos - parseInt(getComputedStyle(abilitiesBody).height)/4;
         const experienceStartPos = section2startPos + parseInt(getComputedStyle(experiencesBody).height) + parseInt(getComputedStyle(abilitiesBody).height)*2.575;
 
         sectionsBtns.forEach((e)=>{e.addEventListener("click", 
@@ -1327,20 +1293,15 @@
                         break;
     
                     case 'navAboutMe':
-                        loaders.loadScroll(getMaxScroll() * (1765 / REFERENCE_SCROLL));
+                        loaders.loadScroll(getMaxScroll() * (sceneAnchors.aboutMe / REFERENCE_SCROLL));
                         loaders.loadPress(document.querySelector('.aboutMe'));
                         break;
                     
                     case 'navProjects':
-                        loaders.loadScroll(sectionHeight * 2.35);
+                        loaders.loadScroll(getMaxScroll() * (cameraScrollPoints[2] / REFERENCE_SCROLL));
                         loaders.loadPress(document.querySelectorAll('.navBtn'));
                         break;
     
-                    case 'navAbilities':
-                        loaders.loadScroll(abilityStartPos);
-                        loaders.loadPress(document.querySelector('.abilities'));
-                        break;
-                    
                     case 'navExperiences':
                         loaders.loadScroll(experienceStartPos);
                         loaders.loadPress(document.querySelector('.experiences'));
@@ -1355,7 +1316,9 @@
 
 
     /* SCENE SCROLL RESISTANCE — Navigation scene anchors
-
+       Applies only to user wheel/trackpad input. No changes to GSAP timings,
+       camera keyframes, text triggers or navigation button destinations.
+       Resistance gently fades in and out across each anchor zone.
     */
     const sceneScrollFeel = {
         zoneHeightInViewports: 0.35,
@@ -1372,26 +1335,27 @@
         return t * t * (3 - 2 * t);
     };
 
-    // Same destinations as the existing navGreeting ... navContacts click handlers.
+    // EXACTLY two magnetic anchors, shared with nav and with GUI.
     function getSceneStops() {
         const limit = getMaxScroll();
-
-        return [
-            limit * (1765 / REFERENCE_SCROLL),                 // Portret
-            sectionHeight * 2.35,                              // Proiecte
-            abilityStartPos,                                   // Abilități
-            experienceStartPos,                                // Experiență
-            section12                                          // Contact
-        ].map(value => scrollClamp(value, 0, limit));
+        return [sceneAnchors.aboutMe, cameraScrollPoints[2]]
+            .map(px => scrollClamp(limit * (px / REFERENCE_SCROLL), 0, limit));
     }
 
     function getScrollGain(atY, stops, radius) {
+        if (!stops.length) return 1;
         const nearest = Math.min(...stops.map(stop => Math.abs(stop - atY)));
-        const t = smoothFade(nearest / radius);
+
+        // When About Me and Projects are close together (157 reference px),
+        // avoid making the entire interval one very slow overlapping magnetic zone.
+        const betweenTwoStops = stops.length === 2 && atY > stops[0] && atY < stops[1];
+        const effectiveRadius = betweenTwoStops
+            ? Math.min(radius, (stops[1] - stops[0]) / 2)
+            : radius;
+
+        const t = smoothFade(nearest / Math.max(1, effectiveRadius));
         const k = sceneScrollFeel.exponentialStrength;
-
         const exponential = (Math.exp(k * t) - 1) / (Math.exp(k) - 1);
-
         return sceneScrollFeel.speedAtAnchor +
             (1 - sceneScrollFeel.speedAtAnchor) * exponential;
     }
@@ -1451,130 +1415,74 @@
         if (!sceneWheelAnimating) sceneWheelTarget = window.scrollY;
     }, { passive: true });
 
-
-
-    // MAGNETIC SCROLL — exponential slowdown + 3 second lock
+    // Exponential resistance, fixed stop, hold and equally smooth release.
+    // Other inputs (GUI, buttons, keyboard, native scrollable content) remain native.
     window.addEventListener('wheel', event => {
+        if (event.defaultPrevented || event.ctrlKey || event.metaKey ||
+            Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
 
-        if (
-            event.defaultPrevented ||
-            event.ctrlKey ||
-            event.metaKey ||
-            Math.abs(event.deltaX) > Math.abs(event.deltaY)
-        ) return;
-
-        // Allow normal scrolling inside the GUI and other scrollable panels
         if (event.target instanceof Element && (
-            event.target.closest(
-                'input, textarea, select, [contenteditable], [data-native-scroll], .dg, #unified-scroll-editor'
-            ) ||
+            event.target.closest('input, textarea, select, [contenteditable], [data-native-scroll], .dg, #unified-scroll-editor') ||
             hasIndependentVerticalScroll(event.target, event.deltaY)
         )) return;
 
         const inputDelta = event.deltaY *
-            (event.deltaMode === 1 ? 16 :
-            event.deltaMode === 2 ? window.innerHeight : 1);
-
+            (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? window.innerHeight : 1);
         if (!inputDelta) return;
-
         event.preventDefault();
-
-        // Ignore wheel input during the 3-second hold
         if (performance.now() < magneticHoldUntil) return;
 
-        if (!sceneWheelAnimating) {
-            sceneWheelTarget = window.scrollY;
-        }
+        if (!sceneWheelAnimating) sceneWheelTarget = window.scrollY;
 
         const direction = Math.sign(inputDelta);
         const scrollLimit = getMaxScroll();
         const sceneStops = getSceneStops();
+        const radius = Math.max(140, window.innerHeight * sceneScrollFeel.zoneHeightInViewports);
 
-        const radius = Math.max(
-            140,
-            window.innerHeight * sceneScrollFeel.zoneHeightInViewports
-        );
-
-        // Allow a stop to activate again after leaving its zone
+        // With stops only 157px apart, re-arm after crossing their midpoint,
+        // so navigating back from Projects can trigger About Me again.
+        const rearmDistance = sceneStops.length === 2
+            ? Math.min(radius, Math.abs(sceneStops[1] - sceneStops[0]) / 2)
+            : radius;
         for (const stop of completedMagneticStops) {
-            if (Math.abs(sceneWheelTarget - stop) > radius) {
-                completedMagneticStops.delete(stop);
-            }
+            if (Math.abs(sceneWheelTarget - stop) > rearmDistance) completedMagneticStops.delete(stop);
         }
-
         const activeStops = sceneStops.filter(stop =>
-            stop > 0 &&
-            stop < scrollLimit &&
-            !completedMagneticStops.has(stop)
+            stop > 0 && stop < scrollLimit && !completedMagneticStops.has(stop)
         );
 
         let remaining = Math.min(2000, Math.abs(inputDelta));
-
         while (remaining > 0) {
             const step = Math.min(18, remaining);
-
-            // Exponential slowdown near magnetic points
             const next = scrollClamp(
-                sceneWheelTarget +
-                direction * step *
-                getScrollGain(sceneWheelTarget, sceneStops, radius),
-                0,
-                scrollLimit
+                sceneWheelTarget + direction * step *
+                    getScrollGain(sceneWheelTarget, sceneStops, radius),
+                0, scrollLimit
             );
-
-            // Detect arrival at a magnetic point
-            const stop = activeStops.find(s =>
-                direction > 0
-                    ? sceneWheelTarget <= s &&
-                    next >= s - sceneScrollFeel.snapPx
-                    : sceneWheelTarget >= s &&
-                    next <= s + sceneScrollFeel.snapPx
+            const stop = activeStops.find(s => direction > 0
+                ? sceneWheelTarget <= s && next >= s - sceneScrollFeel.snapPx
+                : sceneWheelTarget >= s && next <= s + sceneScrollFeel.snapPx
             );
 
             if (stop !== undefined) {
-
-                // Cancel previous glide
-                if (sceneWheelFrame !== null) {
-                    cancelAnimationFrame(sceneWheelFrame);
-                }
-
+                if (sceneWheelFrame !== null) cancelAnimationFrame(sceneWheelFrame);
                 sceneWheelFrame = null;
                 sceneWheelAnimating = false;
-
-                // Snap to the exact magnetic point
                 sceneWheelTarget = stop;
-
-                window.scrollTo({
-                    top: stop,
-                    behavior: 'instant'
-                });
-
+                window.scrollTo({ top: stop, behavior: 'instant' });
                 completedMagneticStops.add(stop);
-
-                // Lock wheel scrolling for 3 seconds
-                magneticHoldUntil =
-                    performance.now() + sceneScrollFeel.holdMs;
-
-                console.log('MAGNETIC STOP', {
-                    stop: Math.round(stop),
-                    actualScroll: Math.round(window.scrollY)
-                });
-
+                magneticHoldUntil = performance.now() + sceneScrollFeel.holdMs;
                 return;
             }
-
             sceneWheelTarget = next;
             remaining -= step;
         }
 
-        // Smoothly move toward the calculated target
         if (!sceneWheelAnimating) {
             sceneWheelAnimating = true;
             sceneWheelFrame = requestAnimationFrame(sceneWheelGlide);
         }
-
     }, { passive: false });
-
 
 
 
