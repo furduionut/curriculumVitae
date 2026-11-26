@@ -11,6 +11,9 @@
     import { domain as dom } from "./domain.js";
     import { materials } from "./materials.js";
     
+
+
+    
     const infoSection = document.querySelector('.informations')
     const distance = infoSection.getBoundingClientRect().top + window.scrollY;
     const distance1 = distance;

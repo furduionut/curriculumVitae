@@ -87,10 +87,14 @@
         
         const REFERENCE_SCROLL = 8413;
         const GSAP_PX_PER_SECOND = 110.352;
-        // Durata intrării celor trei butoane; ele ajung în poziția vizibilă chiar la CAM D — Projects.
-        const PROJECT_BUTTON_ENTRY_SECONDS = 1.2;
-        // Menținem momentul vechi de dispariție: 1+4+1+4+12 = 22 s după Projects.
-        const PROJECT_BUTTON_FADE_DELAY_SECONDS = 22;
+        // TIMED PROJECT BUTTONS — independent of scrubbed scroll GSAP.
+        // CAM C = portrait (1765); CAM D = 3D Projects (1922).
+        const PROJECT_BUTTONS = {
+            enterSeconds: 2,   // Slower, softer fade-in
+            minVisibleMs: 850,
+            exitSeconds: 0.65,   // Smoother fade-out
+            risePx: 18
+        };
         const getMaxScroll = () => Math.max(1,
             (document.scrollingElement || document.documentElement).scrollHeight - window.innerHeight);
         const toReferenceScroll = () => window.scrollY / getMaxScroll() * REFERENCE_SCROLL;
@@ -120,6 +124,11 @@
             }
             return 5.999999;
         };
+
+        // Temporal smoothing only. Camera keyframes/easedT stay exactly as defined below.
+        const CAMERA_FOLLOW_PER_SECOND = 4.2; // smaller = softer/longer transition
+        let cameraSmoothedLook = null;
+        let lastCameraFrameAt = null;
 
         function updateCam() {
             let perspCameraZoom;
@@ -265,13 +274,31 @@
                     (-2 * u ** 3 + 3 * u ** 2);
             }
         
-            const pos = posStart.clone().lerp(posEnd, easedT);
-            perspCamera.position.copy(pos);
-        
-            const look = lookStart.clone().lerp(lookEnd, easedT);
-            perspCamera.lookAt(look);
-        
-            perspCamera.zoom = THREE.MathUtils.lerp(zoomStart, zoomEnd, easedT);
+            const targetPos = posStart.clone().lerp(posEnd, easedT);
+            const targetLook = lookStart.clone().lerp(lookEnd, easedT);
+            const targetZoom = THREE.MathUtils.lerp(zoomStart, zoomEnd, easedT);
+
+            // Dampen the *movement in time*, not the camera path or portrait framing.
+            // At rest on CAM C / CAM D the camera converges to the exact original pose.
+            const now = performance.now();
+            const dt = lastCameraFrameAt === null
+                ? 0
+                : Math.min(0.05, Math.max(0, (now - lastCameraFrameAt) / 1000));
+            lastCameraFrameAt = now;
+
+            if (cameraSmoothedLook === null) {
+                // The first rendered frame must be correct immediately.
+                perspCamera.position.copy(targetPos);
+                cameraSmoothedLook = targetLook.clone();
+                perspCamera.zoom = targetZoom;
+            } else {
+                const follow = 1 - Math.exp(-CAMERA_FOLLOW_PER_SECOND * dt);
+                perspCamera.position.lerp(targetPos, follow);
+                cameraSmoothedLook.lerp(targetLook, follow);
+                perspCamera.zoom = THREE.MathUtils.lerp(perspCamera.zoom, targetZoom, follow);
+            }
+
+            perspCamera.lookAt(cameraSmoothedLook);
             perspCamera.updateProjectionMatrix();
 
             };
@@ -558,7 +585,7 @@
             buildingModelIndex = 0;
             updateRefs();
             loaders.loadBuilding(scene, light, building, material, filterColor, filterIntensity, filterBlendMode);
-            changeDescription(name, about, type, style);
+            changeDescription({ animate: true });
         });
 
         dom.prevBtn.addEventListener('click', () => {
@@ -566,7 +593,7 @@
             buildingModelIndex = 0;
             updateRefs();
             loaders.loadBuilding(scene, light, building, material, filterColor, filterIntensity, filterBlendMode);
-            changeDescription(name, about, type, style);
+            changeDescription({ animate: true });
         });
 
         function displayCurrentModel() {
@@ -839,61 +866,14 @@
             return orthoCameraTimeline
             };
 
-        // Ascunde comenzile până când începe intrarea lor pe timeline.
-        gsap.set(['.nextBtn', '.prevBtn', '.downBtn'], { autoAlpha: 0 });
-
-        // Un singur tip de animație pentru toate cele trei comenzi ale proiectelor.
-        // IMPORTANT: poziția din GUI indică FINALUL intrării (buton vizibil), nu începutul tween-ului.
-        function animateProjectControl(selector, from, to) {
-            return gsap.timeline()
-                .fromTo(selector,
-                    { ...from, autoAlpha: 0 },
-                    {
-                        ...to,
-                        autoAlpha: 1,
-                        duration: PROJECT_BUTTON_ENTRY_SECONDS,
-                        ease: 'power2.out',
-                        immediateRender: false
-                    }
-                )
-                .to(selector, {
-                    autoAlpha: 0,
-                    duration: 4,
-                    delay: PROJECT_BUTTON_FADE_DELAY_SECONDS,
-                    ease: 'power2.out'
-                });
-        }
-
-        function controlNextBtn() {
-            return animateProjectControl('.nextBtn',
-                { x: '45%', y: '12%', rotateZ: '6deg' },
-                { x: '0%', y: '0%', rotateZ: '0deg' }
-            );
-        }
-
-        function controlPrevBtn() {
-            return animateProjectControl('.prevBtn',
-                { x: '-45%', y: '12%', rotateZ: '-6deg' },
-                { x: '0%', y: '0%', rotateZ: '0deg' }
-            );
-        }
-
-        function controlDownBtn() {
-            // The entire middle UP / WHOLE / DOWN group enters together.
-            return animateProjectControl('.downBtn',
-                { y: '28%', rotateZ: '0deg' },
-                { y: '0%', rotateZ: '0deg' }
-            );
-        }
-
-        function controlBtnsOff         () {
-            let tl = gsap.timeline();
-        
-            tl.to(".controls", { opacity: 1, duration: 3, ease: "power2.out"})
-                .to(".controls", { opacity: 0, duration: 3, ease: "power2.out" });
-        
-            return tl;
-            };
+        // The controls are now driven by real-time arrival/exit at Projects,
+        // not by the mainTimeline. This prevents them flying across the page.
+        const projectButtonTargets = ['.prevBtn', '.downBtn', '.nextBtn'];
+        gsap.set(projectButtonTargets, {
+            autoAlpha: 0,
+            y: PROJECT_BUTTONS.risePx,
+            pointerEvents: 'none'
+        });
 
         // ScrollTrigger folosește ÎNTREGUL scroll real; reperele sunt cele exportate.
         const mainTimeline = gsap.timeline({
@@ -919,12 +899,8 @@
                 duration: 6,
                 ease: 'power2.out'
             }, gsapTimeAt(1103))
-            // Intrarea începe puțin mai devreme și se termină EXACT la markerul Projects.
-            .add(controlNextBtn(), gsapTimeAt(cameraScrollPoints[2]) - PROJECT_BUTTON_ENTRY_SECONDS)
-            .add(controlPrevBtn(), gsapTimeAt(cameraScrollPoints[2]) - PROJECT_BUTTON_ENTRY_SECONDS)
-            .add(controlDownBtn(), gsapTimeAt(cameraScrollPoints[2]) - PROJECT_BUTTON_ENTRY_SECONDS)
+            // Project controls are timed independently when CAM D is reached.
             .add(infoBarShowOff(), gsapTimeAt(5667))
-            .add(controlBtnsOff(), gsapTimeAt(6219))
             .add(infoBarShowOff(), gsapTimeAt(6881));
 
         // Ancoră invizibilă: durata totală a timeline-ului = 100% din scroll.
@@ -1224,36 +1200,124 @@
         let startAnimation = 20;
         updateheightFactor();
 
-        const changeDescription = () => {
-            const name = info.names[buildingIndex];
-            const about = info.abouts[buildingIndex];
-            const type = info.types[buildingIndex];
-            const style = info.styles[buildingIndex];
-            const scroll = toReferenceScroll();
-          
-            if (scroll >= textScrollPoints.salut && scroll < textScrollPoints.proiect) {
-              dom.infoBar.innerHTML = `
+        // INFO BAR SCENE TRANSITION — only the visual wrapper is offset.
+        // GSAP's existing .infoBar x / opacity animations are intentionally untouched.
+        // The scene transition is scroll-driven and reversible in both directions.
+        const infoBarMotion = {
+            exitEnd: 0.40,      // C -> D: panel has fully disappeared
+            enterStart: 0.60,   // C -> D: panel begins to return
+            travelPercent: 110,
+            textFadeOut: 0.20,  // seconds on Next / Prev
+            textFadeIn: 0.38
+        };
+
+        const infoBarContent = document.createElement('div');
+        infoBarContent.className = 'infobar-content';
+        dom.infoBar.replaceChildren(infoBarContent);
+        let currentInfoKey = null;
+        let textTransitionVersion = 0;
+
+        const smoothInfo = value => {
+            const t = Math.max(0, Math.min(1, value));
+            return t * t * (3 - 2 * t);
+        };
+
+        function infoBarMarkup(key) {
+            if (key === 'intro') return `
                 <div>
                   <h1>Salut!</h1>
                   <h2>Mă numesc <strong>Mihael-Ionuț FURDU</strong></h2>
                   <p>Sunt arhitect cu drept de semnătură și cu această ocazie vă învit să parcurgeți site-ul.</p>
                 </div>`;
-              return;
-            }
-          
-            if (scroll >= textScrollPoints.proiect && scroll < textScrollPoints.gol) {
-              dom.infoBar.innerHTML = `
-                <div>
-                  <h1>${name ?? ""}</h1>
-                  <p>${about ?? ""}</p>
-                </div>`;
-              return;
-            } 
-          
-            dom.infoBar.innerHTML = "";
-          };
 
-        window.addEventListener("scroll", changeDescription);
+            if (key.startsWith('project:')) return `
+                <div>
+                  <h1>${info.names[buildingIndex] ?? ''}</h1>
+                  <p>${info.abouts[buildingIndex] ?? ''}</p>
+                </div>`;
+
+            return '';
+        }
+
+        function updateInfoBarText(key, animateProjectChange = false) {
+            if (currentInfoKey === key) return;
+
+            const previousKey = currentInfoKey;
+            currentInfoKey = key;
+            const version = ++textTransitionVersion;
+            gsap.killTweensOf(infoBarContent);
+
+            const fadeBetweenHouses = animateProjectChange &&
+                previousKey?.startsWith('project:') && key.startsWith('project:');
+
+            if (!fadeBetweenHouses) {
+                infoBarContent.innerHTML = infoBarMarkup(key);
+                gsap.set(infoBarContent, { opacity: 1, y: 0 });
+                return;
+            }
+
+            gsap.to(infoBarContent, {
+                opacity: 0,
+                y: -8,
+                duration: infoBarMotion.textFadeOut,
+                ease: 'power2.in',
+                overwrite: true,
+                onComplete: () => {
+                    if (version !== textTransitionVersion) return;
+                    infoBarContent.innerHTML = infoBarMarkup(key);
+                    gsap.fromTo(infoBarContent,
+                        { opacity: 0, y: 8 },
+                        { opacity: 1, y: 0, duration: infoBarMotion.textFadeIn,
+                          ease: 'power2.out', overwrite: true }
+                    );
+                }
+            });
+        }
+
+        function updateInfoBarScene(scroll) {
+            const from = sceneAnchors.aboutMe;  // CAM C — GUI live value
+            const to = textScrollPoints.proiect; // CAM D / Text: Project — GUI live value
+            const gap = to - from;
+            let offset = 0;
+            let opacity = 1;
+
+            if (gap > 1 && scroll > from && scroll < to) {
+                const progress = (scroll - from) / gap;
+
+                if (progress < infoBarMotion.exitEnd) {
+                    const t = smoothInfo(progress / infoBarMotion.exitEnd);
+                    offset = infoBarMotion.travelPercent * t;
+                    opacity = 1 - t;
+                } else if (progress <= infoBarMotion.enterStart) {
+                    offset = infoBarMotion.travelPercent;
+                    opacity = 0;
+                } else {
+                    const t = smoothInfo((progress - infoBarMotion.enterStart) /
+                        (1 - infoBarMotion.enterStart));
+                    offset = infoBarMotion.travelPercent * (1 - t);
+                    opacity = t;
+                }
+            }
+
+            // CSS 'translate' and 'filter' are independent of GSAP 'transform' / 'opacity'.
+            dom.infoBar.style.setProperty('--infobar-scene-x', `${offset.toFixed(3)}%`);
+            dom.infoBar.style.setProperty('--infobar-scene-alpha', opacity.toFixed(4));
+        }
+
+        function changeDescription(options = {}) {
+            const scroll = toReferenceScroll();
+            const midTransition = (sceneAnchors.aboutMe + textScrollPoints.proiect) / 2;
+            let key = 'empty';
+
+            if (scroll >= textScrollPoints.salut && scroll < textScrollPoints.gol) {
+                key = scroll < midTransition ? 'intro' : `project:${buildingIndex}`;
+            }
+
+            updateInfoBarScene(scroll);
+            updateInfoBarText(key, options?.animate === true);
+        }
+
+        window.addEventListener('scroll', changeDescription, { passive: true });
 
         // TEMPORARY UNIFIED SCROLL EDITOR — same layout and markers as v3 (CAM 0).
         // It edits the underlying live camera points, text thresholds and GSAP tweens.
@@ -1267,7 +1331,7 @@
                 cameraAnimationStart,
                 sceneAnchors,
                 textScrollPoints,
-                projectButtonEntrySeconds: PROJECT_BUTTON_ENTRY_SECONDS,
+                projectButtonTiming: PROJECT_BUTTONS,
                 onTextChange: changeDescription,
                 referenceScroll: REFERENCE_SCROLL
             });
@@ -1315,18 +1379,21 @@
         })});
 
 
-    /* SCENE SCROLL RESISTANCE — Navigation scene anchors
-       Applies only to user wheel/trackpad input. No changes to GSAP timings,
-       camera keyframes, text triggers or navigation button destinations.
-       Resistance gently fades in and out across each anchor zone.
+    /* SCENE SCROLL RESISTANCE — About Me and Projects ONLY
+       Same anchors as the navigation buttons and the unified GUI.
+       No jump-to-anchor or forced lock: glide and continued wheel input stay responsive.
+       The two nearby anchors are handled as one slow cinematic passage.
     */
     const sceneScrollFeel = {
-        zoneHeightInViewports: 0.35,
-        speedAtAnchor: 0.09,
-        exponentialStrength: 2.5,
-        snapPx: 18,
-        holdMs: 1800,
-        glide: 0.14
+        zoneHeightInViewports: 0.18, // outside braking zone (also limited by C-D distance)
+        speedAtAnchor: 0.20,        // slow, but never nearly frozen at either marker
+        betweenStopsMaxGain: 0.78, // sufficient speed through the short C-D corridor
+        exponentialStrength: 1.8,
+        snapPx: 12,                // capture each point without an instant scroll jump
+        aboutMeDwellMs: 420,       // readable pause at the portrait
+        projectsDwellMs: 180,      // shorter accent at the 3D project
+        glide: 0.22,               // responsive but still smooth physical scroll
+        maxGlideSpeedPxPerSecond: 1350 // prevents abrupt large leaps
     };
 
     const scrollClamp = (value, min, max) => Math.min(max, Math.max(min, value));
@@ -1335,7 +1402,7 @@
         return t * t * (3 - 2 * t);
     };
 
-    // EXACTLY two magnetic anchors, shared with nav and with GUI.
+    // Positions live in reference scroll units; GUI editing updates these variables.
     function getSceneStops() {
         const limit = getMaxScroll();
         return [sceneAnchors.aboutMe, cameraScrollPoints[2]]
@@ -1344,16 +1411,22 @@
 
     function getScrollGain(atY, stops, radius) {
         if (!stops.length) return 1;
+
+        // The anchors are only ~157 reference px apart: avoid a sudden speed spike
+        // at the midpoint. This eased corridor never exceeds betweenStopsMaxGain.
+        if (stops.length === 2) {
+            const first = Math.min(stops[0], stops[1]);
+            const second = Math.max(stops[0], stops[1]);
+            if (second > first && atY >= first && atY <= second) {
+                const distanceToEdge = Math.min(atY - first, second - atY);
+                const progress = smoothFade(distanceToEdge / ((second - first) / 2));
+                return sceneScrollFeel.speedAtAnchor +
+                    (sceneScrollFeel.betweenStopsMaxGain - sceneScrollFeel.speedAtAnchor) * progress;
+            }
+        }
+
         const nearest = Math.min(...stops.map(stop => Math.abs(stop - atY)));
-
-        // When About Me and Projects are close together (157 reference px),
-        // avoid making the entire interval one very slow overlapping magnetic zone.
-        const betweenTwoStops = stops.length === 2 && atY > stops[0] && atY < stops[1];
-        const effectiveRadius = betweenTwoStops
-            ? Math.min(radius, (stops[1] - stops[0]) / 2)
-            : radius;
-
-        const t = smoothFade(nearest / Math.max(1, effectiveRadius));
+        const t = smoothFade(nearest / radius);
         const k = sceneScrollFeel.exponentialStrength;
         const exponential = (Math.exp(k * t) - 1) / (Math.exp(k) - 1);
         return sceneScrollFeel.speedAtAnchor +
@@ -1363,21 +1436,100 @@
     let sceneWheelTarget = window.scrollY;
     let sceneWheelFrame = null;
     let sceneWheelAnimating = false;
-    let magneticHoldUntil = 0;
+    let lastWheelGlideFrameAt = null;
     const completedMagneticStops = new Set();
+    let magneticDwellUntil = 0;
+
+    // CAM D controls have their own timed choreography and a short, deliberate
+    // scroll gate. We don't alter the camera path or the magnetic stop positions.
+    const projectsButtonsGate = {
+        phase: 'idle', // idle -> approaching -> waiting -> entering -> shown -> exiting -> released
+        timer: null,
+        visibleAt: 0
+    };
+
+    function hideProjectsButtonsInstantly() {
+        clearTimeout(projectsButtonsGate.timer);
+        projectsButtonsGate.timer = null;
+        gsap.killTweensOf(projectButtonTargets);
+        gsap.set(projectButtonTargets, {
+            autoAlpha: 0,
+            y: PROJECT_BUTTONS.risePx,
+            pointerEvents: 'none'
+        });
+        projectsButtonsGate.phase = 'idle';
+        projectsButtonsGate.visibleAt = 0;
+    }
+
+    function beginProjectsButtonsSequence() {
+        if (projectsButtonsGate.phase !== 'approaching' &&
+            projectsButtonsGate.phase !== 'idle') return;
+
+        projectsButtonsGate.phase = 'waiting';
+        // The 2-second delay starts only AFTER the real scroll reaches CAM D.
+        projectsButtonsGate.timer = setTimeout(() => {
+            if (projectsButtonsGate.phase !== 'waiting') return;
+            projectsButtonsGate.phase = 'entering';
+            gsap.to(projectButtonTargets, {
+                autoAlpha: 1,
+                y: 0,
+                duration: PROJECT_BUTTONS.enterSeconds,
+                stagger: 0.075,
+                ease: 'power2.out',
+                overwrite: 'auto',
+                onComplete() {
+                    if (projectsButtonsGate.phase !== 'entering') return;
+                    gsap.set(projectButtonTargets, { pointerEvents: 'auto' });
+                    projectsButtonsGate.phase = 'shown';
+                    projectsButtonsGate.visibleAt = performance.now();
+                }
+            });
+        }, PROJECT_BUTTONS.waitMs);
+    }
+
+    function leaveProjectsAfterFade(wheelDirection, wheelDelta) {
+        if (projectsButtonsGate.phase !== 'shown') return;
+        projectsButtonsGate.phase = 'exiting';
+        gsap.set(projectButtonTargets, { pointerEvents: 'none' });
+        gsap.to(projectButtonTargets, {
+            autoAlpha: 0,
+            y: PROJECT_BUTTONS.risePx,
+            duration: PROJECT_BUTTONS.exitSeconds,
+            stagger: 0.045,
+            ease: 'power2.inOut',
+            overwrite: 'auto',
+            onComplete() {
+                if (projectsButtonsGate.phase !== 'exiting') return;
+                projectsButtonsGate.phase = 'released';
+                magneticDwellUntil = 0;
+                // Keep the old magnet disarmed until we have actually left it.
+                const projectStop = getSceneStops()[1];
+                completedMagneticStops.add(projectStop);
+                const distance = Math.max(35, Math.min(80, wheelDelta * 0.32));
+                sceneWheelTarget = scrollClamp(
+                    projectStop + wheelDirection * distance, 0, getMaxScroll()
+                );
+                ensureSceneWheelGlide();
+            }
+        });
+    }
 
     function stopSceneWheelGlide() {
         if (sceneWheelFrame !== null) cancelAnimationFrame(sceneWheelFrame);
-
         sceneWheelFrame = null;
         sceneWheelAnimating = false;
+        lastWheelGlideFrameAt = null;
         sceneWheelTarget = window.scrollY;
-
-        magneticHoldUntil = 0;
         completedMagneticStops.clear();
+        magneticDwellUntil = 0;
+        hideProjectsButtonsInstantly();
     }
 
-    function sceneWheelGlide() {
+    function sceneWheelGlide(frameTime) {
+        const dt = lastWheelGlideFrameAt === null
+            ? 1 / 60
+            : Math.min(0.05, Math.max(0.001, (frameTime - lastWheelGlideFrameAt) / 1000));
+        lastWheelGlideFrameAt = frameTime;
         const current = window.scrollY;
         const difference = sceneWheelTarget - current;
 
@@ -1385,13 +1537,25 @@
             window.scrollTo({ top: sceneWheelTarget, behavior: 'instant' });
             sceneWheelAnimating = false;
             sceneWheelFrame = null;
+            lastWheelGlideFrameAt = null;
+
+            if (projectsButtonsGate.phase === 'approaching' &&
+                Math.abs(window.scrollY - getSceneStops()[1]) <= 20) {
+                beginProjectsButtonsSequence();
+            }
             return;
         }
 
-        window.scrollTo({
-            top: current + difference * sceneScrollFeel.glide,
-            behavior: 'instant'
-        });
+        const alpha = 1 - Math.pow(1 - sceneScrollFeel.glide, dt * 60);
+        const maxStep = sceneScrollFeel.maxGlideSpeedPxPerSecond * dt;
+        const step = scrollClamp(difference * alpha, -maxStep, maxStep);
+        window.scrollTo({ top: current + step, behavior: 'instant' });
+        sceneWheelFrame = requestAnimationFrame(sceneWheelGlide);
+    }
+
+    function ensureSceneWheelGlide() {
+        if (sceneWheelAnimating) return;
+        sceneWheelAnimating = true;
         sceneWheelFrame = requestAnimationFrame(sceneWheelGlide);
     }
 
@@ -1406,17 +1570,32 @@
         return false;
     }
 
- 
-    // Manual scrollbar dragging, keyboard navigation and nav button clicks
-    // interrupt the glide; these navigation methods retain their native behavior.
-    window.addEventListener('pointerdown', stopSceneWheelGlide, { passive: true });
+    // Manual scrollbar, keyboard and navigation clicks interrupt the magnetic effect.
+    window.addEventListener('pointerdown', event => {
+        if (event.target instanceof Element && event.target.closest('#controls')) return;
+        stopSceneWheelGlide();
+    }, { passive: true });
     window.addEventListener('keydown', stopSceneWheelGlide, { passive: true });
     window.addEventListener('scroll', () => {
         if (!sceneWheelAnimating) sceneWheelTarget = window.scrollY;
+
+        const projectStop = getSceneStops()[1];
+          if (
+            (projectsButtonsGate.phase === 'idle' &&
+            Math.abs(window.scrollY - projectStop) <= 2) ||
+            (projectsButtonsGate.phase === 'approaching' &&
+            Math.abs(window.scrollY - projectStop) <= 20)
+            ) {
+            // Also handles jumping to Projects via the navigation button / GUI.
+            projectsButtonsGate.phase = 'approaching';
+            beginProjectsButtonsSequence();
+        }
+        if (projectsButtonsGate.phase === 'released' &&
+            Math.abs(window.scrollY - projectStop) > 75) {
+            projectsButtonsGate.phase = 'idle';
+        }
     }, { passive: true });
 
-    // Exponential resistance, fixed stop, hold and equally smooth release.
-    // Other inputs (GUI, buttons, keyboard, native scrollable content) remain native.
     window.addEventListener('wheel', event => {
         if (event.defaultPrevented || event.ctrlKey || event.metaKey ||
             Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
@@ -1430,22 +1609,43 @@
             (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? window.innerHeight : 1);
         if (!inputDelta) return;
         event.preventDefault();
-        if (performance.now() < magneticHoldUntil) return;
+
+        // Keep CAM D stationary while the buttons wait, rise and sink.
+        // The next meaningful wheel impulse exits only after the reveal.
+        const gate = projectsButtonsGate;
+        if (gate.phase === 'approaching' || gate.phase === 'waiting' ||
+            gate.phase === 'entering' || gate.phase === 'exiting') return;
+        if (gate.phase === 'shown') {
+            if (performance.now() - gate.visibleAt >= PROJECT_BUTTONS.minVisibleMs) {
+                leaveProjectsAfterFade(Math.sign(inputDelta), Math.abs(inputDelta));
+            }
+            return;
+        }
+
+        // Brief, bounded dwell after C/D capture. Unlike the old pendingSceneStop,
+        // this timer does NOT wait for a glide to settle before it can expire.
+        if (performance.now() < magneticDwellUntil) return;
 
         if (!sceneWheelAnimating) sceneWheelTarget = window.scrollY;
-
         const direction = Math.sign(inputDelta);
         const scrollLimit = getMaxScroll();
         const sceneStops = getSceneStops();
-        const radius = Math.max(140, window.innerHeight * sceneScrollFeel.zoneHeightInViewports);
+        // C and D are only ~157 reference pixels apart: large overlapping slowdown
+        // zones made D feel sticky and C easy to skip. Keep the two zones separate.
+        const gap = Math.abs(sceneStops[1] - sceneStops[0]);
+        const radius = Math.max(24, Math.min(
+            window.innerHeight * sceneScrollFeel.zoneHeightInViewports,
+            gap / 2
+        ));
 
-        // With stops only 157px apart, re-arm after crossing their midpoint,
-        // so navigating back from Projects can trigger About Me again.
+        // Re-enable a visited stop after passing the midpoint, so reversing works.
         const rearmDistance = sceneStops.length === 2
             ? Math.min(radius, Math.abs(sceneStops[1] - sceneStops[0]) / 2)
             : radius;
         for (const stop of completedMagneticStops) {
-            if (Math.abs(sceneWheelTarget - stop) > rearmDistance) completedMagneticStops.delete(stop);
+            if (Math.abs(sceneWheelTarget - stop) > rearmDistance) {
+                completedMagneticStops.delete(stop);
+            }
         }
         const activeStops = sceneStops.filter(stop =>
             stop > 0 && stop < scrollLimit && !completedMagneticStops.has(stop)
@@ -1465,29 +1665,30 @@
             );
 
             if (stop !== undefined) {
-                if (sceneWheelFrame !== null) cancelAnimationFrame(sceneWheelFrame);
-                sceneWheelFrame = null;
-                sceneWheelAnimating = false;
+                // No window.scrollTo(stop) here: that caused the visual jump.
                 sceneWheelTarget = stop;
-                window.scrollTo({ top: stop, behavior: 'instant' });
+                // Capture once, then give each scene a short, predictable dwell.
+                // The stop is not instantly applied to window.scrollY: glide stays smooth.
                 completedMagneticStops.add(stop);
-                magneticHoldUntil = performance.now() + sceneScrollFeel.holdMs;
+                if (Math.abs(stop - sceneStops[1]) < 0.5) {
+                    // Wait for the *actual* glide to arrive before the 2s countdown.
+                    projectsButtonsGate.phase = 'approaching';
+                    magneticDwellUntil = 0;
+                } else {
+                    magneticDwellUntil = performance.now() + sceneScrollFeel.aboutMeDwellMs;
+                }
+                ensureSceneWheelGlide();
                 return;
             }
+
             sceneWheelTarget = next;
             remaining -= step;
         }
-
-        if (!sceneWheelAnimating) {
-            sceneWheelAnimating = true;
-            sceneWheelFrame = requestAnimationFrame(sceneWheelGlide);
-        }
+        ensureSceneWheelGlide();
     }, { passive: false });
 
 
 
-
-    
     /* TESTING */
 
     /* COMMITS */
@@ -1514,36 +1715,47 @@
         };
         animate()
 
-    //SCROLL ANIMATION
+    // SCROLL IDLE ANIMATION — hide on any click/touch, then wait for inactivity.
+    const scrollCue = document.querySelector('.scroll-indicator');
+    if (scrollCue) {
+        let lastScrollY = window.scrollY;
+        let pointerDown = false;
+        let cueTimer = null;
 
-      const scrollCue = document.querySelector(".scroll-indicator");
-        if (scrollCue) {
-            let lastScrollY = window.scrollY;
+        const hideCue = () => {
+            scrollCue.classList.remove('is-visible');
+            clearTimeout(cueTimer);
+        };
+        const scheduleCue = (delay = 10000) => {
+            clearTimeout(cueTimer);
+            if (pointerDown) return;
+            cueTimer = setTimeout(() => {
+                const maxScroll = getMaxScroll();
+                if (!pointerDown && window.scrollY < maxScroll - 50) {
+                    scrollCue.classList.add('is-visible');
+                }
+            }, delay);
+        };
+        scheduleCue(15000);
 
-            // First appearance after 15 seconds
-            let cueTimer = setTimeout(() => {
-                scrollCue.classList.add("is-visible");
-            }, 15000);
+        window.addEventListener('scroll', () => {
+            const currentY = window.scrollY;
+            const scrollingUp = currentY < lastScrollY;
+            hideCue();
+            scheduleCue(scrollingUp && currentY < 120 ? 1000 : 10000);
+            lastScrollY = currentY;
+        }, { passive: true });
 
-            window.addEventListener("scroll", () => {
-                const currentY = window.scrollY;
-                const scrollingUp = currentY < lastScrollY;
-
-                // Fade out when scrolling
-                scrollCue.classList.remove("is-visible");
-                clearTimeout(cueTimer);
-
-                // Reappear after inactivity, or sooner when returning to top
-                const delay = scrollingUp && currentY < 120 ? 1000 : 10000;
-
-                cueTimer = setTimeout(() => {
-                    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-
-                    if (window.scrollY < maxScroll - 50) {
-                        scrollCue.classList.add("is-visible");
-                    }
-                }, delay);
-
-                lastScrollY = currentY;
-            }, { passive: true });
-        }  
+        window.addEventListener('pointerdown', () => {
+            pointerDown = true;
+            hideCue();
+        }, { passive: true });
+        const endInteraction = () => {
+            if (!pointerDown) return;
+            pointerDown = false;
+            hideCue();
+            scheduleCue(10000);
+        };
+        window.addEventListener('pointerup', endInteraction, { passive: true });
+        window.addEventListener('pointercancel', endInteraction, { passive: true });
+    }

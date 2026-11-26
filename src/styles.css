@@ -48,6 +48,9 @@
     --shadow-color: #949CBF;
     --first-color: #c85356;
     --text-on-glass: #ffffff;
+    
+    --infobar-title-color: #ffffff;
+    --infobar-text-color: rgba(255, 255, 255, 0.85);
 
     /* GLASS PANEL MATERIAL — shared by normal and masked glass. */
     --glass-gradient: linear-gradient(145deg,
@@ -481,6 +484,11 @@ svg {
     interpolate-size: allow-keywords;
     transition: height 0.5s ease, opacity 0.4s ease;
 
+    translate: var(--infobar-scene-x, 0%) 0;
+    filter: opacity(var(--infobar-scene-alpha, 1));
+
+
+    
     position: absolute;
     right: 0%;
     transform: translateX(105%);
@@ -492,6 +500,15 @@ svg {
     align-items: center;
     align-content: space-between;
 }
+
+/* INFO BAR — CONTENT FADE */
+.infoBar > .infobar-content {
+    width: 100%;
+    min-width: 0;
+    will-change: opacity, transform;
+}
+
+
 
 .infoBar h1 {
     font-weight: 1000;
@@ -1586,6 +1603,21 @@ div[class^="geometry"] {
         display: none;
     }
 }
+
+
+    .infoBar {
+        color: var(--infobar-text-color);
+    }
+
+    .infoBar h1 {
+        color: var(--infobar-title-color);
+    }
+
+    .infoBar h2,
+    .infoBar h3,
+    .infoBar p {
+        color: var(--infobar-text-color);
+    }
 
 
 /* =====================================================================
