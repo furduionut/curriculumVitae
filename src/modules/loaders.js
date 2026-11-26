@@ -351,86 +351,187 @@
             currentBuilding.position.set(0, 0, 0);
             currentBuilding.scale.set(scale, scale, scale);
         
-            let neighborTimeline = gsap.timeline({
-                scrollTrigger: {
-                    trigger: '.main',
-                    start: `10% 25%`,
-                    end: `${distToPage} 25%`,
-                    scrub: 1,
-                    markers: false
-                }
-            });
-        
-            currentBuilding.traverse((child) => {
+            // Architectural scene motion: coordinates use the same reference
+            // scroll (0..8413) as the CAM C / CAM D positions in scripts.js.
+            const DESK_START_PX = 1600;
+            const DESK_END_PX = 1870;
+            const BUILDINGS_START_PX = 1837;
+            const BUILDINGS_END_PX = 1900;
+            const PORTRAIT_FADE_IN_START_PX = 650;
+            const PORTRAIT_FADE_IN_END_PX = 1300;
+            const PORTRAIT_FADE_OUT_START_PX = 1837;
+            const PORTRAIT_HIDE_PX = 1921;
+            const REFERENCE_SCROLL_PX = 8413;
 
+            const sceneMaxScroll = () => Math.max(1,
+                (document.scrollingElement || document.documentElement).scrollHeight - window.innerHeight
+            );
+            const sceneRefScroll = () => window.scrollY / sceneMaxScroll() * REFERENCE_SCROLL_PX;
+
+            function sceneScrollTimeline(startPx, endPx, scrubSeconds = 0.75) {
+                return gsap.timeline({
+                    scrollTrigger: {
+                        trigger: '.main',
+                        start: () => sceneMaxScroll() * startPx / REFERENCE_SCROLL_PX,
+                        end: () => sceneMaxScroll() * endPx / REFERENCE_SCROLL_PX,
+                        // Numeric scrub smooths out large wheel steps. Scrub:true
+                        // followed the wheel instantly, causing the sudden popping.
+                        scrub: scrubSeconds,
+                        invalidateOnRefresh: true,
+                        markers: false
+                    }
+                });
+            }
+
+            const deskTimeline = sceneScrollTimeline(DESK_START_PX, DESK_END_PX, 0.75);
+            const buildingsTimeline = sceneScrollTimeline(BUILDINGS_START_PX, BUILDINGS_END_PX, 0.90);
+            // The portrait needs exact scroll positioning so it is fully hidden
+            // at CAM D. Its fade-in and fade-out share ONE timeline/material.
+            const portraitTimeline = sceneScrollTimeline(0, PORTRAIT_HIDE_PX, true);
+
+            // Keep the glass setting from the previous version, only for context
+            // buildings (never change the main project or the desk material).
+            function createNeighborGlass() {
+                const glass = material.model.clone();
+                glass.color.setHex(0xd0caff);
+                glass.metalness = 0.03;
+                glass.roughness = 0.045;
+                glass.transmission = 0.95;
+                glass.thickness = 0.65;
+                glass.ior = 1.48;
+                glass.envMapIntensity = 3.0;
+                glass.clearcoat = 0.35;
+                glass.clearcoatRoughness = 0.05;
+                glass.transparent = true;
+                glass.depthWrite = false;
+                glass.opacity = 0;
+                glass.needsUpdate = true;
+                return glass;
+            }
+
+            const portraitMeshes = [];
+            let buildingIndex = 0;
+
+            currentBuilding.traverse((child) => {
                 if (!child.isMesh) return;
-        
-                const originalX = child.position.x;
                 const originalY = child.position.y;
                 const originalZ = child.position.z;
 
+                // Retain original visibility setup for nonanimated scene meshes.
                 child.material.transparent = true;
                 child.material.opacity = 0;
 
                 if (child.name.includes('pictureFrame')) {
-                    // child.material = materials.support;
+                    // The human image: keep the original position and scale,
+                    // but make it vanish smoothly as CAM D (1921) approaches.
+                    // Clone its material so no other mesh can affect its opacity.
+                    child.material = child.material.clone();
                     child.material.transparent = true;
                     child.material.opacity = 0;
                     child.position.y = originalY + 6.5;
-                    child.scale.set(.55,.55,.55);
+                    child.scale.set(0.55, 0.55, 0.55);
+                    portraitMeshes.push(child);
 
-                    neighborTimeline
-                        .to(child.material, {opacity: 1, duration: 5, ease: "power2.out"}, 1)
-                        .to(child.material, {opacity: 0, duration: 8, delay: 2, ease: "power2.out"}, 4);
+                    const fadeInStart = PORTRAIT_FADE_IN_START_PX / PORTRAIT_HIDE_PX;
+                    const fadeInDuration = (PORTRAIT_FADE_IN_END_PX - PORTRAIT_FADE_IN_START_PX) / PORTRAIT_HIDE_PX;
+                    const fadeOutStart = PORTRAIT_FADE_OUT_START_PX / PORTRAIT_HIDE_PX;
+                    const fadeOutDuration = (PORTRAIT_HIDE_PX - PORTRAIT_FADE_OUT_START_PX) / PORTRAIT_HIDE_PX;
+
+                    portraitTimeline.fromTo(child.material,
+                        { opacity: 0 },
+                        { opacity: 1, duration: fadeInDuration, ease: 'sine.out', immediateRender: false },
+                        fadeInStart
+                    );
+                    portraitTimeline.to(child.material,
+                        { opacity: 0, duration: fadeOutDuration, ease: 'sine.inOut' },
+                        fadeOutStart
+                    );
                     return;
-                };
+                }
 
                 if (child.name.includes('greetingBox')) {
-
-                    child.material          = material.model;
-
+                    child.material = material.model;
                     return;
-                };
-                
+                }
+
                 if (child.name.includes('desk')) {
-                    const startPosition = originalZ + 200;
-                    child.material      = material.desk;
-
-                    child.position.z = startPosition;
-                
-                    neighborTimeline
-                        .to(child.position, {z: originalZ, duration: 10, ease: "power3.out"}, 2.5);
-                
+                    // Same +200 Z travel as the original: soften start and end.
+                    child.material = material.desk;
+                    child.position.z = originalZ + 200;
+                    deskTimeline.to(child.position, {
+                        z: originalZ,
+                        duration: 1,
+                        ease: 'sine.inOut'
+                    }, 0);
                     return;
-                };
+                }
 
-                if (child.name.includes('neighboar_012') || child.name.includes('neighboar_013')){
-                    child.material = materials.model;
-                    child.material.transparent = true;
+                if (child.name.includes('neighboar_012') || child.name.includes('neighboar_013')) {
+                    child.material = createNeighborGlass();
                     child.material.opacity = 1;
-                    child.material.depthWrite = true;
-                    
-                    neighborTimeline.to(child.material, {opacity: 0,        duration: 2,     ease: "power2.out",      }, 9.5);
+                    deskTimeline.to(child.material, {
+                        opacity: 0,
+                        duration: 1,
+                        ease: 'sine.inOut'
+                    }, 0);
                     return;
-                };
+                }
 
                 if (child.name.includes('neighboar')) {
-                    const belowY = originalY - (Math.random() * 2 + 1);
+                    const finalScale = child.scale.clone();
+                    child.material = createNeighborGlass();
 
-                    child.scale.set(0,0,0);
-                    child.material          = material.model;
-                    child.position.y        = belowY;
-                    
-                    neighborTimeline.to(child.scale,    {x: 1, y: 1, z:1,   duration: 4, delay: -2,       ease: "back.out(1.7)",   }, 8.25);
-                    neighborTimeline.to(child.material, {opacity: 1,        duration: 4, delay: -3,        ease: "power2.out",      }, 8.25);
-                    neighborTimeline.to(child.position, {y: originalY,      duration: 4, delay: -2,      ease: "bounce.out",      }, 8.25);
-                        
+                    // Avoid scale=0 and random vertical offsets: both made the
+                    // short 1837..1900 range look jumpy on quick scrolling.
+                    child.scale.set(
+                        finalScale.x * 0.72,
+                        finalScale.y * 0.72,
+                        finalScale.z * 0.72
+                    );
+                    child.position.y = originalY - 1.2;
+
+                    // A small stagger still gives individual buildings character;
+                    // all tweens reach their endpoint at reference scroll 1900.
+                    const popStart = Math.min(0.12, buildingIndex++ * 0.015);
+                    const popDuration = 1 - popStart;
+                    buildingsTimeline.to(child.scale, {
+                        x: finalScale.x, y: finalScale.y, z: finalScale.z,
+                        duration: popDuration,
+                        ease: 'sine.inOut'
+                    }, popStart);
+                    buildingsTimeline.to(child.position, {
+                        y: originalY,
+                        duration: popDuration,
+                        ease: 'sine.inOut'
+                    }, popStart);
+                    buildingsTimeline.to(child.material, {
+                        opacity: 1,
+                        duration: popDuration,
+                        ease: 'sine.inOut'
+                    }, popStart);
                     return;
-                };
-
+                }
             });
-        
+
             scene.add(currentBuilding);
+
+            // Hard boundary at 1921: the human image cannot remain visible
+            // after direct navigation or a very fast scroll. Scrolling back
+            // makes it visible again and the same timeline plays in reverse.
+            if (portraitMeshes.length) {
+                const updatePortraitAtCamD = () => {
+                    const show = sceneRefScroll() < PORTRAIT_HIDE_PX;
+                    portraitMeshes.forEach(mesh => { mesh.visible = show; });
+                };
+                window.addEventListener('scroll', updatePortraitAtCamD, { passive: true });
+                updatePortraitAtCamD();
+            }
+
+            // Model loading is asynchronous: sync with the current scroll once
+            // the mesh exists, including when a page opens mid-animation.
+            deskTimeline.scrollTrigger?.refresh();
+            buildingsTimeline.scrollTrigger?.refresh();
+            portraitTimeline.scrollTrigger?.refresh();
         });
         };
     

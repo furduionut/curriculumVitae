@@ -1,4 +1,7 @@
-function addContourLines(model) {
+
+import * as THREE from "three";
+
+export function addContourLines(model) {
     const meshes = [];
 
     model.traverse((child) => {

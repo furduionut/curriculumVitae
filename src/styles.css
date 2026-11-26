@@ -59,7 +59,7 @@
         rgba(255, 255, 255, 0.06) 80%,
         rgba(255, 255, 255, 0.18) 100%);
     --glass-blur: 12px;
-    --glass-saturation: 150%;
+    --glass-saturation: 170%;
     --glass-border: rgba(255, 255, 255, 0.45);
     --glass-edge-highlight: rgba(255, 255, 255, 0.75);
     --glass-shadow-color: rgba(70, 91, 123, 0.29);
@@ -76,9 +76,9 @@
     --symbol-edge-offset: 1.7px;
     --symbol-edge-gradient: linear-gradient(145deg,
         rgba(255, 255, 255, 0.90) 0%,
-        rgba(255, 255, 255, 0.25) 45%,
+        rgba(255, 255, 255, 0.25) 35%,
         rgba(130, 150, 200, 0.45) 65%,
-        rgba(65, 85, 145, 0.55) 100%);
+        rgba(65, 85, 145, 0.55) 70%);
     --symbol-shadow: rgba(35, 45, 90, 0.58);
     --contact-symbol-fill: rgba(190, 205, 240, 0.65);
 
