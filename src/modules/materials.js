@@ -1,10 +1,16 @@
 import * as THREE from "three";
+import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
 import { liquidGlassBackdropUniforms } from "./liquidGlass.js";
 import { styles } from "./styles.js"; // Retained from the original module.
 
 // The main logo palette. One hex change here updates all matching roles.
 const logoPurple = new THREE.Color(0x8e93f8);
 const logoWhite = new THREE.Color(0xffffff);
+const sectionPlaneColor = new THREE.Color(0xc85356);
+const terrainLineColor = new THREE.Color(0xffffff);
+
+
+
 
 // Individual names let you customize each visual role later if you want.
 export const logoColors = {
@@ -61,6 +67,22 @@ const papper = new THREE.MeshStandardMaterial({
     roughness: 1,
     envMapIntensity: 0.5,
 });
+
+
+// Architectural section planes
+const sectionPlane = new THREE.MeshBasicMaterial({
+    color: sectionPlaneColor,
+    side: THREE.DoubleSide,
+    toneMapped: false,
+    // Depth bias keeps coplanar surfaces from flickering, including vertical cuts.
+    polygonOffset: true,
+    polygonOffsetFactor: -1,
+    polygonOffsetUnits: -1,
+});
+
+
+
+
 
 const glass = new THREE.MeshPhysicalMaterial({
     color: "white",
@@ -336,9 +358,9 @@ const lampBeam = new THREE.ShaderMaterial({
             uBeamColor:        { value: new THREE.Color(0xfff1e0) },
             uBeamPower:        { value: 0 },
             uBeamOpacity:      { value: 0.35 },
-            uBeamIntensity:    { value: 1.8 },
-            uBeamFalloff:      { value: 1.6 },
-            uBeamEdgeSoftness: { value: 0.95 },
+            uBeamIntensity:    { value: 1.7 },
+            uBeamFalloff:      { value: 1.9 },
+            uBeamEdgeSoftness: { value: 1.25 },
     },
     vertexShader: `
         attribute float lampBeamT;
@@ -402,7 +424,7 @@ export const materials = {
     glassEmmisive,
     logoBulbGlow,
     logoSegmentGlow,
-
+    sectionPlane,
 };
 
 // ARCHITECTURAL CONTEXT MATERIALS
@@ -411,11 +433,15 @@ export const materials = {
 export const contextAppearance = {
     neighbours: blurredGlassSettings,
     terrainLines: {
-        color: 0x45536b,
-        dashSize: 3.5,            // local GLB units; GLB root is scaled by 0.1
-        gapSize: 2.0,
-        opacity: 0.85,
-        scale: 1
+        color: terrainLineColor,
+        linewidth: 1.8,          // CSS pixels; independent of camera zoom
+        dashSize: 1,            // local GLB units; GLB root is scaled by 0.1
+        gapSize: 1,
+        opacity: 0.95,
+        scale: 1,
+        revealDuration: 4,    // seconds, centre to both ends
+        revealFeather: 0.10,     // fraction of half the path length
+        revealResetAfter: 0.5   // seconds out of view before replay
     }
 };
 
@@ -424,14 +450,25 @@ export function createContextBuildingMaterial() {
     return materials.blurredGlass.clone();
 }
 
-export function createContextLineMaterial() {
-    return new THREE.LineDashedMaterial({
-        ...contextAppearance.terrainLines,
+export function createContextLineMaterial(initialOpacity = 0) {
+    const { color, linewidth, dashSize, gapSize, scale } = contextAppearance.terrainLines;
+    const lineMaterial = new LineMaterial({
+        color,
+        linewidth,
+        worldUnits: false,
+        dashed: true,
+        dashSize,
+        gapSize,
+        dashScale: scale,
         transparent: true,
-        opacity: 0,
+        opacity: initialOpacity, // context manager retains control of the fade
         depthTest: true,
-        depthWrite: false
+        depthWrite: false,
+        toneMapped: false,
+        alphaToCoverage: false
     });
+    lineMaterial.userData.terrainNoBloom = true;
+    return lineMaterial;
 }
 
 /* =====================================================

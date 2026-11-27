@@ -710,6 +710,49 @@
         }
     }
 
+    // Section surfaces: small upward displacement in world-space units.
+    const SECTION_PLANE_Y_OFFSET = 0.001;
+
+    function applyProjectMaterials(root, material) {
+        root.updateWorldMatrix(true, true);
+        const sectionMeshes = [];
+
+        root.traverse(child => {
+            if (!child.isMesh) return;
+
+            // Match section, sectionPlane, and any case or suffix variation.
+            // Named parent groups are included, but not the project root.
+            let object = child;
+            let isSection = false;
+            while (object && object !== root) {
+                if (object.name.toLowerCase().includes('section')) {
+                    isSection = true;
+                    break;
+                }
+                object = object.parent;
+            }
+
+            child.material = isSection ? materials.sectionPlane : material;
+
+            if (isSection) {
+                // Record positions before moving anything, so nested meshes
+                // never inherit the offset twice from a selected parent mesh.
+                const target = child.getWorldPosition(new THREE.Vector3());
+                target.y += SECTION_PLANE_Y_OFFSET;
+                sectionMeshes.push({ child, target });
+            }
+        });
+
+        // Traversal order is parent-first. Convert the desired world position
+        // to the current parent's local space, respecting GLB scale/rotation.
+        for (const { child, target } of sectionMeshes) {
+            child.position.copy(child.parent.worldToLocal(target));
+            child.updateMatrix();
+            child.updateWorldMatrix(false, false);
+        }
+        root.updateWorldMatrix(true, true);
+    }
+
     // HOUSE MODEL ONLY: never remove pageLayout, other contexts or scene lights.
     // Shared projectLoadVersion ignores stale GLB responses after rapid clicks.
     function loadSelectedProject(scene, assetPath, material, isVariant) {
@@ -722,9 +765,7 @@
             root.position.set(-5, 0, -10); // original -50 * .1, 0, -100 * .1
             root.scale.setScalar(0.1);
             alignCasaClim(root, assetPath, isVariant);
-            root.traverse(child => {
-                if (child.isMesh) child.material = material;
-            });
+            applyProjectMaterials(root, material);
 
             // Replace only the previous main house; leave context and common scene intact.
             if (currentBuilding) scene.remove(currentBuilding);

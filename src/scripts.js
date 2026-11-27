@@ -38,6 +38,7 @@
         import { setLampBeamProjectActive } from './modules/lampLight.js';
         import { updateGlassCutouts } from "./modules/styles.js";
         import { installUnifiedScrollTimelineEditor } from "./scroll-timeline-editor.js";
+        import { createExperienceTransition } from './modules/experienceTransition.js';
     /* PRELOAD */
 
 
@@ -93,7 +94,7 @@
         // PROJECT BUTTONS — real-time fade, activated by reference scroll position.
         // Independent of the scrubbed GSAP timeline so they can appear during CAM D hold.
         const PROJECT_BUTTON_START_PX = 1920;
-        const PROJECT_BUTTON_END_PX = 2480;
+        const PROJECT_BUTTON_END_PX = 3080;
         const PROJECT_BUTTON_ENTRY_SECONDS = 2.5;
         const PROJECT_BUTTON_EXIT_SECONDS = 0.05;
         const PROJECT_BUTTON_RISE_PX = 18;
@@ -157,23 +158,23 @@
 
             // Section 3
             const camPosD = new THREE.Vector3(15, 10, -10.5);
-            const lookD = new THREE.Vector3(-5.5, 3, -10.5);
-            const zoomD = perspCameraZoom * 3.5;
+            const lookD = new THREE.Vector3(-5.5, -1.5, -10.5);
+            const zoomD = perspCameraZoom * 2;
 
             // Section 4
-            const camPosE = new THREE.Vector3(12.5, 0, -10.5);
-            const lookE = new THREE.Vector3(-5.5, 0, -10.5);
-            const zoomE = perspCameraZoom * 4.5;
+            const camPosE = new THREE.Vector3(15, -5, -10.5);
+            const lookE = lookD.clone();
+            const zoomE = zoomD;
 
             // Section 5
-            const camPosF = new THREE.Vector3(12.5, -10.5, -10.5);
-            const lookF = new THREE.Vector3(-5.5, -10.5, -10.5);
-            const zoomF = perspCameraZoom * 5.5;
+            const camPosF = new THREE.Vector3(15, -10.5, -10.5);
+            const lookF = lookD.clone();
+            const zoomF = zoomD;
 
             // Section 6
-            const camPosG = new THREE.Vector3(12.5, -10.5, -10.5);
-            const lookG = new THREE.Vector3(-5.5, -10.5, -10.5);
-            const zoomG = perspCameraZoom * 5.5;
+            const camPosG = new THREE.Vector3(15, -10.5, -10.5);
+            const lookG = lookD.clone();
+            const zoomG = zoomD;
             
             let scroll = getCameraPhase(toReferenceScroll());
             let section = Math.floor(scroll);
@@ -1146,25 +1147,34 @@
           programmer: experiences.programmer,
           artist: experiences.artist
         };
-        function showExpDetails(domBtn, type) {
-          const data = experienceData[type];
-          if (!data) throw new Error(`Unknown experience type: ${type}`);
-        
-            document.querySelectorAll("#experiences .experience.banner > .btn")
-                .forEach(button => {
-                    button.classList.toggle("is-selected", button === domBtn);
+                const showExpDetails = createExperienceTransition({
+            panel: document.getElementById('expDetails'),
+
+            select(domBtn) {
+                document.querySelectorAll(
+                    '#experiences .experience.banner > .btn'
+                ).forEach(button => {
+                    button.classList.toggle(
+                        'is-selected', button === domBtn
+                    );
                 });
+            },
 
+            render(domBtn, type) {
+                const data = experienceData[type];
 
+                if (!data) {
+                    throw new Error(`Unknown experience type: ${type}`);
+                }
 
-          expDetails.style.display = "flex";
-          loaders.loadExperience(domBtn, data);
-        
-          // Initialize descriptions after the content has been loaded.
-          setupExperienceDescriptions(
-            expDetails.querySelectorAll(".expDescription")
-          );
-        };
+                loaders.loadExperience(domBtn, data);
+
+                setupExperienceDescriptions(
+                    document.getElementById('expDetails')
+                        .querySelectorAll('.expDescription')
+                );
+            },
+        });
         setupExperienceDescriptions         (expDetails.querySelectorAll(".expDescription"));
         
         dom.architectBtn.addEventListener   ("click",   () => showExpDetails(dom.architectBtn, "architecture"));
@@ -1497,7 +1507,7 @@
         betweenStopsMaxGain: 0.78, // sufficient speed through the short C-D corridor
         exponentialStrength: 1.8,
         snapPx: 12,                // capture each point without an instant scroll jump
-        aboutMeDwellMs: 1200,       // readable pause at the portrait
+        aboutMeDwellMs: 1700,       // readable pause at the portrait
         projectsDwellMs: 1600,      // shorter accent at the 3D project
         glide: 0.22,               // responsive but still smooth physical scroll
         maxGlideSpeedPxPerSecond: 1350 // prevents abrupt large leaps

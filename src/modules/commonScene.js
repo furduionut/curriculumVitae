@@ -29,12 +29,57 @@ export function attachCommonSceneAnimations(root, materials) {
         }
     });
 
-    const deskTimeline = createTimeline(1600, 1921, 0.75);
-    const portraitTimeline = createTimeline(0, 1921, true);
+    const deskTimeline = createTimeline(1500, 1921, 0.75);
+    // LAYOUT_SCROLL_FADES_V2
+    const layoutFadeSettings = {
+        portraitInStart: 1750,
+        portraitInEnd: 1765,
+        portraitOutStart: 1837,
+        portraitOutEnd: 1921,
+        echerInStart: 1837,
+        echerInEnd: 1922,
+        portraitFadeSeconds: 0.1,
+        echerFadeSeconds: 1,
+    };
     const portraits = [];
+    const portraitMaterials = new Set();
+    const portraitFade = { value: 0 };
     // One shared material for all layout meshes with a local gradient attribute.
     const gradientGlass = materials.blurredGlass.clone();
     gradientGlass.vertexColors = true;
+
+    // Independent glass material: never animate the shared layout material.
+    const echerGlass = gradientGlass.clone();
+    const echerFinalOpacity = 1;
+    const echerDepthWrite = echerGlass.depthWrite;
+    echerGlass.transparent = true;
+    echerGlass.opacity = 0;
+    echerGlass.depthWrite = false;
+    echerGlass.alphaTest = 0;
+    echerGlass.alphaHash = false;
+    echerGlass.alphaToCoverage = false;
+    echerGlass.needsUpdate = true;
+    const echerMeshes = [];
+    const echerFade = { value: 0 };
+    const belongsTo = (mesh, token) => {
+        for (let node = mesh; node && node !== root; node = node.parent) {
+            if ((node.name || '').toLowerCase().includes(token)) return true;
+        }
+        return false;
+    };
+    const isEcher = mesh => belongsTo(mesh, 'echer');
+    const clamp01 = value => Math.max(0, Math.min(1, value));
+    const syncPortraitFade = () => {
+        const alpha = clamp01(portraitFade.value);
+        for (const material of portraitMaterials) material.opacity = alpha;
+        for (const mesh of portraits) mesh.visible = alpha > 0.001;
+    };
+    const syncEcherFade = () => {
+        const alpha = Math.max(0, Math.min(1, echerFade.value));
+        echerGlass.opacity = alpha * echerFinalOpacity;
+        echerGlass.depthWrite = alpha >= 0.999 ? echerDepthWrite : false;
+        for (const mesh of echerMeshes) mesh.visible = alpha > 0.001;
+    };
 
     const lampBeam = attachLampBeam(root, materials.lampBeam);
 
@@ -42,28 +87,32 @@ export function attachCommonSceneAnimations(root, materials) {
         if (!child.isMesh || lampBeam.meshes.has(child)) return;
         const name = child.name.toLowerCase();
 
-        if (name.includes('pictureframe')) {
+        if (belongsTo(child, 'pictureframe')) {
             const material = createUnlitMaterial(child.material);
             if (material) {
                 child.material = material;
-                material.transparent = true;
-                material.opacity = 0;
-                material.depthWrite = false;
+                const list = Array.isArray(material) ? material : [material];
+                for (const mat of list) {
+                    if (!mat) continue;
+                    mat.transparent = true;
+                    mat.opacity = 0;
+                    mat.depthWrite = false;
+                    // A fixed alpha cutoff/hash would turn an opacity fade into a pop.
+                    // Texture alpha is retained through normal alpha blending.
+                    mat.alphaTest = 0;
+                    mat.alphaHash = false;
+                    mat.alphaToCoverage = false;
+                    mat.needsUpdate = true;
+                    portraitMaterials.add(mat);
+                }
             }
-
-            child.position.y += 6.5;
-            child.scale.set(0.55, 0.55, 0.55);
+            // Preserve the original portrait transform for the named mesh.
+            if (name.includes('pictureframe')) {
+                child.position.y += 6.5;
+                child.scale.set(0.55, 0.55, 0.55);
+            }
             portraits.push(child);
-            // Fade in at 650..1300, fade out at 1837..1921.
-            if (material) {
-                portraitTimeline.fromTo(material,
-                    { opacity: 0 },
-                    { opacity: 1, duration: (1300 - 650) / 1921, ease: 'sine.out', immediateRender: false },
-                    650 / 1921);
-                portraitTimeline.to(material,
-                    { opacity: 0, duration: (1921 - 1837) / 1921, ease: 'sine.inOut' },
-                    1837 / 1921);
-            }
+            child.visible = false;
             return;
         }
 
@@ -83,7 +132,7 @@ export function attachCommonSceneAnimations(root, materials) {
         let parent = child.parent;
         while (parent && parent !== root) {
             const parentName = parent.name.toLowerCase();
-            if (parentName.includes('pictureframe') || parentName.includes('deskplane')) {
+            if (parentName.includes('deskplane')) {
                 child.material = createUnlitMaterial(child.material);
                 return;
             }
@@ -94,26 +143,71 @@ export function attachCommonSceneAnimations(root, materials) {
         prepareLiquidGlassGeometry(child);
 
         // All other pageLayout meshes share the material defined in materials.js.
-        child.material = gradientGlass;
+        if (isEcher(child)) {
+            child.material = echerGlass;
+            echerMeshes.push(child);
+            child.visible = false;
+        } else {
+            child.material = gradientGlass;
+        }
         child.castShadow = false;
         console.log('[Blurred Glass]', child.name);
     });
 
-    const updatePortraitAtCamD = () => {
-        const visible = currentReferenceScroll() < 1921;
-        portraits.forEach(mesh => { mesh.visible = visible; });
+    // Calculate desired opacity from scroll, then ease the rendered opacity
+    // toward it in real time. Even an instant jump to a keyframe gets a fade.
+    const ramp = (position, start, end) => {
+        if (end <= start) return position >= end ? 1 : 0;
+        return clamp01((position - start) / (end - start));
     };
-    window.addEventListener('scroll', updatePortraitAtCamD, { passive: true });
-    updatePortraitAtCamD();
+    const movePortrait = gsap.quickTo(portraitFade, 'value', {
+        duration: layoutFadeSettings.portraitFadeSeconds,
+        ease: 'sine.out',
+        onUpdate: syncPortraitFade,
+    });
+    const moveEcher = gsap.quickTo(echerFade, 'value', {
+        duration: layoutFadeSettings.echerFadeSeconds,
+        ease: 'sine.out',
+        onUpdate: syncEcherFade,
+    });
+    let lastPortraitTarget = 0;
+    let lastEcherTarget = 0;
+    const updateLayoutFades = () => {
+        const pos = currentReferenceScroll();
+        const portraitTarget = ramp(pos, layoutFadeSettings.portraitInStart, layoutFadeSettings.portraitInEnd)
+            * (1 - ramp(pos, layoutFadeSettings.portraitOutStart, layoutFadeSettings.portraitOutEnd));
+        const echerTarget = ramp(pos, layoutFadeSettings.echerInStart, layoutFadeSettings.echerInEnd);
+        if (portraits.length && portraitTarget !== lastPortraitTarget) {
+            lastPortraitTarget = portraitTarget;
+            movePortrait(portraitTarget);
+        }
+        if (echerMeshes.length && echerTarget !== lastEcherTarget) {
+            lastEcherTarget = echerTarget;
+            moveEcher(echerTarget);
+        }
+    };
+
+    // No raw scroll-based visible toggle: visibility follows animated alpha only.
+    syncPortraitFade();
+    syncEcherFade();
+    window.addEventListener('scroll', updateLayoutFades, { passive: true });
+    window.addEventListener('resize', updateLayoutFades);
+    ScrollTrigger.addEventListener('refresh', updateLayoutFades);
     deskTimeline.scrollTrigger?.refresh();
-    portraitTimeline.scrollTrigger?.refresh();
+    updateLayoutFades();
+
+    if (!portraits.length) console.warn('[Layout fades] No pictureFrame mesh found in pageLayout.glb');
+    if (!echerMeshes.length) console.warn('[Layout fades] No Echer mesh found in pageLayout.glb');
 
     return () => {
         lampBeam.dispose();
-        window.removeEventListener('scroll', updatePortraitAtCamD);
+        window.removeEventListener('scroll', updateLayoutFades);
+        window.removeEventListener('resize', updateLayoutFades);
+        ScrollTrigger.removeEventListener('refresh', updateLayoutFades);
+        movePortrait.tween.kill();
+        moveEcher.tween.kill();
         deskTimeline.scrollTrigger?.kill();
-        portraitTimeline.scrollTrigger?.kill();
         deskTimeline.kill();
-        portraitTimeline.kill();
+        echerGlass.dispose();
     };
 }

@@ -20,8 +20,14 @@ function isBeam(object) {
     return list.some(m => m?.uniforms?.uBeamPower && m?.uniforms?.uBeamIntensity);
 }
 
+function isTerrainLine(object) {
+    const list = Array.isArray(object.material) ? object.material : [object.material];
+    return object.userData?.terrainDashedGenerated === true ||
+        list.some(m => m?.userData?.terrainNoBloom === true);
+}
+
 function excluded(object) {
-    if (isBeam(object)) return true;
+    if (isBeam(object) || isTerrainLine(object)) return true;
     for (let p = object; p; p = p.parent) {
         if (matches(p.name, selectiveLightingSettings.projectRoots)) return true;
         if (selectiveLightingSettings.layoutObjects.some(key => normalized(p.name).includes(normalized(key)))) return true;
@@ -124,7 +130,7 @@ export class SelectiveBloomPass extends Pass {
                 const original = object.material;
                 this.saved.push([object,original]);
                 // The additive cone does not occlude objects behind it.
-                object.material = (isBeam(object) || !object.isMesh) ? this.hidden :
+                object.material = (isBeam(object) || isTerrainLine(object) || !object.isMesh) ? this.hidden :
                     Array.isArray(original) ? original.map(m=>this.maskFor(m)) : this.maskFor(original);
             });
             this.scene.background = this.blackBackground;

@@ -65,7 +65,7 @@ export function prepareLiquidGlassGeometry(mesh) {
 export const liquidGlassBackdropSettings = {
     blurPixels: 6,       // Gaussian standard deviation, in CSS pixels
     resolutionScale: 0.4,
-    maxLayers: 2,         // 1 = original non-glass-only capture; 2–4 = layered
+    maxLayers: 3,         // 1 = original non-glass-only capture; 2–4 = layered
 };
 
 export const liquidGlassBackdropUniforms = {

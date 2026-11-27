@@ -1694,3 +1694,25 @@ div[class^="geometry"] {
         transition: none;
     }
 }
+
+/* White text — Abilities and Contacts */
+#abilities .btn .icon,
+#contacts .btn .icon {
+    color: #ffffff !important;
+}
+
+
+/* Experience buttons — inactive text */
+#experiences .experience.banner > .btn:not(.is-selected) .icon {
+    color: #ffffff !important;
+}
+
+/* Experience buttons — selected text */
+#experiences .experience.banner > .btn.is-selected .icon {
+    color: #303963 !important;
+}
+
+/* Smooth text color transition */
+#experiences .experience.banner > .btn .icon {
+    transition: color 950ms ease-in-out;
+}

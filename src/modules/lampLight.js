@@ -9,7 +9,7 @@ export const lampLightSettings = {
     reverseDirection: false, // true reverses the gradient if needed
     flicker: true,
     ignitionDuration: 0.9,
-    exitDuration: 0.18,
+    exitDuration: 10,
 };
 
 const controllers = new Set();
