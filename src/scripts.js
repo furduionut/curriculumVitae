@@ -1460,8 +1460,8 @@
                 referenceScroll: REFERENCE_SCROLL
             });
         };
-        if (document.readyState === "complete") startUnifiedScrollEditor();
-        else window.addEventListener("load", startUnifiedScrollEditor, { once: true });
+        // if (document.readyState === "complete") startUnifiedScrollEditor();
+        // else window.addEventListener("load", startUnifiedScrollEditor, { once: true });
 
         // IMPORTANT: call this once after DOM loads
         // updateSectionsPos();

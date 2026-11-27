@@ -10,6 +10,8 @@
     import { styles } from "./styles.js";
     import { domain as dom } from "./domain.js";
     import { materials } from "./materials.js";
+    import { ContextSceneManager } from "./contextScene.js";
+    import { attachCommonSceneAnimations } from "./commonScene.js";
     
 
 
@@ -50,6 +52,10 @@
     let currentBuilding
     let currentModel
     let currentLogo
+    let currentPageLayout = null;
+    let clearCommonSceneAnimations = null;
+    let contextManager = null;
+    let projectLoadVersion = 0;
 
     function changeLanguage         (language) {
         };
@@ -341,200 +347,36 @@
         return element;
         }
         
-    function loadingNeighbor        (scene, light, building, material){ 
-        let scale = .1;
-
-        gltfLoader.load(building, (gltf) => {
-        
-            currentBuilding = gltf.scene;
-            currentBuilding.name = 'pageLayout';
-            currentBuilding.position.set(0, 0, 0);
-            currentBuilding.scale.set(scale, scale, scale);
-        
-            // Architectural scene motion: coordinates use the same reference
-            // scroll (0..8413) as the CAM C / CAM D positions in scripts.js.
-            const DESK_START_PX = 1600;
-            const DESK_END_PX = 1870;
-            const BUILDINGS_START_PX = 1837;
-            const BUILDINGS_END_PX = 1900;
-            const PORTRAIT_FADE_IN_START_PX = 650;
-            const PORTRAIT_FADE_IN_END_PX = 1300;
-            const PORTRAIT_FADE_OUT_START_PX = 1837;
-            const PORTRAIT_HIDE_PX = 1921;
-            const REFERENCE_SCROLL_PX = 8413;
-
-            const sceneMaxScroll = () => Math.max(1,
-                (document.scrollingElement || document.documentElement).scrollHeight - window.innerHeight
-            );
-            const sceneRefScroll = () => window.scrollY / sceneMaxScroll() * REFERENCE_SCROLL_PX;
-
-            function sceneScrollTimeline(startPx, endPx, scrubSeconds = 0.75) {
-                return gsap.timeline({
-                    scrollTrigger: {
-                        trigger: '.main',
-                        start: () => sceneMaxScroll() * startPx / REFERENCE_SCROLL_PX,
-                        end: () => sceneMaxScroll() * endPx / REFERENCE_SCROLL_PX,
-                        // Numeric scrub smooths out large wheel steps. Scrub:true
-                        // followed the wheel instantly, causing the sudden popping.
-                        scrub: scrubSeconds,
-                        invalidateOnRefresh: true,
-                        markers: false
-                    }
-                });
-            }
-
-            const deskTimeline = sceneScrollTimeline(DESK_START_PX, DESK_END_PX, 0.75);
-            const buildingsTimeline = sceneScrollTimeline(BUILDINGS_START_PX, BUILDINGS_END_PX, 0.90);
-            // The portrait needs exact scroll positioning so it is fully hidden
-            // at CAM D. Its fade-in and fade-out share ONE timeline/material.
-            const portraitTimeline = sceneScrollTimeline(0, PORTRAIT_HIDE_PX, true);
-
-            // Keep the glass setting from the previous version, only for context
-            // buildings (never change the main project or the desk material).
-            function createNeighborGlass() {
-                const glass = material.model.clone();
-                glass.color.setHex(0xd0caff);
-                glass.metalness = 0.03;
-                glass.roughness = 0.045;
-                glass.transmission = 0.95;
-                glass.thickness = 0.65;
-                glass.ior = 1.48;
-                glass.envMapIntensity = 3.0;
-                glass.clearcoat = 0.35;
-                glass.clearcoatRoughness = 0.05;
-                glass.transparent = true;
-                glass.depthWrite = false;
-                glass.opacity = 0;
-                glass.needsUpdate = true;
-                return glass;
-            }
-
-            const portraitMeshes = [];
-            let buildingIndex = 0;
-
-            currentBuilding.traverse((child) => {
-                if (!child.isMesh) return;
-                const originalY = child.position.y;
-                const originalZ = child.position.z;
-
-                // Retain original visibility setup for nonanimated scene meshes.
-                child.material.transparent = true;
-                child.material.opacity = 0;
-
-                if (child.name.includes('pictureFrame')) {
-                    // The human image: keep the original position and scale,
-                    // but make it vanish smoothly as CAM D (1921) approaches.
-                    // Clone its material so no other mesh can affect its opacity.
-                    child.material = child.material.clone();
-                    child.material.transparent = true;
-                    child.material.opacity = 0;
-                    child.position.y = originalY + 6.5;
-                    child.scale.set(0.55, 0.55, 0.55);
-                    portraitMeshes.push(child);
-
-                    const fadeInStart = PORTRAIT_FADE_IN_START_PX / PORTRAIT_HIDE_PX;
-                    const fadeInDuration = (PORTRAIT_FADE_IN_END_PX - PORTRAIT_FADE_IN_START_PX) / PORTRAIT_HIDE_PX;
-                    const fadeOutStart = PORTRAIT_FADE_OUT_START_PX / PORTRAIT_HIDE_PX;
-                    const fadeOutDuration = (PORTRAIT_HIDE_PX - PORTRAIT_FADE_OUT_START_PX) / PORTRAIT_HIDE_PX;
-
-                    portraitTimeline.fromTo(child.material,
-                        { opacity: 0 },
-                        { opacity: 1, duration: fadeInDuration, ease: 'sine.out', immediateRender: false },
-                        fadeInStart
-                    );
-                    portraitTimeline.to(child.material,
-                        { opacity: 0, duration: fadeOutDuration, ease: 'sine.inOut' },
-                        fadeOutStart
-                    );
-                    return;
-                }
-
-                if (child.name.includes('greetingBox')) {
-                    child.material = material.model;
-                    return;
-                }
-
-                if (child.name.includes('desk')) {
-                    // Same +200 Z travel as the original: soften start and end.
-                    child.material = material.desk;
-                    child.position.z = originalZ + 200;
-                    deskTimeline.to(child.position, {
-                        z: originalZ,
-                        duration: 1,
-                        ease: 'sine.inOut'
-                    }, 0);
-                    return;
-                }
-
-                if (child.name.includes('neighboar_012') || child.name.includes('neighboar_013')) {
-                    child.material = createNeighborGlass();
-                    child.material.opacity = 1;
-                    deskTimeline.to(child.material, {
-                        opacity: 0,
-                        duration: 1,
-                        ease: 'sine.inOut'
-                    }, 0);
-                    return;
-                }
-
-                if (child.name.includes('neighboar')) {
-                    const finalScale = child.scale.clone();
-                    child.material = createNeighborGlass();
-
-                    // Avoid scale=0 and random vertical offsets: both made the
-                    // short 1837..1900 range look jumpy on quick scrolling.
-                    child.scale.set(
-                        finalScale.x * 0.72,
-                        finalScale.y * 0.72,
-                        finalScale.z * 0.72
-                    );
-                    child.position.y = originalY - 1.2;
-
-                    // A small stagger still gives individual buildings character;
-                    // all tweens reach their endpoint at reference scroll 1900.
-                    const popStart = Math.min(0.12, buildingIndex++ * 0.015);
-                    const popDuration = 1 - popStart;
-                    buildingsTimeline.to(child.scale, {
-                        x: finalScale.x, y: finalScale.y, z: finalScale.z,
-                        duration: popDuration,
-                        ease: 'sine.inOut'
-                    }, popStart);
-                    buildingsTimeline.to(child.position, {
-                        y: originalY,
-                        duration: popDuration,
-                        ease: 'sine.inOut'
-                    }, popStart);
-                    buildingsTimeline.to(child.material, {
-                        opacity: 1,
-                        duration: popDuration,
-                        ease: 'sine.inOut'
-                    }, popStart);
-                    return;
+    // PERSISTENT SCENE: pageLayout.glb = desk, picture frame and greeting image only.
+    // The three house-specific contexts are cached by ContextSceneManager.
+    function loadingNeighbor(scene, light, building, material) {
+        if (!contextManager) {
+            contextManager = new ContextSceneManager(scene, gltfLoader);
+            // Preload all contexts; Bacau is the initial project, so its slot will
+            // appear as soon as the GLB loads (not only after the house callback).
+            contextManager.preload().then(results => {
+                const failed = results.filter(result => result.status === 'rejected');
+                if (failed.length) {
+                    console.error(`[ContextScene] ${failed.length}/3 context GLBs failed to load. Verify context_B.glb, context_C.glb and context_S.glb in public/assets/meshes/mainScene/.`);
                 }
             });
+        }
+        if (currentPageLayout) return; // common scene is loaded once
 
-            scene.add(currentBuilding);
-
-            // Hard boundary at 1921: the human image cannot remain visible
-            // after direct navigation or a very fast scroll. Scrolling back
-            // makes it visible again and the same timeline plays in reverse.
-            if (portraitMeshes.length) {
-                const updatePortraitAtCamD = () => {
-                    const show = sceneRefScroll() < PORTRAIT_HIDE_PX;
-                    portraitMeshes.forEach(mesh => { mesh.visible = show; });
-                };
-                window.addEventListener('scroll', updatePortraitAtCamD, { passive: true });
-                updatePortraitAtCamD();
-            }
-
-            // Model loading is asynchronous: sync with the current scroll once
-            // the mesh exists, including when a page opens mid-animation.
-            deskTimeline.scrollTrigger?.refresh();
-            buildingsTimeline.scrollTrigger?.refresh();
-            portraitTimeline.scrollTrigger?.refresh();
+        gltfLoader.load(building, gltf => {
+            const root = gltf.scene;
+            root.name = 'pageLayout';
+            root.position.set(0, 0, 0);
+            root.scale.setScalar(0.1); // existing layout scale; keep exported Blender coordinates
+            currentPageLayout = root;
+            scene.add(root);
+            clearCommonSceneAnimations?.();
+            clearCommonSceneAnimations = attachCommonSceneAnimations(root, material);
+        }, undefined, error => {
+            console.error('[Scene] Failed to load persistent pageLayout.glb:', building, error);
         });
-        };
-    
+    }
+
     function preventReload          () {
         if (window.scrollY < 1) {
         window.scrollTo({
@@ -833,64 +675,81 @@
         });
         };
 
-    function loadingBuilding        (scene, light, building, material){ 
-        let scale  = .1;
-        let scaleX = scale;
-        let scaleY = scale;
-        let scaleZ = scale;
-        
-        gltfLoader.load( building, (gltf) => 
-            {
-            scene.children.slice().forEach(obj => {
-                if (obj.name !== "pageLayout") scene.remove(obj);
-            });
-    
-            if (currentModel || currentBuilding && currentBuilding.name !== 'pageLayout') {
-                scene.remove(currentModel, currentBuilding);
-                currentBuilding = null;
-                currentModel = null;
-            }
-        
-                currentBuilding = gltf.scene;
-            
-            console.log(`Changed building to ${building}`);
-            currentBuilding.position.set(-50 * scale , 0 * scale, -100 * scale);
-            currentBuilding.scale.set(scaleX, scaleY, scaleZ);
-            currentBuilding.traverse((child) => {
-                if (child.isMesh) {child.material = material;}
-            console.log(`Changed material to ${child.material}`)
-            });
-            scene.add(currentBuilding);
-            })
-        };
+    // CASA CLIM ALIGNMENT — only the house, not its neighbours or the common scene.
+    // All model variants reuse the *outer-shell* correction, so floors stay aligned.
+    const CASA_CLIM_CENTER = { x: -6, z: -10.5 }; // camera's established world-space project anchor
+    const casaClimShift = { x: 0, z: 0, ready: false };
 
-    function loadingModel           (scene, light, model, material){ 
-        let scale  = .1;
-        let scaleX = scale;
-        let scaleY = scale;
-        let scaleZ = scale; 
-        gltfLoader.load( model, (gltf) => 
-            {
-                scene.children.slice().forEach(obj => {
-                    if (obj.name !== "pageLayout") {
-                        scene.remove(obj);
-                    }
-                });
-                currentModel = null;
-                currentBuilding = null;
-                currentModel = gltf.scene;
-            
-            console.log(`Changed model to ${model}`);
-            currentModel.position.set(-50 * scale , 0 * scale, -100 * scale);
-            currentModel.scale.set(scaleX, scaleY, scaleZ);
-            currentModel.traverse((child) => {  
-                if (child.isMesh) {child.material = material;}
-            console.log(`Changed material to ${child.material}`)
-            }); 
-            scene.add(currentModel);
-            })
-        };
-        
+    function alignCasaClim(root, assetPath, isVariant) {
+        if (!/casaclim/i.test(assetPath)) return;
+
+        if (!isVariant) {
+            // Measure the complete outer shell AFTER the loader's 0.1 scale/position.
+            root.updateMatrixWorld(true);
+            const bounds = new THREE.Box3().setFromObject(root);
+            if (bounds.isEmpty()) {
+                casaClimShift.ready = false;
+                console.warn('[Casa Clim] Could not calculate GLB bounds; no centering applied.');
+                return;
+            }
+            const center = bounds.getCenter(new THREE.Vector3());
+            casaClimShift.x = CASA_CLIM_CENTER.x - center.x;
+            casaClimShift.z = CASA_CLIM_CENTER.z - center.z;
+            casaClimShift.ready = true;
+            console.info('[Casa Clim] Centered outer shell:', {
+                originalCenter: { x: center.x, z: center.z },
+                correction: { x: casaClimShift.x, z: casaClimShift.z }
+            });
+        }
+
+        if (casaClimShift.ready) {
+            root.position.x += casaClimShift.x;
+            root.position.z += casaClimShift.z;
+            root.updateMatrixWorld(true);
+        }
+    }
+
+    // HOUSE MODEL ONLY: never remove pageLayout, other contexts or scene lights.
+    // Shared projectLoadVersion ignores stale GLB responses after rapid clicks.
+    function loadSelectedProject(scene, assetPath, material, isVariant) {
+        const version = ++projectLoadVersion;
+        gltfLoader.load(assetPath, gltf => {
+            if (version !== projectLoadVersion) return;
+
+            const root = gltf.scene;
+            root.name = isVariant ? 'activeProjectVariant' : 'activeProjectBuilding';
+            root.position.set(-5, 0, -10); // original -50 * .1, 0, -100 * .1
+            root.scale.setScalar(0.1);
+            alignCasaClim(root, assetPath, isVariant);
+            root.traverse(child => {
+                if (child.isMesh) child.material = material;
+            });
+
+            // Replace only the previous main house; leave context and common scene intact.
+            if (currentBuilding) scene.remove(currentBuilding);
+            if (currentModel) scene.remove(currentModel);
+            currentBuilding = isVariant ? null : root;
+            currentModel = isVariant ? root : null;
+            scene.add(root);
+
+            // Next/Previous: context animates 0 -> original mesh scale + contour fade.
+            // UP/DOWN variants keep the same context and do not replay it.
+            if (!isVariant) contextManager?.selectFromProjectPath(assetPath);
+        }, undefined, error => {
+            if (version === projectLoadVersion) {
+                console.error('[Scene] Failed to load project GLB:', assetPath, error);
+            }
+        });
+    }
+
+    function loadingBuilding(scene, light, building, material) {
+        loadSelectedProject(scene, building, material, false);
+    }
+
+    function loadingModel(scene, light, model, material) {
+        loadSelectedProject(scene, model, material, true);
+    }
+
     function loadingLogo3D          (scene, light, model, material, animationModel){
         let scale  = .1;
         let scaleX = scale;

@@ -156,3 +156,46 @@ export const materials = {
     logoBulbGlow,
     logoSegmentGlow,
 };
+
+// ARCHITECTURAL CONTEXT MATERIALS — edit only here.
+// Grey, softly polished neighbours + dark, thin dashed topographic curves.
+export const contextAppearance = {
+    neighbours: {
+        color: 0xaeb4ba,          // neutral grey (not purple)
+        roughness: 0.32,
+        metalness: 0.02,
+        transmission: 0.16,       // 0 = solid; increase toward 1 for more glass
+        thickness: 0.55,
+        ior: 1.46,
+        envMapIntensity: 1.25,
+        clearcoat: 0.30,
+        clearcoatRoughness: 0.18
+    },
+    terrainLines: {
+        color: 0x45536b,
+        dashSize: 3.5,            // local GLB units; GLB root is scaled by 0.1
+        gapSize: 2.0,
+        opacity: 0.85,
+        scale: 1
+    }
+};
+
+export function createContextBuildingMaterial() {
+    return new THREE.MeshPhysicalMaterial({
+        ...contextAppearance.neighbours,
+        transparent: false,
+        opacity: 1,
+        depthTest: true,
+        depthWrite: true
+    });
+}
+
+export function createContextLineMaterial() {
+    return new THREE.LineDashedMaterial({
+        ...contextAppearance.terrainLines,
+        transparent: true,
+        opacity: 0,
+        depthTest: true,
+        depthWrite: false
+    });
+}
