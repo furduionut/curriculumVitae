@@ -40,6 +40,7 @@ export function attachCommonSceneAnimations(root, materials) {
                 material.opacity = 0;
                 material.depthWrite = false;
             }
+
             child.position.y += 6.5;
             child.scale.set(0.55, 0.55, 0.55);
             portraits.push(child);
@@ -56,7 +57,7 @@ export function attachCommonSceneAnimations(root, materials) {
             return;
         }
 
-        if (name.includes('desk')) {
+        if (name.includes('deskplane')) {
             const finalZ = child.position.z;
             child.material = materials.desk;
             child.position.z = finalZ + 200;
@@ -68,9 +69,18 @@ export function attachCommonSceneAnimations(root, materials) {
             return;
         }
 
-        if (name.includes('greetingbox')) {
-            child.material = materials.model.clone();
+        // Preserve the materials of meshes nested inside the excluded objects.
+        let parent = child.parent;
+        while (parent && parent !== root) {
+            const parentName = parent.name.toLowerCase();
+            if (parentName.includes('pictureframe') || parentName.includes('deskplane')) return;
+            parent = parent.parent;
         }
+
+        // All other pageLayout meshes share the material defined in materials.js.
+        child.material = materials.blurredGlass;
+        child.castShadow = false;
+        console.log('[Blurred Glass]', child.name);
     });
 
     const updatePortraitAtCamD = () => {

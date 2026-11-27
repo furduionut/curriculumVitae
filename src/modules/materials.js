@@ -140,8 +140,48 @@ const logoSegmentGlow = new THREE.SpriteMaterial({
     toneMapped: false,
 });
 
+
+/* BLURRED GLASS — PAGE LAYOUT + ARCHITECTURAL CONTEXT */
+
+const blurredGlassSettings = {
+
+    // Surface appearance
+    color: 0xf0f2ff,
+    metalness: 0.0,
+    roughness: 0.35,
+
+    // Optical properties
+    transmission: 1.0,
+    thickness: 0.8,
+    ior: 1.46,
+
+    // Volumetric color absorption
+    attenuationColor: 0xd5d9ff,
+    attenuationDistance: 4.0,
+
+    // Surface reflections
+    specularIntensity: 1.0,
+    specularColor: 0xffffff,
+    envMapIntensity: 1.8,
+
+    // Polished surface layer
+    clearcoat: 1.0,
+    clearcoatRoughness: 0.12,
+
+    // Rendering
+    transparent: false,
+    opacity: 1.0,
+    depthWrite: true,
+    depthTest: true,
+    side: THREE.FrontSide
+
+};
+
+const blurredGlass = new THREE.MeshPhysicalMaterial(blurredGlassSettings);
+
 export const materials = {
-    // Original keys retained for loaders.js and the other scenes.
+
+    // General materials
     cloudDiffuse: whiteColor,
     lightBulbDiffuse: lavenderColor,
     lightBulbGlass: lightBlueColor,
@@ -149,28 +189,23 @@ export const materials = {
     model: glass,
     desk: wood,
     tube: clearGlass,
-    glassPurple,
-    glassEmmisive, // Existing spelling retained for compatibility.
 
-    // New glow templates used by animations.js.
+    // Page layout materials
+    blurredGlass,
+
+    // Logo materials
+    glassPurple,
+    glassEmmisive,
     logoBulbGlow,
     logoSegmentGlow,
+
 };
 
-// ARCHITECTURAL CONTEXT MATERIALS — edit only here.
-// Grey, softly polished neighbours + dark, thin dashed topographic curves.
+// ARCHITECTURAL CONTEXT MATERIALS
+// Neighbours use the same blurred glass preset as the page layout.
+// Terrain lines retain their independent appearance settings.
 export const contextAppearance = {
-    neighbours: {
-        color: 0xaeb4ba,          // neutral grey (not purple)
-        roughness: 0.32,
-        metalness: 0.02,
-        transmission: 0.16,       // 0 = solid; increase toward 1 for more glass
-        thickness: 0.55,
-        ior: 1.46,
-        envMapIntensity: 1.25,
-        clearcoat: 0.30,
-        clearcoatRoughness: 0.18
-    },
+    neighbours: blurredGlassSettings,
     terrainLines: {
         color: 0x45536b,
         dashSize: 3.5,            // local GLB units; GLB root is scaled by 0.1
@@ -181,13 +216,8 @@ export const contextAppearance = {
 };
 
 export function createContextBuildingMaterial() {
-    return new THREE.MeshPhysicalMaterial({
-        ...contextAppearance.neighbours,
-        transparent: false,
-        opacity: 1,
-        depthTest: true,
-        depthWrite: true
-    });
+    // Independent instance: context animations/disposal must not affect pageLayout.
+    return materials.blurredGlass.clone();
 }
 
 export function createContextLineMaterial() {
@@ -198,4 +228,114 @@ export function createContextLineMaterial() {
         depthTest: true,
         depthWrite: false
     });
+}
+
+/* =====================================================
+   PAGE LAYOUT — FROSTED GLASS
+   ===================================================== */
+
+export const pageLayoutAppearance = {
+
+    glass: {
+        color: 0xe2e6ff,
+
+        metalness: 0.0,
+        roughness: 0.32,
+
+        transmission: 1.0,
+        thickness: 0.5,
+        ior: 1.46,
+
+        attenuationColor: 0xc3c9f5,
+        attenuationDistance: 5.0,
+
+        clearcoat: 0.65,
+        clearcoatRoughness: 0.16,
+
+        envMapIntensity: 1.65,
+
+        specularIntensity: 1.0,
+        specularColor: 0xffffff
+    },
+
+    excludedObjects: [
+        "deskPlane",
+        "pictureFrame"
+    ]
+};
+
+
+/* CREATE GLASS MATERIAL */
+
+export function createPageLayoutGlassMaterial() {
+
+    return new THREE.MeshPhysicalMaterial({
+
+        ...pageLayoutAppearance.glass,
+
+        transparent: false,
+        opacity: 1,
+
+        depthWrite: true,
+        depthTest: true,
+
+        side: THREE.FrontSide
+
+    });
+
+}
+
+
+/* APPLY GLASS TO PAGE LAYOUT */
+
+export function applyPageLayoutMaterials(root) {
+
+    const normalizeName = name =>
+        name.toLowerCase().replace(/[^a-z0-9]/g, "");
+
+    const excludedNames =
+        pageLayoutAppearance.excludedObjects.map(normalizeName);
+
+    function isExcluded(object) {
+
+        let current = object;
+
+        while (current && current !== root) {
+
+            const name = normalizeName(current.name);
+
+            if (
+                excludedNames.some(
+                    excluded => name.startsWith(excluded)
+                )
+            ) {
+                return true;
+            }
+
+            current = current.parent;
+
+        }
+
+        return false;
+
+    }
+
+    const glass = createPageLayoutGlassMaterial();
+
+    root.traverse(child => {
+
+        if (!child.isMesh) return;
+        if (isExcluded(child)) return;
+
+        child.material = glass;
+
+        child.castShadow = false;
+
+        console.log(
+            "[PageLayout] Frosted glass applied:",
+            child.name
+        );
+
+    });
+
 }
