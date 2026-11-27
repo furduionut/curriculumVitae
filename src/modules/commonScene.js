@@ -1,6 +1,11 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { CONTEXT_ANIMATION } from './contextConfig.js';
+import { prepareLiquidGlassGeometry } from './liquidGlass.js';
+import { attachLampBeam } from './lampLight.js';
+import { createUnlitMaterial } from './selectiveLighting.js';
+// Preserve the previously exported helper for any existing imports.
+export { smoothGlassGeometry } from './liquidGlass.js';
 
 // pageLayout.glb contains ONLY the persistent table + portrait / greeting objects.
 // This module preserves their existing scroll choreography, independently of
@@ -27,13 +32,18 @@ export function attachCommonSceneAnimations(root, materials) {
     const deskTimeline = createTimeline(1600, 1921, 0.75);
     const portraitTimeline = createTimeline(0, 1921, true);
     const portraits = [];
+    // One shared material for all layout meshes with a local gradient attribute.
+    const gradientGlass = materials.blurredGlass.clone();
+    gradientGlass.vertexColors = true;
+
+    const lampBeam = attachLampBeam(root, materials.lampBeam);
 
     root.traverse(child => {
-        if (!child.isMesh) return;
+        if (!child.isMesh || lampBeam.meshes.has(child)) return;
         const name = child.name.toLowerCase();
 
         if (name.includes('pictureframe')) {
-            const material = child.material?.clone?.();
+            const material = createUnlitMaterial(child.material);
             if (material) {
                 child.material = material;
                 material.transparent = true;
@@ -59,7 +69,7 @@ export function attachCommonSceneAnimations(root, materials) {
 
         if (name.includes('deskplane')) {
             const finalZ = child.position.z;
-            child.material = materials.desk;
+            child.material = createUnlitMaterial(materials.desk);
             child.position.z = finalZ + 200;
             deskTimeline.to(child.position, {
                 z: finalZ,
@@ -73,12 +83,18 @@ export function attachCommonSceneAnimations(root, materials) {
         let parent = child.parent;
         while (parent && parent !== root) {
             const parentName = parent.name.toLowerCase();
-            if (parentName.includes('pictureframe') || parentName.includes('deskplane')) return;
+            if (parentName.includes('pictureframe') || parentName.includes('deskplane')) {
+                child.material = createUnlitMaterial(child.material);
+                return;
+            }
             parent = parent.parent;
         }
 
+        // Smooth across split GLB vertices, without changing the actual bevel.
+        prepareLiquidGlassGeometry(child);
+
         // All other pageLayout meshes share the material defined in materials.js.
-        child.material = materials.blurredGlass;
+        child.material = gradientGlass;
         child.castShadow = false;
         console.log('[Blurred Glass]', child.name);
     });
@@ -93,6 +109,7 @@ export function attachCommonSceneAnimations(root, materials) {
     portraitTimeline.scrollTrigger?.refresh();
 
     return () => {
+        lampBeam.dispose();
         window.removeEventListener('scroll', updatePortraitAtCamD);
         deskTimeline.scrollTrigger?.kill();
         portraitTimeline.scrollTrigger?.kill();

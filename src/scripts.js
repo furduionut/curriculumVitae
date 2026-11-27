@@ -33,6 +33,9 @@
         import { rendero }      from "./modules/render.js";
         import { controls }     from "./modules/controls.js";
         import { materials }    from "./modules/materials.js";
+        import { createLiquidGlassBackdrop } from "./modules/liquidGlass.js";
+        import { SelectiveBloomPass } from './modules/selectiveLighting.js';
+        import { setLampBeamProjectActive } from './modules/lampLight.js';
         import { updateGlassCutouts } from "./modules/styles.js";
         import { installUnifiedScrollTimelineEditor } from "./scroll-timeline-editor.js";
     /* PRELOAD */
@@ -490,6 +493,7 @@
             rendererWidth       = dom.viewport.clientWidth;
             rendererHeight      = dom.viewport.clientHeight;
             renderer.setSize    (rendererWidth, rendererHeight);
+            composer.setSize    (rendererWidth, rendererHeight);
             perspCamera.aspect  = rendererWidth / rendererHeight;
             perspCamera.updateProjectionMatrix();
             };
@@ -501,69 +505,49 @@
             resizeOrthoCamera       (renderoWidth, renderoHeight);
             };
 
-    /* ENVIRONMENT */
-        const   hdrLoader       = new HDRLoader();
+    /* ENVIRONMENT — SHARED BY BOTH VIEWPORTS */
+        const hdrLoader = new HDRLoader();
 
+        hdrLoader.load(
+            './assets/textures/environment/cloisterPassage/studio_small_08_2k.hdr',
+            (texture) => {
+                texture.mapping = THREE.EquirectangularReflectionMapping;
 
-            hdrLoader.load(
-                './assets/textures/environment/cloisterPassage/studio_small_08_2k.hdr',
-                (texture) => {
+                // One HDRI texture; both scenes retain their own backgrounds.
+                scene.environment = texture;
+                secondScene.environment = texture;
 
+                // Preserve the original effective reflection intensities.
+                scene.environmentIntensity = 1.0;
+                secondScene.environmentIntensity = 0.45;
 
-                    texture.mapping = THREE.EquirectangularReflectionMapping;
+                // The logo scene is the master rotation, as before.
+                const hdriRotation = secondScene.environmentRotation;
+                hdriRotation.set(
+                    THREE.MathUtils.degToRad(25),
+                    0,
+                    THREE.MathUtils.degToRad(45)
+                );
 
-                    // Existing building scene
-                    scene.environment = texture;
+                // Synchronize the main scene before the first animation frame.
+                scene.environmentRotation.copy(hdriRotation);
 
-                    // Separate 3D logo scene
-                    secondScene.environment = texture;
+                // One tween drives the reflections in both viewports.
+                gsap.to(hdriRotation, {
+                    y: Math.PI * 2,
+                    duration: 10,
+                    ease: 'none',
+                    repeat: -1,
+                    onUpdate: () => {
+                        scene.environmentRotation.copy(hdriRotation);
+                    }
+                });
 
-
-
-
-                    const hdriRotation = secondScene.environmentRotation;
-
-                    // Tilt the HDRI diagonally
-                    hdriRotation.set(
-                        THREE.MathUtils.degToRad(25),  // X — vertical tilt
-                        0,                             // Y — horizontal rotation
-                        THREE.MathUtils.degToRad(45)   // Z — diagonal tilt
-                    );
-
-                    // Slowly rotate the reflections
-                    gsap.to(hdriRotation, {
-                        y: Math.PI * 2,
-                        duration: 10,
-                        ease: "none",
-                        repeat: -1
-                    });
-
-
-
-
-
-
-
-
-
-                    // HDRI reflection intensity
-                    secondScene.environmentIntensity = 1.5;
-
-                    console.log("HDRI applied to logo scene");
-
-
-                    // Logo 3D scene
-                    secondScene.environment = texture;
-
-                    // Reflection lighting strength for logo
-                    secondScene.environmentIntensity = 0.45;
-
-                    console.log("HDRI loaded for both scenes");
-                },
-                undefined,
-                (err) => console.log('HDR load error', err)
-            );
- 
+                console.log('Shared animated HDRI loaded for both scenes');
+            },
+            undefined,
+            (err) => console.log('HDR load error', err)
+        );
 
     /* RENDERER */
         let renderer = renders(
@@ -571,6 +555,8 @@
             rendererHeight, 
             rendererCanvas
             );
+
+        const liquidGlassBackdrop = createLiquidGlassBackdrop(renderer);
 
         let renderero = rendero(
             renderoWidth,
@@ -692,16 +678,12 @@
             maxblur: 0.001}) 
         composer.addPass( blurPass )
 
-    // BlOMPASS
+    // BLOOM — soft highlights in the main viewport only.
         const bloomPass = new UnrealBloomPass(
             new THREE.Vector2(dom.viewport.clientWidth, dom.viewport.clientHeight),
-            1.3, 0.55, 4);
-
-        bloomPass.strength  = .05;
-        bloomPass.radius    = .05;
-        bloomPass.threshold = 1;
-
-        composer.addPass(bloomPass)
+            0.28, 0.55, 0.85 // strength, radius, luminance threshold
+        );
+        composer.addPass(new SelectiveBloomPass(scene, perspCamera, bloomPass));
 
     // DISTANCES
         const infoSection = document.querySelector('.informations')
@@ -885,6 +867,7 @@
             // One transition on entering/leaving the range. Never restart on every scroll tick.
             if (shouldShow === projectButtonsInRange) return;
             projectButtonsInRange = shouldShow;
+            setLampBeamProjectActive(shouldShow);
 
             gsap.killTweensOf(projectButtonTargets);
 
@@ -1723,6 +1706,7 @@
             control.update          ();
             logoAnimation.update    ();
             composero.render        ();
+            liquidGlassBackdrop.update(scene, perspCamera);
             composer.render         ();
         };
         animate()

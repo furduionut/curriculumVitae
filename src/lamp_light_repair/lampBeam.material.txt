@@ -1,0 +1,52 @@
+/* LAMP BEAM — a separate, luminous material, not liquid glass. */
+const lampBeam = new THREE.ShaderMaterial({
+    name: 'LampBeam',
+    uniforms: {
+        uBeamColor: { value: new THREE.Color(0xe4edff) },
+        uBeamPower: { value: 0 },        // controlled by GSAP
+        uBeamOpacity: { value: 1.0 },    // maximum alpha at the lamp head
+        uBeamIntensity: { value: 2.2 },  // light brightness / existing bloom
+        uBeamFalloff: { value: 2.0 },    // 1 = linear; >1 fades faster
+        uBeamEdgeSoftness: { value: 0.85 }, // 0 = solid edges; 1 = soft edges
+    },
+    vertexShader: `
+        attribute float lampBeamT;
+        varying float vBeamT;
+        varying vec3 vBeamNormal;
+        varying vec3 vBeamView;
+        void main() {
+            vBeamT = lampBeamT;
+            vec4 mv = modelViewMatrix * vec4(position, 1.0);
+            vBeamNormal = normalMatrix * normal;
+            vBeamView = -mv.xyz;
+            gl_Position = projectionMatrix * mv;
+        }
+    `,
+    fragmentShader: `
+        uniform vec3 uBeamColor;
+        uniform float uBeamPower, uBeamOpacity, uBeamIntensity;
+        uniform float uBeamFalloff, uBeamEdgeSoftness;
+        varying float vBeamT;
+        varying vec3 vBeamNormal;
+        varying vec3 vBeamView;
+        void main() {
+            float t = clamp(vBeamT, 0.0, 1.0);
+            float fade = pow(1.0 - t, max(uBeamFalloff, 0.01));
+            // Fade grazing-angle edges to mimic soft light scattering.
+            float facing = abs(dot(normalize(vBeamNormal), normalize(vBeamView)));
+            float edge = mix(1.0, smoothstep(0.0, 0.72, facing),
+                             clamp(uBeamEdgeSoftness, 0.0, 1.0));
+            float alpha = clamp(fade * edge * uBeamPower * uBeamOpacity, 0.0, 1.0);
+            if (alpha < 0.001) discard;
+            gl_FragColor = vec4(uBeamColor * uBeamIntensity, alpha);
+            #include <colorspace_fragment>
+        }
+    `,
+    transparent: true,
+    blending: THREE.AdditiveBlending,
+    depthTest: true,
+    depthWrite: false,
+    side: THREE.DoubleSide,
+    forceSinglePass: true,
+    toneMapped: false,
+});

@@ -666,7 +666,7 @@ svg {
 .controls > .prevBtn,
 .controls > .nextBtn {
     position: relative;
-    bottom: 37vh;
+    bottom: 27vh;
     left: auto;
     right: auto;
 }

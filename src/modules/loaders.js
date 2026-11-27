@@ -12,6 +12,7 @@
     import { materials } from "./materials.js";
     import { ContextSceneManager } from "./contextScene.js";
     import { attachCommonSceneAnimations } from "./commonScene.js";
+    import { createUnlitMaterial } from './selectiveLighting.js';
     
 
 
@@ -773,6 +774,7 @@
             const transmissionMap = textureLoader.load(texturePaths.transmission);
         
             diffuseMap.flipY      = false;
+            diffuseMap.colorSpace = THREE.SRGBColorSpace;
             roughnessMap.flipY    = false;
             normalMap.flipY       = false;
             transmissionMap.flipY = false;
@@ -787,7 +789,7 @@
             });
         
             mat.needsUpdate = true;
-            return mat;
+            return createUnlitMaterial(mat);
         };
 
     function loadingDisplay         (dom){
